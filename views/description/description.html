@@ -1,0 +1,92 @@
+{% extends '../_base.html' %}
+
+<!-- THE TITLE BLOCK -->
+{% block title %} Description | FB-AUTO {% endblock %}
+
+<!-- THE STYLES BLOCK -->
+{% block styles %}
+<link rel="stylesheet" href="/css/settings/settings.css" />
+{% endblock %}
+
+<!-- THE CONTENT BLOCK -->
+{% block content %}
+<!-- THE DESCRIPTION -->
+<div id="description">
+    <!-- THE DESCRIPTION SWITCHER -->
+    <section id="description-switcher">
+        <!-- THE DESCRIPTION SWITCH -->
+        <button class="tab-switch active" data-tab="manage-groups" onclick="handleTabSwitch('manage-description')">
+            Manage Description
+        </button>
+    </section>
+
+    <!-- THE DESCRIPTION TABS -->
+    <section id="description-tabs">
+        <!-- THE DESCRIPTION TAB -->
+        <section class="settings-tab tab" data-tab="manage-groups">
+            <!-- THE TAB HEADING -->
+            <h2 class="settings-tab-heading">Manage Description</h2>
+
+            <!-- THE CREATE GROUP -->
+            <button class="group-action-create" onclick="openModal('modal-create')">
+                <i class="fa-solid fa-plus"></i> Create Description
+            </button>
+
+            <!-- THE DESCRIPTION LIST -->
+            <table id="description-list">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for description in descriptions %}
+                    <tr>
+                        <td class="group-id">
+                            <p>{{ loop.index }}</p>
+                        </td>
+                        <td class="group-name">
+                            <p>{{ description.description }}</p>
+                            <!-- <p>{{description}}</p> -->
+                        </td>
+                        <td class="group-actions">
+                            <button
+                                class="group-action-edit"
+                                onclick='handleEditDescription("{{ description.id }}", "{{ description.description }}")'>
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button
+                                class="group-action-delete"
+                                onclick='handleDeleteDescription("{{ description.id }}", "{{ description.description }}")'>
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </section>
+</div>
+
+<!-- THE MODALS -->
+{% include './template/_modals.html' %}
+<!-- END MODALS -->
+{% endblock %}
+
+<!-- THE SCRIPTS BLOCK -->
+{% block scripts %}
+<script src="/js/posts/handleTabSwitch.js"></script>
+<script src="/js/timesheet/handleOpenModal.js"></script>
+<script src="/js/timesheet/handleCloseModal.js"></script>
+
+<script src="/js/description/createDescription.js"></script>
+<script src="/js/description/deleteDescription.js"></script>
+<script src="/js/description/handleEditDescription.js"></script>
+<script src="/js/description/handleDeleteDescription.js"></script>
+
+
+<script src="/js/settings/createGroup.js"></script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends '../_base.html' %}
+
+<!-- THE TITLE BLOCK -->
+{% block title %} Settings | FB-AUTO {% endblock %}
+
+<!-- THE STYLES BLOCK -->
+{% block styles %}
+<link rel="stylesheet" href="/css/settings/settings.css" />
+{% endblock %}
+
+<!-- THE CONTENT BLOCK -->
+{% block content %}
+<!-- THE SETTINGS -->
+<div id="settings">
+    <!-- THE SETTINGS SWITCHER -->
+    <section id="settings-switcher">
+        <!-- THE GROUPS SWITCH -->
+        <button class="tab-switch active" data-tab="manage-groups" onclick="handleTabSwitch('manage-groups')">
+            Manage Groups
+        </button>
+    </section>
+
+    <!-- THE SETTINGS TABS -->
+    <section id="settings-tabs">
+        <!-- THE GROUPS TAB -->
+        <section class="settings-tab tab" data-tab="manage-groups">
+            <!-- THE TAB HEADING -->
+            <h2 class="settings-tab-heading">Manage Groups</h2>
+
+            <!-- THE CREATE GROUP -->
+            <button class="group-action-create" onclick="openModal('modal-create')">
+                <i class="fa-solid fa-plus"></i> Create Group
+            </button>
+
+            <!-- THE GROUPS LIST -->
+            <table id="groups-list">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td class="group-id">
+                            <p>{{ loop.index }}</p>
+                        </td>
+                        <td class="group-name">
+                            <p>{{ group.name }}</p>
+                        </td>
+                        <td class="group-link">
+                            <a href="{{ group.link }}" target="_blank">{{ group.link }}</a>
+                        </td>
+                        <td class="group-actions">
+                            <button
+                                class="group-action-edit"
+                                onclick='handleEditGroup("{{ group.id }}", "{{ group.name }}", "{{ group.link }}")'>
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button
+                                class="group-action-delete"
+                                onclick='handleDeleteGroup("{{ group.id }}", "{{ group.name }}", "{{ group.link }}")'>
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </section>
+</div>
+
+<!-- THE MODALS -->
+{% include './template/_modals.html' %}
+<!-- END MODALS -->
+{% endblock %}
+
+<!-- THE SCRIPTS BLOCK -->
+{% block scripts %}
+<script src="/js/posts/handleTabSwitch.js"></script>
+<script src="/js/timesheet/handleOpenModal.js"></script>
+<script src="/js/timesheet/handleCloseModal.js"></script>
+
+<script src="/js/settings/createGroup.js"></script>
+<script src="/js/settings/deleteGroup.js"></script>
+<script src="/js/settings/handleEditGroup.js"></script>
+<script src="/js/settings/handleDeleteGroup.js"></script>
+{% endblock %}

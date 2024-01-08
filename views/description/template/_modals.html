@@ -1,0 +1,65 @@
+<!-- THE MODAL OVERLAY -->
+<div id="modal-overlay" class="hidden"></div>
+
+<!-- THE CREATE MODAL -->
+<div id="modal-create" class="modal hidden">
+    <!-- THE MODAL HEADING -->
+    <h3 id="modal-create-heading" class="modal-heading">Create Description</h3>
+
+    <!-- THE NAME -->
+    <input type="text" name="description" id="modal-create-description" class="modal-input" placeholder="Love it!! That's all I need!!
+    " />
+
+    <!-- THE MODAL BUTTOS -->
+    <section id="modal-create-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="closeModal('modal-create')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-primary" onclick="createDescription('create')">Create</button>
+    </section>
+</div>
+
+<!-- THE UPDATE MODAL -->
+<div id="modal-update" class="modal hidden">
+    <!-- THE MODAL HEADING -->
+    <h3 id="modal-update-heading" class="modal-heading">Update Description</h3>
+
+    <!-- THE ID -->
+    <input type="number" name="id" id="modal-update-description-id" class="modal-input hidden" />
+
+    <!-- THE NAME -->
+    <input type="text" name="description" id="modal-update-description" class="modal-input" placeholder="Love it!! That's all I need!!" />
+
+    <!-- THE MODAL BUTTOS -->
+    <section id="modal-update-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="closeModal('modal-update')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-tertiary" onclick="createDescription('update')">Update</button>
+    </section>
+</div>
+
+<!-- THE DELETE MODAL -->
+<div id="modal-delete" class="modal hidden">
+    <!-- THE MODAL HEADING -->
+    <h3 id="modal-delete-heading" class="modal-heading">Delete Group</h3>
+
+    <!-- THE ID -->
+    <input type="number" name="id" id="modal-delete-description-id" class="modal-input hidden" />
+
+    <!-- THE NAME -->
+    <input type="text" name="description" id="modal-delete-description" class="modal-input" placeholder="Love it!! That's all I need!!" />
+
+
+
+    <!-- THE MODAL BUTTOS -->
+    <section id="modal-delete-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-secondary" onclick="closeModal('modal-delete')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="deleteDescription()">Delete</button>
+    </section>
+</div>

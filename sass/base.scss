@@ -1,0 +1,206 @@
+@import './shared';
+@import './modals/error';
+@import './modals/loader';
+@import './modals/duplink';
+
+body {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+
+    color: $white;
+    background-color: $black;
+
+    display: grid;
+    grid-gap: 25px;
+    grid-template-rows: 75px 50px auto 50px;
+
+    &.update-indicator-visible {
+        grid-template-rows: 75px 50px 50px auto 50px;
+    }
+
+    .mobile-enabled {
+        @media screen and (min-width: 575px) {
+            display: none;
+        }
+    }
+
+    .desktop-enabled {
+        @media screen and (max-width: 574px) {
+            display: none;
+        }
+    }
+
+    a {
+        color: $white;
+        text-decoration: none;
+
+        &:hover {
+            color: $blue;
+            text-decoration: underline;
+        }
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .container {
+        width: 100%;
+        height: inherit;
+        max-width: 1050px;
+
+        margin: 0 auto;
+        padding: 0 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #header {
+        width: 100%;
+        height: 75px;
+
+        box-shadow: 0 0 0 1px $border;
+
+        .container {
+            display: grid;
+            grid-template-columns: 0.75fr 3.25fr;
+
+            .icon {
+                font-size: 24px;
+            }
+
+            #logo {
+                h1 {
+                    a {
+                        font-weight: bolder;
+                        text-transform: uppercase;
+                    }
+                }
+            }
+
+            #menu {
+                gap: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: end;
+
+                a {
+                    font-size: 18px;
+                    text-transform: uppercase;
+                }
+
+                button {
+                    cursor: pointer;
+
+                    color: $blue;
+                    border-color: $blue;
+                    background-color: transparent;
+
+                    border: 3px solid;
+                    padding: 5px 25px;
+
+                    @media screen and (max-width: 574px) {
+                        border: 2px solid;
+                        padding: 5px 10px;
+
+                        .icon {
+                            font-size: 18px;
+                        }
+                    }
+
+                    font-size: 16px;
+                    font-weight: bolder;
+                    text-transform: uppercase;
+
+                    &:hover {
+                        color: $black;
+                        border-color: $blue;
+                        background-color: $blue;
+                        box-shadow: 3px 3px $light;
+
+                        &:active {
+                            box-shadow: none;
+                            transform: translate(3px, 3px);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #identifier {
+        width: 100%;
+        height: 50px;
+
+        .container {
+            #indicator {
+                color: $blue;
+                font-size: 20px;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+    #update-indicator {
+        width: calc(100% - 50px);
+        max-width: 350px;
+        justify-self: center;
+        box-shadow: 0 0 0 2px $green;
+
+        .container {
+            height: 50px;
+            align-items: center;
+
+            display: grid;
+            grid-gap: 25px;
+            grid-template-columns: 1fr 40px;
+
+            #update-message {
+                font-weight: bold;
+                text-transform: uppercase;
+                color: $green;
+                font-size: 14px;
+            }
+
+            #update-message-close {
+                height: 40px;
+                width: 40px;
+                cursor: pointer;
+
+                color: $dark;
+                font-weight: bolder;
+                background-color: $red;
+
+                &:hover {
+                    box-shadow: 2px 2px $light;
+
+                    &:active {
+                        box-shadow: none;
+                        transform: translate(2px, 2px);
+                    }
+                }
+            }
+        }
+    }
+
+    #footer {
+        width: 100%;
+        height: 50px;
+
+        box-shadow: 0 0 0 1px $border;
+
+        .container {
+            #copyright {
+                font-weight: bold;
+
+                a {
+                    color: $blue;
+                }
+            }
+        }
+    }
+}

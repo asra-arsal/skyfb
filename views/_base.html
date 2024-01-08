@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %} {% endblock %}</title>
+        <link rel="stylesheet" href="/css/base.css" />
+        <!-- THE STYLES BLOCK -->
+        {% block styles %} {% endblock %}
+    </head>
+    <body>
+        <!-- THE HEADER -->
+        <header id="header">
+            <!-- THE CONTAINER -->
+            <div class="container">
+                <!-- THE LOGO -->
+                <section id="logo">
+                    <h1>
+                        <a href="/">
+                            <i class="fa-brands fa-facebook-square mobile-enabled icon"></i>
+                            <span class="desktop-enabled">Facebook</span>
+                        </a>
+                    </h1>
+                </section>
+
+                <!-- THE MENU -->
+                <nav id="menu">
+                    <a href="/auth/pass">
+                        <i class="fa-solid fa-key"></i>
+                    </a>
+                    <a href="/settings">
+                        <i class="fa-solid fa-cog"></i>
+                    </a>
+                    <a href="/timesheet">
+                        <i class="fa-regular fa-calendar mobile-enabled icon"></i>
+                        <span class="desktop-enabled">Timesheet</span>
+                    </a>
+                    <a href="/description">
+                        <i class="fa-regular fa-calendar mobile-enabled icon"></i>
+                        <span class="desktop-enabled">Description</span>
+                    </a>
+                    <a href="/posts">
+                        <i class="fa-regular fa-file-lines mobile-enabled icon"></i>
+                        <span class="desktop-enabled">Posts</span>
+                    </a>
+                    <button onclick="handleLogin()">
+                        <i class="fa-solid fa-arrow-right-to-bracket mobile-enabled icon"></i>
+                        <span class="desktop-enabled">Login</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- THE IDENTIFIER -->
+        <section id="identifier">
+            <!-- THE CONTAINER -->
+            <div class="container">
+                <!-- THE INDICATOR -->
+                <a href="#" id="indicator-link" target="_blank">
+                    <h2 id="indicator" title="Indicator of the logged in instance."></h2>
+                </a>
+            </div>
+        </section>
+
+        <!-- THE UPDATE INDICATOR -->
+        <section id="update-indicator" class="hidden">
+            <!-- THE CONTAINER -->
+            <div class="container">
+                <!-- THE UPDATE MESSAGE -->
+                <h3 id="update-message">A new update is available!</h3>
+                <button id="update-message-close" onclick="silenceUpdateNotification()">OK</button>
+            </div>
+        </section>
+
+        <!-- THE CONTENT -->
+        <main id="content">
+            <!-- THE CONTAINER -->
+            <div class="container">
+                <!-- THE CONTENT BLOCK -->
+                {% block content %} {% endblock %}
+            </div>
+        </main>
+
+        <!-- THE FOOTER -->
+        <footer id="footer">
+            <!-- THE CONTAINER -->
+            <div class="container">
+                <!-- THE COPYRIGHT -->
+                <p id="copyright">Copyright (c) 2023 - <a href="mailto:ahmad@shahzad.dev">Ahmad Shahzad</a></p>
+            </div>
+        </footer>
+
+        <!-- THE ERROR -->
+        <div id="error-overlay" class="hidden"></div>
+        <div id="error-modal" class="hidden">
+            <h3 id="error-modal-heading"></h3>
+            <p id="error-modal-message"></p>
+            <pre id="error-modal-content"></pre>
+            <button id="error-modal-close" onclick="closeError()">
+                <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+        </div>
+
+        <!-- THE DUPLINK WARNING -->
+        <div id="duplink-overlay" class="hidden"></div>
+        <div id="duplink-modal" class="hidden">
+            <input type="number" id="duplink-modal-index" class="hidden" />
+            <input type="text" id="duplink-modal-type" class="hidden" />
+            <h3 id="duplink-modal-heading">Duplicate Link</h3>
+            <p id="duplink-modal-message">
+                The link in your post already exists in the database! Are you sure you want to create a new post with
+                the same link?
+            </p>
+            <section id="duplink-modal-buttons">
+                <button id="duplink-modal-close" onclick="closeDuplinkWarning()">Cancel</button>
+                <button id="duplink-modal-create" onclick="ignoreDuplinkWarning()">I am Sure!</button>
+            </section>
+        </div>
+
+        <!-- THE LOADING ANIMATION -->
+        <div id="loading-overlay" class="hidden"></div>
+        <div id="loading-icon" class="hidden"></div>
+
+        <!-- THE SCRIPTS -->
+        <script>
+            let apiURL = '/api/v1';
+            let apiMiscURL = `${apiURL}/misc`;
+            let apiPostsURL = `${apiURL}/posts`;
+            let apiGroupsURL = `${apiURL}/groups`;
+            let apiTimesheetURL = `${apiURL}/timesheet`;
+            let apiDescriptonURL = `${apiURL}/description`;
+
+            let api = {
+                misc: {
+                    login: `${apiMiscURL}/login`,
+                    update: `${apiMiscURL}/update`,
+                    duplink: `${apiMiscURL}/duplink`,
+                    indicator: `${apiMiscURL}/indicator`,
+                },
+                posts: {
+                    get: {
+                        all: `${apiPostsURL}/all`,
+                        automated: `${apiPostsURL}/automated`,
+                        scheduled: `${apiPostsURL}/scheduled`,
+                    },
+                    create: `${apiPostsURL}/create`,
+                    update: `${apiPostsURL}/update`,
+                    delete: `${apiPostsURL}/delete`,
+                    publish: `${apiPostsURL}/publish`,
+                    reOrder: `${apiPostsURL}/re-order`,
+                },
+                groups: {
+                    get: {
+                        all: `${apiGroupsURL}/all`,
+                    },
+                    create: `${apiGroupsURL}/create`,
+                    update: `${apiGroupsURL}/update`,
+                    delete: `${apiGroupsURL}/delete`,
+                },
+                timesheet: {
+                    get: {
+                        all: `${apiTimesheetURL}/all`,
+                    },
+                    create: `${apiTimesheetURL}/create`,
+                    update: `${apiTimesheetURL}/update`,
+                    delete: `${apiTimesheetURL}/delete`,
+                    instant: `${apiTimesheetURL}/instant`,
+                },
+                description: {
+                    get: {
+                        all: `${apiDescriptonURL}/all`,
+                    },
+                    create: `${apiDescriptonURL}/create`,
+                    update: `${apiDescriptonURL}/update`,
+                    delete: `${apiDescriptonURL}/delete`,
+                    instant: `${apiDescriptonURL}/instant`,
+                },
+            };
+        </script>
+        <script src="/js/base/handleLoadingAnimation.js"></script>
+        <script src="/js/base/handleLogin.js"></script>
+        <script src="/js/base/handleError.js"></script>
+        <script src="/js/base/handleIndicator.js"></script>
+        <script src="/js/base/silenceUpdateNotification.js"></script>
+        <script src="/js/base/checkForUpdate.js"></script>
+        <script src="/js/common/handleDuplink.js"></script>
+
+        <!-- THE SCRIPTS BLOCK -->
+        {% block scripts %} {% endblock %}
+    </body>
+</html>

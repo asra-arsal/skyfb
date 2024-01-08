@@ -1,0 +1,370 @@
+@import '../shared/colors';
+
+body {
+    input {
+        width: 100%;
+    }
+    #content {
+        .container {
+            flex-direction: column;
+            gap: 25px;
+
+            #timesheet-actions {
+                height: 50px;
+                width: 125px;
+                display: grid;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 25px;
+
+                .timesheet-action {
+                    color: $blue;
+                    border: 3px solid $blue;
+                    font-size: 18px;
+                    background: transparent;
+                    cursor: pointer;
+
+                    &.timesheet-delete {
+                        color: $red;
+                        border-color: $red;
+                    }
+
+                    &:hover {
+                        box-shadow: 3px 3px $light;
+
+                        &:active {
+                            box-shadow: none;
+                            transform: translate(3px, 3px);
+                        }
+                    }
+                }
+            }
+
+            #timesheet {
+                width: calc(100vw - 50px);
+                max-width: 1000px;
+                overflow-y: auto;
+
+                box-shadow: 0 0 0 2px $border;
+                border-collapse: collapse;
+
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+
+                .timesheet-container {
+                    width: calc(1000px / 7);
+                    box-shadow: 0 0 0 1px $border;
+
+                    display: grid;
+                    grid-template-rows: 50px auto 65px;
+
+                    .timesheet-header {
+                        border-bottom: 2px solid $border;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .timesheet-heading {
+                            font-weight: normal;
+                            text-transform: uppercase;
+                        }
+                    }
+
+                    .timesheet-content {
+                        height: 400px;
+                        max-height: 500px;
+
+                        overflow-y: auto;
+
+                        padding: 10px;
+
+                        gap: 10px;
+                        display: flex;
+                        flex-direction: column;
+
+                        &::-webkit-scrollbar {
+                            display: none;
+                        }
+
+                        &:hover {
+                            /* Hide scrollbar by default */
+                            &::-webkit-scrollbar {
+                                display: initial;
+                                width: 10px;
+                                background-color: $white;
+                            }
+
+                            /* Make scrollbar visible when needed */
+                            &::-webkit-scrollbar-thumb {
+                                background-color: $border;
+                            }
+                        }
+
+                        .timesheet-item {
+                            border: 2px dashed $border;
+
+                            .timesheet-item-heading {
+                                color: $yellow;
+                                padding: 7.5px 0;
+                                text-align: center;
+                                border-bottom: 2px dashed $border;
+                            }
+
+                            .timesheet-item-buttons {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+
+                                .timesheet-item-button {
+                                    width: 100%;
+                                    height: 100%;
+
+                                    border: none;
+                                    background-color: transparent;
+
+                                    padding: 5px 0;
+
+                                    i {
+                                        cursor: pointer;
+                                    }
+
+                                    &:first-child {
+                                        border-right: 1px dashed $border;
+                                    }
+
+                                    &:last-child {
+                                        border-left: 1px dashed $border;
+                                    }
+
+                                    &.timesheet-item-edit-button {
+                                        color: $green;
+                                    }
+
+                                    &.timesheet-item-delete-button {
+                                        color: $red;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .timesheet-footer {
+                        border-top: 2px solid $border;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .timesheet-new-button {
+                            cursor: pointer;
+
+                            width: calc(100% - 20px);
+                            height: 40px;
+
+                            color: $blue;
+                            border: 3px solid $blue;
+                            background-color: transparent;
+
+                            font-weight: bold;
+
+                            &:hover {
+                                color: $black;
+                                box-shadow: 3px 3px $light;
+                                background-color: $blue;
+
+                                &:active {
+                                    box-shadow: none;
+                                    transform: translate(3px, 3px);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            #modal-overlay {
+                z-index: 5;
+
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                position: fixed;
+
+                opacity: 0.85;
+                background-color: $dark;
+            }
+
+            .modal {
+                z-index: 10;
+
+                width: 100%;
+                max-width: 400px;
+
+                background-color: $black;
+
+                top: 50%;
+                left: 50%;
+                position: fixed;
+                transform: translate(-50%, -50%);
+
+                padding: 25px;
+                border: 3px solid;
+
+                gap: 25px;
+                display: flex;
+                flex-direction: column;
+
+                &#modal-create,
+                &#modal-instant {
+                    border-color: $blue;
+                }
+
+                &#modal-update {
+                    border-color: $green;
+                }
+
+                &#modal-delete,
+                &#modal-purge {
+                    border-color: $red;
+                }
+
+                .modal-input {
+                    cursor: pointer;
+                    appearance: none;
+                    color-scheme: dark;
+
+                    border: none;
+                    color: $white;
+                    outline: none;
+                    box-shadow: 0 0 0 1px $border;
+                    background-color: $black;
+
+                    height: 50px;
+                    padding: 0 15px;
+
+                    &::placeholder {
+                        color: $muted;
+                    }
+
+                    &:hover {
+                        box-shadow: 0 0 0 1px $blue;
+                    }
+
+                    &:focus {
+                        box-shadow: 0 0 0 2px $blue;
+                    }
+                }
+
+                fieldset {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    border-color: $border;
+
+                    .modal-checkbox {
+                        display: grid;
+                        grid-gap: 10px;
+                        grid-template-columns: 30px 1fr;
+
+                        .modal-checkbox-input {
+                            color-scheme: dark;
+                        }
+                    }
+                }
+
+                .modal-heading {
+                    text-align: center;
+                    text-transform: uppercase;
+
+                    &#modal-create-heading {
+                        color: $blue;
+                    }
+
+                    &#modal-purge-heading {
+                        color: $red;
+                    }
+                }
+
+                .modal-message {
+                    text-transform: uppercase;
+                }
+
+                .modal-buttons {
+                    display: grid;
+                    grid-gap: 25px;
+                    grid-template-columns: 1fr 1fr;
+
+                    .modal-button {
+                        cursor: pointer;
+
+                        height: 50px;
+
+                        color: $light;
+                        border: 3px solid $light;
+                        background-color: transparent;
+
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+
+                        &:hover {
+                            border: 1px solid $dark;
+                            background-color: $light;
+                            box-shadow: 3px 3px $light;
+
+                            &:active {
+                                box-shadow: none;
+                                transform: translate(3px, 3px);
+                            }
+                        }
+
+                        &.modal-button-primary {
+                            color: $blue;
+                            border-color: $blue;
+
+                            &:hover {
+                                color: $dark;
+                                border: 1px solid $dark;
+                                background-color: $blue;
+                            }
+                        }
+
+                        &.modal-button-danger {
+                            color: $red;
+                            border-color: $red;
+
+                            &:hover {
+                                color: $dark;
+                                border: 1px solid $dark;
+                                background-color: $red;
+                            }
+                        }
+
+                        &.modal-button-secondary {
+                            color: $yellow;
+                            border-color: $yellow;
+
+                            &:hover {
+                                color: $dark;
+                                border: 1px solid $dark;
+                                background-color: $yellow;
+                            }
+                        }
+
+                        &.modal-button-tertiary {
+                            color: $green;
+                            border-color: $green;
+
+                            &:hover {
+                                color: $dark;
+                                border: 1px solid $dark;
+                                background-color: $green;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
