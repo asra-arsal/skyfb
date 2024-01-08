@@ -24,7 +24,15 @@
         <i class="fa-solid fa-plus"></i>
     </button>
 </div>
+<section id="tab-switches">
+    <button class="tab-switch active" id="media" value="media" data-tab="media" onclick="timeSlotValues('media')">
+        TIMESHEET FOR PHOTOS
+    </button>
+    <button class="tab-switch" id="link" data-tab="link" value="link" onclick="timeSlotValues('link')">
+        TIMESHEET FOR LINKS
+    </button>
 
+</section>
 <!-- THE TIMESHEET -->
 <div id="timesheet">
     {% for day in days %}
@@ -32,49 +40,64 @@
         <header class="timesheet-header" data-day="{{ day }}">
             <h3 class="timesheet-heading" data-day="{{ day }}">{{ day }}</h3>
         </header>
-        <section class="timesheet-content" data-day="{{ day }}">
-            {% for timeslot in timeslots %} {% if timeslot.day == day %}
-            <article
-                class="timesheet-item"
-                data-day="{{ timeslot.day }}"
-                data-id="{{ timeslot.id }}"
-                data-time="{{ timeslot.time }}"
-                data-time-formatted="{{ timeslot.time_formatted }}">
-                <h4
-                    class="timesheet-item-heading"
-                    data-day="{{ timeslot.day }}"
-                    data-id="{{ timeslot.id }}"
-                    data-time="{{ timeslot.time }}"
-                    data-time-formatted="{{ timeslot.time_formatted }}">
+        <section class="timesheet-content tab-section media-tab-section"  data-day="{{ day }}" data-tab="media">
+            {% for timeslot in timeslots %} {% if timeslot.day == day %} {% if timeslot.type == "media" %}
+            <article class="timesheet-item" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
+                <!-- {{timeslot | dump}} -->
+                <h4 class="timesheet-item-heading" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                    data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
                     {{ timeslot.time_formatted }}
                 </h4>
-                <section
-                    class="timesheet-item-buttons"
-                    data-day="{{ timeslot.day }}"
-                    data-id="{{ timeslot.id }}"
-                    data-time="{{ timeslot.time }}"
-                    data-time-formatted="{{ timeslot.time_formatted }}">
-                    <button
-                        class="timesheet-item-button timesheet-item-edit-button"
-                        data-day="{{ timeslot.day }}"
-                        data-id="{{ timeslot.id }}"
-                        data-time="{{ timeslot.time }}"
+                <section class="timesheet-item-buttons" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                    data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
+                    <button class="timesheet-item-button timesheet-item-edit-button" data-day="{{ timeslot.day }}"
+                        data-id="{{ timeslot.id }}" data-time="{{ timeslot.time }}"
                         data-time-formatted="{{ timeslot.time_formatted }}"
                         onclick="handleUpdateTimeslot('{{ timeslot.id }}', '{{ timeslot.day }}', '{{ timeslot.time }}')">
                         <i class="fa-regular fa-pen-to-square" title="Edit time."></i>
                     </button>
-                    <button
-                        class="timesheet-item-button timesheet-item-delete-button"
-                        data-day="{{ timeslot.day }}"
-                        data-id="{{ timeslot.id }}"
-                        data-time="{{ timeslot.time }}"
+                    <button class="timesheet-item-button timesheet-item-delete-button" data-day="{{ timeslot.day }}"
+                        data-id="{{ timeslot.id }}" data-time="{{ timeslot.time }}"
                         data-time-formatted="{{ timeslot.time_formatted }}"
                         onclick="handleDeleteTimeslot('{{ timeslot.id }}', '{{ timeslot.day }}', '{{ timeslot.time }}')">
                         <i class="fa-regular fa-trash-can" title="Delete time."></i>
                     </button>
                 </section>
             </article>
-            {% endif %} {% endfor %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </section>
+        <section class="timesheet-content tab-section link-tab-section" data-day="{{ day }}"  data-tab="link" >
+            {% for timeslot in timeslots %} {% if timeslot.day == day %} {% if timeslot.type == "link" %}
+            <article class="timesheet-item" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
+                <!-- {{timeslot | dump}} -->
+
+                <h4 class="timesheet-item-heading" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                    data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
+                    {{ timeslot.time_formatted }}
+                </h4>
+                <section class="timesheet-item-buttons" data-day="{{ timeslot.day }}" data-id="{{ timeslot.id }}"
+                    data-time="{{ timeslot.time }}" data-time-formatted="{{ timeslot.time_formatted }}">
+                    <button class="timesheet-item-button timesheet-item-edit-button" data-day="{{ timeslot.day }}"
+                        data-id="{{ timeslot.id }}" data-time="{{ timeslot.time }}"
+                        data-time-formatted="{{ timeslot.time_formatted }}"
+                        onclick="handleUpdateTimeslot('{{ timeslot.id }}', '{{ timeslot.day }}', '{{ timeslot.time }}')">
+                        <i class="fa-regular fa-pen-to-square" title="Edit time."></i>
+                    </button>
+                    <button class="timesheet-item-button timesheet-item-delete-button" data-day="{{ timeslot.day }}"
+                        data-id="{{ timeslot.id }}" data-time="{{ timeslot.time }}"
+                        data-time-formatted="{{ timeslot.time_formatted }}"
+                        onclick="handleDeleteTimeslot('{{ timeslot.id }}', '{{ timeslot.day }}', '{{ timeslot.time }}')">
+                        <i class="fa-regular fa-trash-can" title="Delete time."></i>
+                    </button>
+                </section>
+            </article>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
         </section>
         <footer class="timesheet-footer" data-day="{{ day }}">
             <button class="timesheet-new-button" data-day="{{ day }}" onclick="handleCreateTimeslot('{{ day }}')">
@@ -94,8 +117,8 @@
 {% block scripts %}
 <script src="/js/timesheet/handleOpenModal.js"></script>
 <script src="/js/timesheet/handleCloseModal.js"></script>
-
-<script src="/js/timesheet/createTimeslot.js"></script>
+<script src="/js/posts/handleTabSwitch.js"></script>
+<!-- <script src="/js/timesheet/createTimeslot.js"></script> -->
 <script src="/js/timesheet/deleteTimeslot.js"></script>
 <script src="/js/timesheet/handleCreateTimeslot.js"></script>
 <script src="/js/timesheet/handleUpdateTimeslot.js"></script>

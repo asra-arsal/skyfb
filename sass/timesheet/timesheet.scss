@@ -8,6 +8,69 @@ body {
         .container {
             flex-direction: column;
             gap: 25px;
+            #tab-switches {
+                width: 100%;
+                max-width: 500px;
+
+                display: grid;
+                grid-gap: 25px;
+                grid-template-columns: 1fr 1fr;
+
+                .tab-switch {
+                    cursor: pointer;
+                    height: 50px;
+
+                    border: 3px solid;
+                    background-color: transparent;
+
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+
+                    &:hover {
+                        box-shadow: 3px 3px $light;
+
+                        &:active {
+                            box-shadow: none;
+                            transform: translate(3px, 3px);
+                        }
+                    }
+
+                    &[data-tab='link'] {
+                        color: $yellow;
+
+                        &:hover {
+                            color: $black;
+                            border-color: $yellow;
+                            background-color: $yellow;
+                        }
+
+                        &.active {
+                            color: $black;
+                            border-color: $yellow;
+                            background-color: $yellow;
+                        }
+                    }
+
+                    &[data-tab='media'] {
+                        color: $blue;
+
+                        &:hover {
+                            color: $black;
+                            border-color: $blue;
+                            background-color: $blue;
+                        }
+
+                        &.active {
+                            color: $black;
+                            border-color: $blue;
+                            background-color: $blue;
+                        }
+                    }
+                    
+                }
+            }
+
 
             #timesheet-actions {
                 height: 50px;

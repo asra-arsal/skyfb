@@ -221,7 +221,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 timestamp,
                 priority,
                 status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const params = [

@@ -41,7 +41,8 @@ const seedDB = async () => {
                 day TEXT NOT NULL,
                 time TEXT NOT NULL,
                 time_formatted TEXT NOT NULL,
-                priority INTEGER NOT NULL
+                priority INTEGER NOT NULL,
+                type TEXT NULL
             );
         `;
 

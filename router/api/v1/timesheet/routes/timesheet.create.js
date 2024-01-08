@@ -16,7 +16,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     // Get user input.
     let day = req?.body?.day ? req?.body?.day : null;
     const time = req?.body?.time ? req?.body?.time : null;
-
+    const type = req?.body?.type ? req?.body?.type : null;
     // Check if user has submitted all required fields.
     if (day === null || time === null) {
         await db.close();
@@ -144,10 +144,11 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 day,
                 time,
                 time_formatted,
-                priority
-            ) VALUES (?, ?, ?, ?);
+                priority,
+                type
+            ) VALUES (?, ?, ?, ?, ?);
         `;
-        const params = [day, time, time_formatted, priority];
+        const params = [day, time, time_formatted, priority, type];
 
         await db.run(query, params);
 

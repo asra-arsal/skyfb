@@ -14,7 +14,7 @@ timesheet.get('/', loggedIn, changePass, async (req, res) => {
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    let timeslots;
+    let timeslots , posts, link, media;
 
     try {
         const query = 'SELECT * FROM timesheet ORDER BY day, priority';
@@ -27,6 +27,5 @@ timesheet.get('/', loggedIn, changePass, async (req, res) => {
             return res.send('There was an error trying to get the time slots from the database.');
         }
     }
-
-    res.render('timesheet/timesheet', { days, timeslots });
+    res.render('timesheet/timesheet', { days, timeslots, link, media });
 });

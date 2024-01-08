@@ -14,7 +14,7 @@ INSTANT.post('/', loggedIn, async (req, res) => {
 
     const days = req?.body?.days && req?.body?.days?.length > 0 ? req?.body?.days : null;
     const time = req?.body?.time ? req?.body?.time : null;
-
+    const type = req?.body?.type ? req?.body?.type : null;
     // Check if user has submitted all required fields.
     if (days === null || time === null) {
         await db.close();
@@ -126,10 +126,11 @@ INSTANT.post('/', loggedIn, async (req, res) => {
                             day,
                             time,
                             time_formatted,
-                            priority
-                        ) VALUES (?, ?, ?, ?);
+                            priority,
+                            type
+                        ) VALUES (?, ?, ?, ?, ?);
                     `;
-                    const params = [day, time, time_formatted, priority];
+                    const params = [day, time, time_formatted, priority, type];
 
                     await db.run(query, params);
                 } catch (err) {

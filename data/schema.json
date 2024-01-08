@@ -30,6 +30,7 @@
         "timesheet": [
             "id",
             "day",
+            "type",
             "time",
             "time_formatted",
             "priority"
