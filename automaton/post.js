@@ -58,7 +58,7 @@ module.exports = async (post, auth) => {
         await sleep(5000);
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -79,7 +79,7 @@ module.exports = async (post, auth) => {
             await sleep(2500);
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,
@@ -111,7 +111,7 @@ module.exports = async (post, auth) => {
             await sleep(4000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,
@@ -150,7 +150,7 @@ module.exports = async (post, auth) => {
         await sleep(3000);
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -198,7 +198,7 @@ module.exports = async (post, auth) => {
         }
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -222,7 +222,7 @@ module.exports = async (post, auth) => {
         }
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -245,7 +245,7 @@ module.exports = async (post, auth) => {
             await sleep(3000);
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -284,7 +284,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -316,7 +316,7 @@ module.exports = async (post, auth) => {
             await sleep(5000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -342,7 +342,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,
@@ -373,7 +373,7 @@ module.exports = async (post, auth) => {
             await sleep(5000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -415,7 +415,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -441,7 +441,7 @@ module.exports = async (post, auth) => {
                 await sleep(3000);
             } catch (err) {
                 if (err) {
-                    // await browser?.close();
+                    await browser?.close();
 
                     return {
                         success: false,
@@ -471,7 +471,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -494,7 +494,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,
@@ -525,7 +525,7 @@ module.exports = async (post, auth) => {
             await sleep(5000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -567,7 +567,7 @@ module.exports = async (post, auth) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -590,7 +590,7 @@ module.exports = async (post, auth) => {
 
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -609,7 +609,7 @@ module.exports = async (post, auth) => {
 
     await sleep(totalSleepTime);
 
-    // await browser?.close();
+    await browser?.close();
     return {
         success: true,
         data: null,
