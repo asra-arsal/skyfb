@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer');
 const { sleep } = require('../utils/utils');
 
 module.exports = async (post, auth) => {
+    const proxy = process.env.PROXY_HOST;
     const username = process.env.PROXY_USER;
     const password = process.env.PROXY_PASSWORD;
     let args = ['--start-maximized', '--disable-notifications']
@@ -19,33 +20,14 @@ module.exports = async (post, auth) => {
     const page = await browser?.newPage();
     await sleep(3000)
     if (process.env.PROXY_ENABLED === "true") {
+        console.log('Proxy is enabled')
         await page.authenticate({ username, password });
         await sleep(2000)
-        try {
-            const proxyConfirmationUrl = 'https://ipinfo.io/';
-    
-            await page?.goto(proxyConfirmationUrl);
-    
-            await sleep(4000);
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
-    
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 700,
-                        type: 'Puppeteer error.',
-                        moment: 'Opening proxy Confirm.',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
+
     }
 
     if (auth.useAgent == "true") {
+        console.log('Agent is enabled')
         await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36  uacq');
     }
 
@@ -120,9 +102,9 @@ module.exports = async (post, auth) => {
 
             const passwordField = await page.$('input[name="pass"]');
             await passwordField.type(process.env.FB_PASSWORD);
-            
+
             await page.keyboard.press('Escape');
-            
+
             const [login] = await page?.$x(`//span[text()='Log In']`);
             await login.evaluate((s) => s.click());
             await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
@@ -143,30 +125,43 @@ module.exports = async (post, auth) => {
             }
         }
     }
-    
-    // if (await XPathExists("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]")) {
-    if (await XPathExists("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]")) {
-        // Open hamburger menu.
-        try {
-            const [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
+    // Open hamburger menu.
+  
+
+   
+    try {
+        let [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
+        if (!hamburgerMenu) {
+            [hamburgerMenu] = await page?.$x("/html/body/div[3]/div/div[1]/div[3]/div/div/div[3]");
+        }
+        if (!hamburgerMenu) {
+            [hamburgerMenu] = await page?.$x("/html/body/div[2]/div/div[1]/div[3]/div/div/div[3]");
+        }
+        if(hamburgerMenu){
             await hamburgerMenu.click();
+        }else{
+            await page.evaluate(() => {
+                let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[6];
+                let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
+                d.click();
+            });
+        }
 
-            await sleep(3000);
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
+        await sleep(3000);
+    } catch (err) {
+        if (err) {
+            // await browser?.close();
 
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 703,
-                        type: 'Puppeteer error.',
-                        moment: 'Hamburger Menu not found',
-                        error: err.toString(),
-                    },
-                };
-            }
+            return {
+                success: false,
+                data: null,
+                error: {
+                    code: 703,
+                    type: 'Puppeteer error.',
+                    moment: 'Hamburger Menu not found',
+                    error: err.toString(),
+                },
+            };
         }
     }
     // Open context  menu.
@@ -176,8 +171,19 @@ module.exports = async (post, auth) => {
 
         // if the publisher is page and the profile is of user OR publisher is user and profile is of page . Switch the context
         if ((post?.publisher === 'user' && checkPage) || (post?.publisher === 'page' && checkUser)) {
-            const [contextMenu] = await page?.$x("/html/body/div[1]/div/div[2]/div[2]/div/div/div[2]/div[5]/div");
-            await contextMenu.click();
+            let [contextMenu] = await page?.$x("/html/body/div[1]/div/div[2]/div[2]/div/div/div[2]/div[5]/div");
+            if (!contextMenu) {
+                [contextMenu] = await page?.$x("/html/body/div[2]/div/div[2]/div[2]/div/div/div[2]/div[5]/div");
+            }
+            if(contextMenu){
+                await contextMenu.click();
+            }else{
+                const element = await page.evaluate(() => {
+                    let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[15];
+                    let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
+                    d.click();
+                });
+            }
 
             await sleep(2000);
 
