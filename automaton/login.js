@@ -68,13 +68,16 @@ const login = async (username, password) => {
 
             await page.keyboard.press('Escape');
 
-            const [login] = await page?.$x(`//span[text()='Log In']`);
+            let [login] = await page?.$x(`//span[text()='Log In']`);
+            if(!login){
+                [login] = await page?.$x(`//span[text()='Log in']`);
+            }
             await login.evaluate((s) => s.click());
             await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
             await sleep(4000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,

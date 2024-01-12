@@ -99,8 +99,8 @@ CREATE.post('/', loggedIn, async (req, res) => {
     const priority = parseInt(time.replace(':', ''));
 
     try {
-        const query = 'SELECT * FROM timesheet WHERE day = ? AND time = ?';
-        const params = [day, time];
+        const query = 'SELECT * FROM timesheet WHERE day = ? AND time = ? AND type = ?';
+        const params = [day, time, type];
 
         const timeslot = await db.get(query, params);
 

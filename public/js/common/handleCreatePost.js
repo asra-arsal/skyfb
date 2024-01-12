@@ -20,9 +20,10 @@ const createPost = async (index, type, descriptions = "") => {
     }
     let mediaLength = getInput('media', index).value ? JSON.parse(getInput('media', index).value).length : 0
     let randomDescription = mediaLength > 0 ? getRandomElement(array) : '';  
+
     const post = {
         id: getInput('id', index).value,
-        message: `${getInput('message', index).value}\n\n${randomDescription == undefined ? "" : randomDescription}` ,
+        message: mediaLength > 0 ? getInput("link_description", index).value : getInput('message', index).value,
         link: getInput('link', index).value,
         link_description: getInput('link_description', index).value,
         media: getInput('media', index).value,

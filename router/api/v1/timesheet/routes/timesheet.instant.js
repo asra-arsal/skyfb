@@ -11,7 +11,6 @@ const { loggedIn } = require('../../../../../utils/loggedIn');
 
 INSTANT.post('/', loggedIn, async (req, res) => {
     const db = await openDB();
-
     const days = req?.body?.days && req?.body?.days?.length > 0 ? req?.body?.days : null;
     const time = req?.body?.time ? req?.body?.time : null;
     const type = req?.body?.type ? req?.body?.type : null;
@@ -113,8 +112,8 @@ INSTANT.post('/', loggedIn, async (req, res) => {
         const priority = parseInt(time.replace(':', ''));
 
         try {
-            const query = 'SELECT * FROM timesheet WHERE day = ? AND time = ?';
-            const params = [day, time];
+            const query = 'SELECT * FROM timesheet WHERE day = ? AND time = ? AND type = ?';
+            const params = [day, time, type];
 
             const timeslot = await db.get(query, params);
 

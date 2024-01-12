@@ -175,12 +175,14 @@ module.exports = async (post, auth) => {
             if (!contextMenu) {
                 [contextMenu] = await page?.$x("/html/body/div[2]/div/div[2]/div[2]/div/div/div[2]/div[5]/div");
             }
+            console.log('contextMenu: ', contextMenu);
             if(contextMenu){
                 await contextMenu.click();
             }else{
                 const element = await page.evaluate(() => {
                     let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[15];
                     let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
+                    console.log('d: ', d);
                     d.click();
                 });
             }
