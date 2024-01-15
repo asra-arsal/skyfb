@@ -151,7 +151,7 @@ module.exports = async (post, auth) => {
     } catch (err) {
         if (err) {
             await browser?.close();
-
+            console.log(703)
             return {
                 success: false,
                 data: null,
@@ -201,6 +201,7 @@ module.exports = async (post, auth) => {
     } catch (err) {
         if (err) {
             await browser?.close();
+            console.log(704)
 
             return {
                 success: false,
@@ -216,6 +217,8 @@ module.exports = async (post, auth) => {
     }
     // Switch to the correct context.
     try {
+        console.log('post1111', post)
+
         if (post?.context !== 'page' && post.publisher !== "page") {
             // const contextURL = post?.context === 'page' ? auth?.context?.page : auth?.context?.group;
             const contextURL = post?.context === 'page' ? 'https://www.facebook.com' : auth?.context?.group;

@@ -63,8 +63,9 @@ module.exports = async (posts, db) => {
             }
 
             console.log('post: ', post);
-            if (post.context == "page") {
-                if (post.publisher == "page") {
+            if (post.context == "page" || post.bulk == true) {
+                post.context = "page"
+                if (post.publisher == "page" && !post.bulk) {
                     const res = await pub.post(post, auth);
 
                     if (!res.success)
@@ -75,8 +76,32 @@ module.exports = async (posts, db) => {
                             res,
                         });
                 }
+                if (post.bulk) {
+                    post.context = "page"
+                    post.publisher = "page"
+                    const res = await pub.post(post, auth);
+
+                    if (!res.success)
+                        end_result.publish_errors.push({
+                            message: 'Failed to post to the page1.',
+                            adaptar: 'Legacy',
+                            post,
+                            res,
+                        });
+                    // post.context = "page"
+                    // post.publisher = "user"
+                    // const res1 = await pub.post(post, auth);
+
+                    // if (!res1.success)
+                    //     end_result.publish_errors.push({
+                    //         message: 'Failed to post to the page2.',
+                    //         adaptar: 'Legacy',
+                    //         post,
+                    //         res,
+                    //     });
+                }
             }
-            if (post.context == "group" && (post?.groups?.length < 1 || !post?.groups)) {
+            if ((post.context == "group") && (post?.groups?.length < 1 || !post?.groups)) {
                 end_result.publish_errors.push({
                     success: false,
                     data: null,
@@ -96,18 +121,47 @@ module.exports = async (posts, db) => {
                     const group = await db.get('SELECT * FROM groups WHERE name = ?', [name]);
                     auth.context.group = group.link;
                     auth.context.groupName = group.name;
-                    post.context = 'group';
+                    if(!post.bulk){
+                        post.context = 'group';
+                        const res = await pub.post(post, auth);
+    
+                        if (!res.success) {
+                            end_result.publish_errors.push({
+                                message: 'Failed to post to the group.',
+                                adaptar: 'Legacy',
+                                post,
+                                res,
+                            });
+                            j++;
+                        }
+                    }else{
+                        post.context = 'group';
+                        post.publisher = 'page';
+                        const res = await pub.post(post, auth);
+    
+                        if (!res.success) {
+                            end_result.publish_errors.push({
+                                message: 'Failed to post to the group.',
+                                adaptar: 'Legacy',
+                                post,
+                                res,
+                            });
+                            j++;
+                        }
+                        post.context = 'group';
+                        post.publisher = 'user';
+                        const res1 = await pub.post(post, auth);
+    
+                        if (!res1.success) {
+                            end_result.publish_errors.push({
+                                message: 'Failed to post to the group.',
+                                adaptar: 'Legacy',
+                                post,
+                                res,
+                            });
+                            j++;
+                        }
 
-                    const res = await pub.post(post, auth);
-
-                    if (!res.success) {
-                        end_result.publish_errors.push({
-                            message: 'Failed to post to the group.',
-                            adaptar: 'Legacy',
-                            post,
-                            res,
-                        });
-                        j++;
                     }
 
                     if (i === groups?.length - 1 && j === 0) {
@@ -167,222 +221,6 @@ module.exports = async (posts, db) => {
                     }
                 }
             }
-            // if (
-            //     (post?.media === null || post?.media?.length < 1) &&
-            //     (post.context !== 'group' || post.publisher !== 'user')
-            // ) {
-            //     const res = await pub.meta(post, auth);
-
-            //     if (!res.success)
-            //         end_result.publish_errors.push({
-            //             message: 'Failed to post to the page.',
-            //             adapatar: 'Meta',
-            //             post,
-            //             res,
-            //         });
-
-            //     if (res?.success && res?.data?.groups !== null && res?.data?.groups?.length > 0) {
-            //         const groups = res?.data?.groups;
-
-            //         let j = 0;
-
-            //         for (let i = 0; i < groups?.length; i++) {
-            //             const name = groups[i];
-            //             const group = await db.get('SELECT * FROM groups WHERE name = ?', [name]);
-            //             auth.context.group = group.link;
-            //             post.context = 'group';
-
-            //             const res = await pub.post(post, auth);
-
-            //             if (!res.success) {
-            //                 end_result.publish_errors.push({
-            //                     message: 'Failed to post to the group.',
-            //                     adaptor: 'Legacy',
-            //                     post,
-            //                     res,
-            //                 });
-            //                 j++;
-            //             }
-
-            //             if (i === groups?.length - 1 && j === 0) {
-            //                 // Delete the post once everything is published.
-            //                 try {
-            //                     const query = `
-            //                             DELETE
-            //                                 FROM
-            //                                     posts
-            //                                 WHERE
-            //                                     id = ?;
-            //                         `;
-            //                     const params = [post.id];
-
-            //                     await db.run(query, params);
-            //                 } catch (err) {
-            //                     if (err) {
-            //                         end_result.delete_errors.push({
-            //                             success: false,
-            //                             data: null,
-            //                             error: {
-            //                                 code: 500,
-            //                                 type: 'Internal server error.',
-            //                                 moment: 'Deleting post from the database.',
-            //                                 error: err.toString(),
-            //                             },
-            //                         });
-            //                     }
-            //                 }
-            //             } else {
-            //                 if (res.success && i === groups?.length - 1 && j === 0) {
-            //                     // Delete the post once everything is published.
-            //                     try {
-            //                         const query = `
-            //                                 DELETE
-            //                                     FROM
-            //                                         posts
-            //                                     WHERE
-            //                                         id = ?;
-            //                             `;
-            //                         const params = [post.id];
-
-            //                         await db.run(query, params);
-            //                     } catch (err) {
-            //                         if (err) {
-            //                             end_result.delete_errors.push({
-            //                                 success: false,
-            //                                 data: null,
-            //                                 error: {
-            //                                     code: 500,
-            //                                     type: 'Internal server error.',
-            //                                     moment: 'Deleting post from the database.',
-            //                                     error: err.toString(),
-            //                                 },
-            //                             });
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     } else {
-            //         try {
-            //             const query = `
-            //                     DELETE
-            //                         FROM
-            //                             posts
-            //                         WHERE
-            //                             id = ?;
-            //                 `;
-            //             const params = [post.id];
-
-            //             await db.run(query, params);
-            //         } catch (err) {
-            //             if (err) {
-            //                 end_result.delete_errors.push({
-            //                     success: false,
-            //                     data: null,
-            //                     error: {
-            //                         code: 500,
-            //                         type: 'Internal server error.',
-            //                         moment: 'Deleting post from the database.',
-            //                         error: err.toString(),
-            //                     },
-            //                 });
-            //             }
-            //         }
-            //     }
-            // } else {
-            // const res = await pub.post(post, auth);
-
-            // if (!res.success)
-            //     end_result.publish_errors.push({
-            //         message: 'Failed to post to the page.',
-            //         adaptar: 'Legacy',
-            //         post,
-            //         res,
-            //     });
-
-            // if (post?.groups?.length > 0) {
-            //     const groups = post?.groups;
-
-            //     let j = 0;
-
-            //     for (let i = 0; i < groups?.length; i++) {
-            //         const name = groups[i];
-            //         const group = await db.get('SELECT * FROM groups WHERE name = ?', [name]);
-            //         auth.context.group = group.link;
-            //         post.context = 'group';
-
-            //         const res = await pub.post(post, auth);
-
-            //         if (!res.success) {
-            //             end_result.publish_errors.push({
-            //                 message: 'Failed to post to the group.',
-            //                 adaptar: 'Legacy',
-            //                 post,
-            //                 res,
-            //             });
-            //             j++;
-            //         }
-
-            //         if (i === groups?.length - 1 && j === 0) {
-            //             // Delete the post once everything is published.
-            //             try {
-            //                 const query = `
-            //                         DELETE
-            //                             FROM
-            //                                 posts
-            //                             WHERE
-            //                                 id = ?;
-            //                     `;
-            //                 const params = [post.id];
-
-            //                 await db.run(query, params);
-            //             } catch (err) {
-            //                 if (err) {
-            //                     end_result.delete_errors.push({
-            //                         success: false,
-            //                         data: null,
-            //                         error: {
-            //                             code: 500,
-            //                             type: 'Internal server error.',
-            //                             moment: 'Deleting post from the database.',
-            //                             error: err.toString(),
-            //                         },
-            //                     });
-            //                 }
-            //             }
-            //         }
-            //     }
-            // } else {
-            //     // Delete the post once everything is published.
-            //     if (res.success) {
-            //         try {
-            //             const query = `
-            //                     DELETE
-            //                         FROM
-            //                             posts
-            //                         WHERE
-            //                             id = ?;
-            //                 `;
-            //             const params = [post.id];
-
-            //             await db.run(query, params);
-            //         } catch (err) {
-            //             if (err) {
-            //                 end_result.delete_errors.push({
-            //                     success: false,
-            //                     data: null,
-            //                     error: {
-            //                         code: 500,
-            //                         type: 'Internal server error.',
-            //                         moment: 'Deleting post from the database.',
-            //                         error: err.toString(),
-            //                     },
-            //                 });
-            //             }
-            //         }
-            //     }
-            // }
-            // }
         }
     }
 

@@ -24,6 +24,7 @@ publish.post('/', loggedIn, async (req, res) => {
         req?.body?.groups && req?.body?.groups?.length > 0 && req?.body?.groups !== '[]' ? req?.body?.groups : null;
     const context = req?.body?.context ? req?.body?.context : null;
     const publisher = req?.body?.publisher ? req?.body?.publisher : null;
+    const bulk = req?.body?.bulk ? true : false;
 
     if (id && id > 0) {
         // Check if the post id is valid.
@@ -185,6 +186,7 @@ publish.post('/', loggedIn, async (req, res) => {
             groups: JSON.stringify(groups),
             context,
             publisher,
+            bulk
         };
 
         const posts = [post];

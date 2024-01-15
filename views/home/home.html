@@ -14,12 +14,7 @@
 <form class="form" data-form-id="0" onsubmit="event.preventDefault();">
     <!-- THE HEADING -->
     <h3 class="form-heading" data-form-id="0">Create a Post</h3>
-    <select name="link_description" class="form-select" data-form-id="0">
-        <option value="" disabled selected>Description</option>
-        {% for description in descriptions %}
-        <option disabled value="{{ description.description  }}">{{ description.description }}</option>
-        {% endfor %}
-    </select>
+  
 
     <!-- THE ID -->
     <input type="number" name="id" class="form-input hidden" data-form-id="0" value="0" />
@@ -27,6 +22,12 @@
     <section class="form-container">
 
         <section class="form-content">
+            <select name="link_description" class="form-select" data-form-id="0" readonly="readonly">
+                <option value="" disabled selected>Description</option>
+                {% for description in descriptions %}
+                <option disabled value="{{ description.description  }}">{{ description.description }}</option>
+                {% endfor %}
+            </select>
             <!-- THE MESSAGE -->
             <textarea name="message" class="form-textarea" data-form-id="0"
                 placeholder="What's on your mind?"></textarea>
@@ -86,15 +87,20 @@
                 <select name="context" class="form-select" data-form-id="0">
                     <option value="page" {% if context=='page' %}selected{% endif %}>Post to Page</option>
                     <option value="group" {% if context=='group' %}selected{% endif %}>Post to Group</option>
+                    <!-- <option value="bulk" {% if context=='bulk' %}selected{% endif %}>Bulk Post</option> -->
                 </select>
 
                 <!-- THE PUBLISHER -->
                 <select name="publisher" class="form-select" data-form-id="0">
                     <option value="page" {% if publisher=='page' %}selected{% endif %}>Post as Page</option>
                     <option value="user" {% if publisher=='user' %}selected{% endif %}>Post as User</option>
+                    <!-- <option value="bulk" {% if publisher=='bulk' %}selected{% endif %}>Bulk Post</option> -->
                 </select>
             </section>
-
+            <label>
+                <input type="checkbox" name="bulk" value="1" classs="checkbox" style="width:auto" data-form-id="0">
+                Check this if you want to bulk post
+            </label>
             <!-- THE TIME -->
             <input type="datetime-local" name="time" class="form-input" data-form-id="0" />
 
@@ -161,7 +167,19 @@
             }
         }
     }
+
+    function checkBulk() {
+        let bulk = document.querySelector('[name="bulk"]').checked;    
+        // let context = document.querySelector('[name="context"]').value;   
+        if(bulk){
+            document.querySelector('[name="groups"]').checked = true
+        }else{
+            document.querySelector('[name="groups"]').checked = false
+        }
+    }
     document.querySelector('[name="files"]').addEventListener('change', setRandomDescription);
+    document.querySelector('[name="bulk"]').addEventListener('change', checkBulk);
+    // document.querySelector('[name="context"]').addEventListener('change', checkBulk);
 </script>
 
 {% endblock %}
