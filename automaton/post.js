@@ -1,6 +1,5 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
-const pluginProxy = require('puppeteer-extra-plugin-proxy');
 
 const { sleep } = require('../utils/utils');
 
