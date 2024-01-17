@@ -1,10 +1,11 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
+const pluginProxy = require('puppeteer-extra-plugin-proxy');
 
 const { sleep } = require('../utils/utils');
 
 module.exports = async (post, auth) => {
-    const proxy = process.env.PROXY_HOST;
+    const proxy = process.env.PROXY_HOST+":"+process.env.PROXY_PORT;
     const username = process.env.PROXY_USER;
     const password = process.env.PROXY_PASSWORD;
     let args = ['--start-maximized', '--disable-notifications']
@@ -23,7 +24,6 @@ module.exports = async (post, auth) => {
         console.log('Proxy is enabled')
         await page.authenticate({ username, password });
         await sleep(2000)
-
     }
 
     if (auth.useAgent == "true") {
@@ -48,6 +48,11 @@ module.exports = async (post, auth) => {
     page?.on('dialog', async (dialog) => {
         await dialog?.accept();
     });
+    const ipurl = 'https://ipinfo.io/';
+
+    await page?.goto(ipurl);
+
+    await sleep(5000);
 
     // Open facebook and go to a dead link.
     try {
@@ -219,12 +224,12 @@ module.exports = async (post, auth) => {
     try {
         console.log('post1111', post)
 
-        if (post?.context !== 'page' && post.publisher !== "page") {
+        // if (post?.context !== 'page' && post.publisher !== "page") {
             // const contextURL = post?.context === 'page' ? auth?.context?.page : auth?.context?.group;
             const contextURL = post?.context === 'page' ? 'https://www.facebook.com' : auth?.context?.group;
             await page?.goto(contextURL);
             await sleep(3000);
-        }
+        // }
     } catch (err) {
         if (err) {
             await browser?.close();
