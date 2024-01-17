@@ -19,6 +19,7 @@ publish.post('/', loggedIn, async (req, res) => {
     const message = req?.body?.message ? req?.body?.message : null;
     const link = req?.body?.link ? req?.body?.link : null;
     const link_description = req?.body?.link_description ? req?.body?.link_description : null;
+    const description = req?.body?.description ? req?.body?.description : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     const groups =
         req?.body?.groups && req?.body?.groups?.length > 0 && req?.body?.groups !== '[]' ? req?.body?.groups : null;
@@ -179,9 +180,10 @@ publish.post('/', loggedIn, async (req, res) => {
         const images = media !== null ? saveBase64MediaToFileSystem(media) : null;
 
         const post = {
-            message,
+            message : images.length > 0 ? (description ?? '') : (message ?? ''),
             link,
             link_description,
+            description,
             media: JSON.stringify(images),
             groups: JSON.stringify(groups),
             context,

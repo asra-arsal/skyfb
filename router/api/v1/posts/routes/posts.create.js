@@ -23,6 +23,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     const message = req?.body?.message ? req?.body?.message : null;
     const link = req?.body?.link ? req?.body?.link : null;
     const link_description = req?.body?.link_description ? req?.body?.link_description : null;
+    const description = req?.body?.description ? req?.body?.description : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     let groups = req?.body?.groups && req?.body?.groups?.length > 0 ? req?.body?.groups : null;
     const context = req?.body?.context ? req?.body?.context : null;
@@ -191,7 +192,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     // Create the post object.
     const post = {
         type,
-        message,
+        message : images.length > 0 ? (description ?? '') : (message ?? ''),
         link,
         link_description,
         media: JSON.stringify(images),

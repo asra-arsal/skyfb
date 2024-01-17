@@ -22,7 +22,7 @@
     <section class="form-container">
 
         <section class="form-content">
-            <select name="link_description" class="form-select" data-form-id="0" readonly="readonly">
+            <select name="description" class="form-select" data-form-id="0" readonly="readonly">
                 <option value="" disabled selected>Description</option>
                 {% for description in descriptions %}
                 <option disabled value="{{ description.description  }}">{{ description.description }}</option>

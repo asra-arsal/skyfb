@@ -133,7 +133,7 @@ dist
 *.db
 
 # User-uploaded media
-public/media/
+# public/media/
 
 # Sass-generated files
 *.css

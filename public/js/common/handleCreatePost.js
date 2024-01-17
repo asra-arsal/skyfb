@@ -8,10 +8,6 @@ const createPost = async (index, type, descriptions = "") => {
     for (let i = 0; i < groupInputs.length; i++) {
         groups.push(parseInt(groupInputs[i].value));
     }
-    const getRandomElement = (array) => {
-        const randomIndex = Math.floor(Math.random() * array.length);
-        return array[randomIndex];
-    };
     let array = []
     if(descriptions){
         for( let description of JSON.parse(descriptions)) {
@@ -19,15 +15,16 @@ const createPost = async (index, type, descriptions = "") => {
         };
     }
     let mediaLength = getInput('media', index).value ? JSON.parse(getInput('media', index).value).length : 0
-    let randomDescription = mediaLength > 0 ? getRandomElement(array) : '';  
 
     const post = {
         id: getInput('id', index).value,
         message: mediaLength > 0 ? getInput("link_description", index).value : getInput('message', index).value,
         link: getInput('link', index).value,
         link_description: getInput('link_description', index).value,
+        description: getInput('description', index).value,
         media: getInput('media', index).value,
         images: getInput('images', index).value,
+        bulk: getInput('bulk', index).value,
 
         groups,
         context: getInput('context', index).value,
