@@ -28,6 +28,7 @@ module.exports = async (posts, db) => {
         delete_errors: [],
     };
 
+    console.log('posts: ', posts);
     if (posts.length > 0) {
         // Standardize the data.
         for (let i = 0; i < posts.length; i++) {
@@ -62,44 +63,20 @@ module.exports = async (posts, db) => {
                 post.groups = groups;
             }
 
-            console.log('post: ', post);
-            if (post.context == "page" || post.bulk == true) {
-                post.context = "page"
-                if (post.publisher == "page" && !post.bulk) {
-                    const res = await pub.post(post, auth);
-
-                    if (!res.success)
-                        end_result.publish_errors.push({
-                            message: 'Failed to post to the page.',
-                            adaptar: 'Legacy',
-                            post,
-                            res,
-                        });
-                }
-                if (post.bulk) {
+            if (post.context == "page" || post.bulk === true) {
+                if(post.bulk === true){
                     post.context = "page"
                     post.publisher = "page"
-                    const res = await pub.post(post, auth);
-
-                    if (!res.success)
-                        end_result.publish_errors.push({
-                            message: 'Failed to post to the page1.',
-                            adaptar: 'Legacy',
-                            post,
-                            res,
-                        });
-                    // post.context = "page"
-                    // post.publisher = "user"
-                    // const res1 = await pub.post(post, auth);
-
-                    // if (!res1.success)
-                    //     end_result.publish_errors.push({
-                    //         message: 'Failed to post to the page2.',
-                    //         adaptar: 'Legacy',
-                    //         post,
-                    //         res,
-                    //     });
                 }
+                const res = await pub.post(post, auth);
+
+                if (!res.success)
+                    end_result.publish_errors.push({
+                        message: 'Failed to post to the page.',
+                        adaptar: 'Legacy',
+                        post,
+                        res,
+                    });
             }
             if ((post.context == "group") && (post?.groups?.length < 1 || !post?.groups)) {
                 end_result.publish_errors.push({
@@ -121,10 +98,10 @@ module.exports = async (posts, db) => {
                     const group = await db.get('SELECT * FROM groups WHERE name = ?', [name]);
                     auth.context.group = group.link;
                     auth.context.groupName = group.name;
+                    post.context = 'group';
+                    let res = null
                     if(!post.bulk){
-                        post.context = 'group';
-                        const res = await pub.post(post, auth);
-    
+                        res = await pub.post(post, auth);
                         if (!res.success) {
                             end_result.publish_errors.push({
                                 message: 'Failed to post to the group.',
@@ -135,10 +112,8 @@ module.exports = async (posts, db) => {
                             j++;
                         }
                     }else{
-                        post.context = 'group';
-                        post.publisher = 'page';
-                        const res = await pub.post(post, auth);
-    
+                        post.publisher = 'user'
+                        res = await pub.post(post, auth);
                         if (!res.success) {
                             end_result.publish_errors.push({
                                 message: 'Failed to post to the group.',
@@ -148,11 +123,10 @@ module.exports = async (posts, db) => {
                             });
                             j++;
                         }
-                        post.context = 'group';
-                        post.publisher = 'user';
-                        const res1 = await pub.post(post, auth);
-    
-                        if (!res1.success) {
+
+                        post.publisher = 'page'
+                        res = await pub.post(post, auth);
+                        if (!res.success) {
                             end_result.publish_errors.push({
                                 message: 'Failed to post to the group.',
                                 adaptar: 'Legacy',
@@ -161,7 +135,6 @@ module.exports = async (posts, db) => {
                             });
                             j++;
                         }
-
                     }
 
                     if (i === groups?.length - 1 && j === 0) {

@@ -19,10 +19,8 @@ publish.post('/', loggedIn, async (req, res) => {
     const message = req?.body?.message ? req?.body?.message : null;
     const link = req?.body?.link ? req?.body?.link : null;
     const link_description = req?.body?.link_description ? req?.body?.link_description : null;
-    const description = req?.body?.description ? req?.body?.description : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
-    const groups =
-        req?.body?.groups && req?.body?.groups?.length > 0 && req?.body?.groups !== '[]' ? req?.body?.groups : null;
+    const groups = req?.body?.groups && req?.body?.groups?.length > 0 && req?.body?.groups !== '[]' ? req?.body?.groups : null;
     const context = req?.body?.context ? req?.body?.context : null;
     const publisher = req?.body?.publisher ? req?.body?.publisher : null;
     const bulk = req?.body?.bulk ? true : false;
@@ -114,7 +112,7 @@ publish.post('/', loggedIn, async (req, res) => {
         }
 
         // Verify the context.
-        const contexts = ['page', 'group'];
+        const contexts = ['page', 'group', 'all'];
         if (context === null || !contexts.includes(context)) {
             await db.close();
 
@@ -150,6 +148,22 @@ publish.post('/', loggedIn, async (req, res) => {
                 },
             });
         }
+        if (publisher === 'user' && context === 'page') {
+            await db.close();
+
+            return res.status(400).json({
+                success: false,
+                data: null,
+                error: {
+                    code: 400,
+                    type: 'User cannot post to a page',
+                    route: '/api/v1/posts/create',
+                    moment: 'Validating publisher submitted by the user.',
+                    message:
+                        "The user cannot post to a page",
+                },
+            });
+        }
 
         // Verify the groups.
         if (groups !== null && groups.length > 0) {
@@ -180,10 +194,9 @@ publish.post('/', loggedIn, async (req, res) => {
         const images = media !== null ? saveBase64MediaToFileSystem(media) : null;
 
         const post = {
-            message : images.length > 0 ? (description ?? '') : (message ?? ''),
+            message,
             link,
             link_description,
-            description,
             media: JSON.stringify(images),
             groups: JSON.stringify(groups),
             context,

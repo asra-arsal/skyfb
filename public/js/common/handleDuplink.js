@@ -1,7 +1,6 @@
 
 
 const duplink = async (index, type, descriptions = null) => {
-    console.log('index, type, descriptions: ', index, type, descriptions);
     const apiEndpoint = api.misc.duplink;
     const link = getInput('link', index).value;
     

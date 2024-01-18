@@ -14,7 +14,7 @@
 <form class="form" data-form-id="0" onsubmit="event.preventDefault();">
     <!-- THE HEADING -->
     <h3 class="form-heading" data-form-id="0">Create a Post</h3>
-  
+
 
     <!-- THE ID -->
     <input type="number" name="id" class="form-input hidden" data-form-id="0" value="0" />
@@ -22,23 +22,28 @@
     <section class="form-container">
 
         <section class="form-content">
-            <select name="description" class="form-select" data-form-id="0" readonly="readonly">
-                <option value="" disabled selected>Description</option>
-                {% for description in descriptions %}
-                <option disabled value="{{ description.description  }}">{{ description.description }}</option>
-                {% endfor %}
-            </select>
             <!-- THE MESSAGE -->
             <textarea name="message" class="form-textarea" data-form-id="0"
                 placeholder="What's on your mind?"></textarea>
-
+            <select name="description" class="form-select" data-form-id="0" >
+                <option value="" disabled selected>Description</option>
+                {% for description in descriptions %}
+                <option value="{{ description.description  }}">{{ description.description }}</option>
+                {% endfor %}
+            </select>
+            <!-- THE MESSAGE / DESCRIPTION SWITCHER -->
+            <label>
+                <input type="checkbox" name="random_description" value="1" classs="checkbox" style="width:auto"
+                    data-form-id="0">
+                Use random description
+            </label>
             <!-- THE LINK -->
             <input type="url" name="link" class="form-input" data-form-id="0"
                 placeholder="http(s)://(www.)example.org" />
 
             <!-- THE LINK DESCRIPTION-->
-            <input type="text" name="link_description" class="form-input" data-form-id="0"
-                placeholder="What's the link about" />
+            <!-- <input type="text" name="link_description" class="form-input" data-form-id="0"
+                placeholder="What's the link about" /> -->
 
             <!-- THE GROUPS -->
             {% if groups.length > 0 %}
@@ -99,7 +104,7 @@
             </section>
             <label>
                 <input type="checkbox" name="bulk" value="1" classs="checkbox" style="width:auto" data-form-id="0">
-                Check this if you want to bulk post
+                Check this if you want to post to all groups and pages
             </label>
             <!-- THE TIME -->
             <input type="datetime-local" name="time" class="form-input" data-form-id="0" />
@@ -118,11 +123,8 @@
                 <button class="form-button form-button-automate" data-form-id="0" onclick="duplink('0', 'automated')">
                     <i class="fa-regular fa-paper-plane"></i>
                 </button>
-                {% set items = descriptions
-                %}
                 <!-- THE PUBLISH BUTTON -->
-                <button class="form-button form-button-publish" data-form-id="0"
-                    onclick="duplink('0', 'publish')">
+                <button class="form-button form-button-publish" data-form-id="0" onclick="duplink('0', 'publish')">
                     Publish Now
                 </button>
             </section>
@@ -169,17 +171,29 @@
     }
 
     function checkBulk() {
-        let bulk = document.querySelector('[name="bulk"]').checked;    
-        // let context = document.querySelector('[name="context"]').value;   
-        if(bulk){
+        let bulk = document.querySelector('[name="bulk"]').checked;
+        if (bulk) {
             document.querySelector('[name="groups"]').checked = true
-        }else{
+        } else {
             document.querySelector('[name="groups"]').checked = false
+        }
+    }
+
+    function checkRandomSwitch() {
+        let swtch = document.querySelector('[name="random_description"]').checked;
+        if (swtch) {
+            document.querySelector('[name="message"]').disabled = true
+            document.querySelector('[name="description"]').disabled = false
+        } else {
+            document.querySelector('[name="message"]').disabled = false
+            document.querySelector('[name="description"]').disabled = true
         }
     }
     document.querySelector('[name="files"]').addEventListener('change', setRandomDescription);
     document.querySelector('[name="bulk"]').addEventListener('change', checkBulk);
-    // document.querySelector('[name="context"]').addEventListener('change', checkBulk);
+    document.querySelector('[name="random_description"]').addEventListener('change', checkRandomSwitch);
+    document.querySelector('[name="message"]').disabled = false
+    document.querySelector('[name="description"]').disabled = true
 </script>
 
 {% endblock %}

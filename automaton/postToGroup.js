@@ -1,41 +1,9 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
-const publish = {
-    toPage: require('./postToPage'),
-    toGroup: require('./postToGroup'),
-    // meta: require('../automaton/post.create'),
-};
+
 const { sleep } = require('../utils/utils');
 
-module.exports = async (post, auth) => {
-    const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
-    const username = process.env.PROXY_USER;
-    const password = process.env.PROXY_PASSWORD;
-    let args = ['--start-maximized', '--disable-notifications',]
-    if (process.env.PROXY_ENABLED === "true") {
-        args.push(`--proxy-server=${proxy}`)
-    }
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-        args: args,
-        userDataDir: path.join(__dirname, 'userData'),
-    });
-    const page = await browser?.newPage();
-    await sleep(3000)
-
-    if (process.env.PROXY_ENABLED === "true") {
-        console.log('Proxy is enabled')
-        await page.authenticate({ username, password });
-        await sleep(2000)
-    }
-
-    if (auth.useAgent == "true") {
-        console.log('Agent is enabled')
-        await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36  uacq');
-    }
-
-    // Check if an XPath exists on the page?.
+module.exports = async (post, auth, page, browser) => {
     const XPathExists = async (XPath) => {
         try {
             if (await page?.waitForXPath(XPath, { timeout: 2500 })) {
@@ -47,56 +15,6 @@ module.exports = async (post, auth) => {
             return false;
         }
     };
-    // Open facebook and go to a dead link.
-    try {
-        console.log('opening Facebook')
-        const deadURL = 'https://www.facebook.com';
-
-        await page?.goto(deadURL);
-
-        await sleep(5000);
-    } catch (err) {
-        if (err) {
-            // await browser?.close();
-
-            return {
-                success: false,
-                data: null,
-                error: {
-                    code: 701,
-                    type: 'Puppeteer error.',
-                    moment: 'Opening facebook.',
-                    error: err.toString(),
-                },
-            };
-        }
-    }
-    let res = {
-        success: false,
-        data: null,
-        error: {
-            code: 10000,
-            type: 'EXIT.',
-            moment: 'EXITED',
-            error: 'err.toString()',
-        },
-    }
-    if (post.context === "group" || post.context === "all") {
-        console.log('posting to groups')
-        res = await publish.toGroup(post,auth, page, browser)
-        if(res.success){
-            await browser?.close();
-        }
-    }
-    if (post.context === "page" || post.context === "all") {
-        console.log('posting to page')
-        res = await publish.toPage(post,auth, page, browser)
-        if(res.success){
-            await browser?.close();
-        }
-    }
-    return res
-    
     // Open hamburger menu.
     try {
         let [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
@@ -106,6 +24,7 @@ module.exports = async (post, auth) => {
         if (!hamburgerMenu) {
             [hamburgerMenu] = await page?.$x("/html/body/div[2]/div/div[1]/div[3]/div/div/div[3]");
         }
+        console.log('hamburgerMenu: ', hamburgerMenu);
         if (hamburgerMenu) {
             await hamburgerMenu.click();
         } else {
@@ -120,7 +39,6 @@ module.exports = async (post, auth) => {
     } catch (err) {
         if (err) {
             // await browser?.close();
-            console.log(703)
             return {
                 success: false,
                 data: null,
@@ -135,6 +53,7 @@ module.exports = async (post, auth) => {
     }
     // Open context  menu.
     try {
+        await sleep(2000);
         const [checkUser] = await page?.$x(`//h3[text()='${auth?.publisher?.user}']`);
         const [checkPage] = await page?.$x(`//h3[text()='${auth?.publisher?.page}']`);
 
@@ -186,18 +105,13 @@ module.exports = async (post, auth) => {
     }
     // Switch to the correct context.
     try {
-        console.log('post1111', post)
-
-        // if (post?.context !== 'page' && post.publisher !== "page") {
-        // const contextURL = post?.context === 'page' ? auth?.context?.page : auth?.context?.group;
-        const contextURL = post?.context === 'page' ? 'https://www.facebook.com' : auth?.context?.group;
+        const contextURL = auth?.context?.group;
         await page?.goto(contextURL);
         await sleep(3000);
-        // }
+        console.log('group opened')
     } catch (err) {
         if (err) {
             // await browser?.close();
-
             return {
                 success: false,
                 data: null,
@@ -210,102 +124,6 @@ module.exports = async (post, auth) => {
             };
         }
     }
-    // If the post is to page by the page
-    if (post?.publisher === "page" && post?.context === "page") {
-        // Handle post create dialog Click.
-        try {
-            const postDialog = 'div[aria-label="Make a Post on Facebook"]';
-            await page?.click(postDialog);
-            await sleep(3000);
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
-
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 706,
-                        type: 'Puppeteer error.',
-                        moment: 'Handle post create dialog Click.',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
-        // Switch to the content writing field.
-        try {
-            const [pageField] = await page?.$x(`//button[text()="What\'s on your mind?"]`);
-            await pageField.evaluate((s) => {
-                s.click()
-            });
-            await sleep(1000);
-            await page.keyboard.type(post?.message,);
-            await sleep(1500);
-            if (post?.link !== '' && post?.link !== null) {
-                await page?.keyboard.press('Enter');
-                await page?.keyboard.press('Enter');
-                await sleep(1000);
-                if (post?.link_description !== '' && post?.link_description !== null) {
-                    await page.keyboard.type(post?.link_description,);
-                    await page?.keyboard.press('Enter');
-                }
-                await page.keyboard.type(post?.link,);
-                await sleep(1000);
-            }
-            await page.keyboard.press('Escape');
-            await sleep(3000);
-
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
-
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 707,
-                        type: 'Puppeteer error.',
-                        moment: 'Switching to the content writing field.',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
-        // Entering the Post Media
-        try {
-            const mediaPath = path.join(__dirname, '..', 'public', 'media');
-            const [photoSelector] = await page?.$x(`//div[text()="Photos"]`);
-            let media = []
-            for (let i = 0; i < post?.media?.length; i++) {
-                media.push(path.join(mediaPath, post?.media[i]));
-            }
-            const [fileChooser] = await Promise.all([
-                page.waitForFileChooser(),
-                photoSelector.click(),
-            ]);
-
-            await fileChooser.accept(media);
-
-            await sleep(5000)
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
-
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 708,
-                        type: 'Puppeteer error.',
-                        moment: 'Inserting the images attached to the post.',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
-    }
-
     if (post?.publisher === "user" && post?.context === "group") {
 
         // Handle post create dialog Click.
@@ -406,59 +224,59 @@ module.exports = async (post, auth) => {
     }
 
     if (post?.publisher === "page" && post?.context === "group") {
-        if (await XPathExists("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]")) {
-            // Open hamburger menu.
-            try {
-                const [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
-                await hamburgerMenu.click();
+        // if (await XPathExists("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]")) {
+        //     // Open hamburger menu.
+        //     try {
+        //         const [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
+        //         await hamburgerMenu.click();
 
-                await sleep(3000);
-            } catch (err) {
-                if (err) {
-                    // await browser?.close();
+        //         await sleep(3000);
+        //     } catch (err) {
+        //         if (err) {
+        //             // await browser?.close();
 
-                    return {
-                        success: false,
-                        data: null,
-                        error: {
-                            code: 712,
-                            type: 'Puppeteer error.',
-                            moment: 'Hamburger Menu not found',
-                            error: err.toString(),
-                        },
-                    };
-                }
-            }
-        }
+        //             return {
+        //                 success: false,
+        //                 data: null,
+        //                 error: {
+        //                     code: 712,
+        //                     type: 'Puppeteer error.',
+        //                     moment: 'Hamburger Menu not found',
+        //                     error: err.toString(),
+        //                 },
+        //             };
+        //         }
+        //     }
+        // }
         // Select Group
-        try {
-            const [groupMenuField] = await page?.$x(`//div[text()="Groups"]`);
-            await groupMenuField.evaluate((s) => {
-                s.click()
-            });
-            await sleep(2000);
-            const [groupSelectorField] = await page?.$x(`//span[text()="${auth.context.groupName}"]`);
-            await groupSelectorField.evaluate((s) => {
-                s.click()
-            });
-            await sleep(2000);
+        // try {
+        //     const [groupMenuField] = await page?.$x(`//div[text()="Groups"]`);
+        //     await groupMenuField.evaluate((s) => {
+        //         s.click()
+        //     });
+        //     await sleep(2000);
+        //     const [groupSelectorField] = await page?.$x(`//span[text()="${auth.context.groupName}"]`);
+        //     await groupSelectorField.evaluate((s) => {
+        //         s.click()
+        //     });
+        //     await sleep(2000);
 
-        } catch (err) {
-            if (err) {
-                // await browser?.close();
+        // } catch (err) {
+        //     if (err) {
+        //         // await browser?.close();
 
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 713,
-                        type: 'Puppeteer error.',
-                        moment: 'Selecting the Group',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
+        //         return {
+        //             success: false,
+        //             data: null,
+        //             error: {
+        //                 code: 713,
+        //                 type: 'Puppeteer error.',
+        //                 moment: 'Selecting the Group',
+        //                 error: err.toString(),
+        //             },
+        //         };
+        //     }
+        // }
 
         // Handle post create dialog Click.
         try {
