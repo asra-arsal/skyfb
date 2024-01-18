@@ -28,7 +28,6 @@ module.exports = async (post, auth, page, browser) => {
     } catch (err) {
         if (err) {
             // await browser?.close();
-            console.log(703)
             return {
                 success: false,
                 data: null,
@@ -58,7 +57,6 @@ module.exports = async (post, auth, page, browser) => {
                 const element = await page.evaluate(() => {
                     let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[15];
                     let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
-                    console.log('d: ', d);
                     d.click();
                 });
             }
@@ -75,7 +73,6 @@ module.exports = async (post, auth, page, browser) => {
             await sleep(4000);
         } else {
             try {
-                console.log('opening Home Page')
                 const pageUrl = "https://www.facebook.com";
 
                 await page?.goto(pageUrl);
@@ -101,7 +98,6 @@ module.exports = async (post, auth, page, browser) => {
     } catch (err) {
         if (err) {
             // await browser?.close();
-            console.log(704)
 
             return {
                 success: false,
@@ -122,11 +118,9 @@ module.exports = async (post, auth, page, browser) => {
         try {
             await sleep(3000);
             let [postDialog] = await page?.$x('//div[@aria-label="Create a post on Facebook"]');
-            console.log('postDialog: ', postDialog);
             if (!postDialog){
                 [postDialog] = await page?.$x('//div[@aria-label="Make a Post on Facebook"]');
             }
-            console.log('postDialog: ', postDialog);
             await postDialog.evaluate((s) => s.click());
             await sleep(3000);
         } catch (err) {
@@ -244,7 +238,6 @@ module.exports = async (post, auth, page, browser) => {
     const totalSleepTime = 5000;
 
     await sleep(totalSleepTime);
-    console.log("===================DONE POSTING TO PAGE===================")
     // await browser?.close();
     return {
         success: true,

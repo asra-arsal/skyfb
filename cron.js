@@ -73,7 +73,9 @@ cron.schedule('*/5 * * * *', async () => {
 });
 
 // The cronjob for automated posts.
-cron.schedule('*/5 * * * *', async () => {
+// cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
+    console.log('==============cron==============')
     // Connect to the database.
     const db = await openDB();
 
@@ -96,14 +98,17 @@ cron.schedule('*/5 * * * *', async () => {
             FROM
                 timesheet
             WHERE
+                type = ?
+                AND
                 day = ?
                 AND
                 time = ?;
         `;
 
-        const params = [current_day, current_time];
+        const params = ["link" ,current_day, current_time];
 
         timeslot = await db.get(query, params);
+        console.log('timeslot1: ', timeslot);
     } catch (err) {
         if (err) {
             await db.close();
@@ -134,6 +139,8 @@ cron.schedule('*/5 * * * *', async () => {
                 FROM
                     posts
                 WHERE
+                    link IS NOT NULL
+                    AND
                     type = 'automated'
                     AND
                     status = 'inactive'
@@ -141,6 +148,89 @@ cron.schedule('*/5 * * * *', async () => {
             `;
 
             post = await db.get(query);
+            console.log('post: ', post);
+        } catch (err) {
+            if (err) {
+                console.error({
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 500,
+                        type: 'Cron runner error.',
+                        cron: 'automated',
+                        moment: 'Trying to get the post from the database.',
+                        error: err.toString(),
+                    },
+                });
+            }
+        }
+
+        const posts = [post];
+
+        const resp = await pubsub(posts, db);
+
+        if (!resp.success) console.error(resp);
+    }
+
+    try {
+        const query = `
+            SELECT
+                *
+            FROM
+                timesheet
+            WHERE
+                type = ? 
+                AND
+                day = ?
+                AND
+                time = ?;
+        `;
+
+        const params = ["media", current_day, current_time];
+        console.log('params: ', params);
+
+        timeslot = await db.get(query, params);
+        console.log('timeslot: ', timeslot);
+    } catch (err) {
+        if (err) {
+            await db.close();
+
+            console.error({
+                success: false,
+                data: null,
+                error: {
+                    code: 500,
+                    type: 'Cron runner error.',
+                    cron: 'automated',
+                    moment: 'Trying to get time slot from the database.',
+                    error: err.toString(),
+                },
+            });
+        }
+    }
+
+    if (timeslot) {
+        // Get the first post that can be published.
+
+        let post;
+
+        try {
+            const query = `
+                SELECT
+                    *
+                FROM
+                    posts
+                WHERE
+                    media IS NOT NULL
+                    AND
+                    type = 'automated'
+                    AND
+                    status = 'inactive'
+                ORDER BY priority;
+            `;
+
+            post = await db.get(query);
+            console.log('post: ', post);
         } catch (err) {
             if (err) {
                 console.error({

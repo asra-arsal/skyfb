@@ -1,4 +1,4 @@
-(() => {
+(reloadDropzones = () => {
     let base64Files = {};
 
     // A FUNCTION TO CONVERT A FILE TO ITS BASE64 EQUIVALENT.
@@ -33,6 +33,7 @@
     };
 
     const dropZones = document.querySelectorAll('.form-media-drop-zone');
+
     const fileInputs = document.querySelectorAll('input[name="files"]');
 
     // A FUNCTION TO PROCESS FILES AS NEEDED.
@@ -82,35 +83,35 @@
     dropZones.forEach((dropZone) => {
         const id = dropZone.getAttribute('data-form-id');
         base64Files[id] = [];
+        if (dropZone.getAttribute('listener') !== 'true') {
+            dropZone.addEventListener('dragover', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
+                dropZone.classList.add('highlight');
+            });
+            dropZone.addEventListener('dragleave', (e) => {
+                dropZone.classList.remove('highlight');
+            });
+            dropZone.addEventListener('drop', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
 
-            dropZone.classList.add('highlight');
-        });
+                let files;
 
-        dropZone.addEventListener('dragleave', (e) => {
-            dropZone.classList.remove('highlight');
-        });
+                if (e.dataTransfer) {
+                    files = e.dataTransfer.files;
+                }
 
-        dropZone.addEventListener('drop', async (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-
-            let files;
-
-            if (e.dataTransfer) {
-                files = e.dataTransfer.files;
-            }
-
-            dropZone.classList.remove('highlight');
-            await processFiles(id, files);
-        });
-
-        dropZone.addEventListener('click', () => {
-            document.querySelector(`input[type="file"][data-form-id="${id}"]`).click();
-        });
+                dropZone.classList.remove('highlight');
+                await processFiles(id, files);
+            });
+            dropZone.addEventListener('click', () => {
+                
+                document.querySelector(`input[name="files"][data-form-id="${id}"]`).click();
+            });
+            dropZone.setAttribute('listener', 'true')
+        }
     });
 })();

@@ -24,7 +24,6 @@ module.exports = async (post, auth, page, browser) => {
         if (!hamburgerMenu) {
             [hamburgerMenu] = await page?.$x("/html/body/div[2]/div/div[1]/div[3]/div/div/div[3]");
         }
-        console.log('hamburgerMenu: ', hamburgerMenu);
         if (hamburgerMenu) {
             await hamburgerMenu.click();
         } else {
@@ -63,14 +62,12 @@ module.exports = async (post, auth, page, browser) => {
             if (!contextMenu) {
                 [contextMenu] = await page?.$x("/html/body/div[2]/div/div[2]/div[2]/div/div/div[2]/div[5]/div");
             }
-            console.log('contextMenu: ', contextMenu);
             if (contextMenu) {
                 await contextMenu.click();
             } else {
                 const element = await page.evaluate(() => {
                     let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[15];
                     let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
-                    console.log('d: ', d);
                     d.click();
                 });
             }
@@ -89,7 +86,6 @@ module.exports = async (post, auth, page, browser) => {
     } catch (err) {
         if (err) {
             // await browser?.close();
-            console.log(704)
 
             return {
                 success: false,
@@ -108,7 +104,6 @@ module.exports = async (post, auth, page, browser) => {
         const contextURL = auth?.context?.group;
         await page?.goto(contextURL);
         await sleep(3000);
-        console.log('group opened')
     } catch (err) {
         if (err) {
             // await browser?.close();

@@ -28,7 +28,7 @@ module.exports = async (posts, db) => {
         delete_errors: [],
     };
 
-    console.log('posts: ', posts);
+    console.log('posts=================================: ', posts);
     if (posts.length > 0) {
         // Standardize the data.
         for (let i = 0; i < posts.length; i++) {

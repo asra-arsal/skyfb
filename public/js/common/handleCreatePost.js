@@ -1,5 +1,6 @@
-const createPost = async (index, type, descriptions = "") => {
-    const apiType = index === '0' ? 'create' : 'update';
+const createPost = async (index, type) => {
+    // const apiType = (index === '0' || index === 0) ? 'create' : 'update';
+    const apiType =  'create';
     const apiEndpoint = type === 'publish' ? api.posts.publish : api.posts[apiType];
 
     let groups = [];
@@ -9,21 +10,14 @@ const createPost = async (index, type, descriptions = "") => {
         groups.push(parseInt(groupInputs[i].value));
     }
     let array = []
-    if(descriptions){
-        for( let description of JSON.parse(descriptions)) {
-            array.push(description.description)
-        };
-    }
-    let mediaLength = getInput('media', index).value ? JSON.parse(getInput('media', index).value).length : 0
 
     const post = {
         id: getInput('id', index).value,
-        message: getInput('random_description', index).checked ? getInput("description", index).value : getInput('message', index).value,
+        message: getInput('message', index).value ? getInput("message", index).value : getInput('description', index).value,
         link: getInput('link', index).value,
-        // link_description: getInput('link_description', index).value,
         media: getInput('media', index).value,
         images: getInput('images', index).value,
-        bulk: getInput('bulk', index).value,
+        bulk: getInput('bulk', index).checked,
         groups,
         context: getInput('context', index).value,
         publisher: getInput('publisher', index).value,
@@ -31,6 +25,7 @@ const createPost = async (index, type, descriptions = "") => {
         priority: getInput('priority', index).value,
         type,
     };
+    console.log('post: ', post);
     if (type === 'publish') {
         showLoadingAnimation();
     }
@@ -49,7 +44,7 @@ const createPost = async (index, type, descriptions = "") => {
         return handleError('Error encountered when trying to create the Post.', error);
     }
 
-    location.reload();
+    // location.reload();
 };
 
 const getInput = (name, index) => {

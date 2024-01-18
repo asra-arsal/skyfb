@@ -22,7 +22,6 @@ CREATE.post('/', loggedIn, async (req, res) => {
     const type = req?.body?.type ? req?.body?.type : null;
     const message = req?.body?.message ? req?.body?.message : null;
     const link = req?.body?.link ? req?.body?.link : null;
-    // const link_description = req?.body?.link_description ? req?.body?.link_description : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     let groups = req?.body?.groups && req?.body?.groups?.length > 0 ? req?.body?.groups : null;
     const context = req?.body?.context ? req?.body?.context : null;
@@ -193,7 +192,6 @@ CREATE.post('/', loggedIn, async (req, res) => {
         type,
         message,
         link,
-        link_description,
         media: JSON.stringify(images),
         groups: JSON.stringify(groups),
         context,
@@ -212,7 +210,6 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 type,
                 message,
                 link,
-                link_description,
                 media,
                 groups,
                 context,
@@ -221,14 +218,13 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 timestamp,
                 priority,
                 status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const params = [
             post.type,
             post.message,
             post.link,
-            post.link_description,
             post.media,
             post.groups,
             post.context,
