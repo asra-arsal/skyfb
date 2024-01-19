@@ -21,7 +21,8 @@ const seedDB = async () => {
                 time TEXT,
                 timestamp TIMESTAMP,
                 priority INTEGER NOT NULL,
-                status TEXT
+                status TEXT,
+                bulk BOOL
             );
         `;
 

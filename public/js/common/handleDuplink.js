@@ -1,10 +1,10 @@
 
 
-const duplink = async (index, type) => {
+const duplink = async (index, type, isNew = true) => {
     const apiEndpoint = api.misc.duplink;
     const link = getInput('link', index).value;
     if (!link) {
-        return createPost(index, type);
+        return createPost(index, type, isNew);
     } else {
         const resp = await fetch(apiEndpoint, {
             method: 'POST',
@@ -18,7 +18,7 @@ const duplink = async (index, type) => {
         if (error) return handleError('Error encountered when checking for link duplication.', error);
 
         if (success) {
-            return createPost(index, type);
+            return createPost(index, type, isNew);
         } else {
             const duplinkOverlay = document.getElementById('duplink-overlay');
             const duplinkModal = document.getElementById('duplink-modal');

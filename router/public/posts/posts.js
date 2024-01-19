@@ -96,9 +96,12 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
             });
         }
     }
+    const description = 'SELECT * FROM description';
 
+    descriptions = await db.all(description);
     res.render('posts/posts', {
         all_groups,
+        descriptions,
         posts: {
             automated,
             scheduled,

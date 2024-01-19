@@ -27,6 +27,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     const context = req?.body?.context ? req?.body?.context : null;
     const publisher = req?.body?.publisher ? req?.body?.publisher : null;
     let time = req?.body?.time ? req?.body?.time : null;
+    let bulk = req?.body?.bulk ? true : false;
 
     /**
      * INPUT VALIDATION.
@@ -200,6 +201,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
         timestamp,
         priority,
         status,
+        bulk
     };
 
     // Store the post into the database.
@@ -217,8 +219,9 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 time,
                 timestamp,
                 priority,
-                status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                status,
+                bulk
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const params = [
@@ -233,6 +236,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
             post.timestamp,
             post.priority,
             post.status,
+            post.bulk,
         ];
 
         await db.run(query, params);

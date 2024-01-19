@@ -13,17 +13,13 @@
 <!-- THE TAB SWITCHES -->
 <section id="tab-switches">
     <!-- THE AUTOMATED SWITCH -->
-    <button
-        class="tab-switch {% if posts.automated.length > 0 %} active {% endif %}"
-        data-tab="automated"
+    <button class="tab-switch {% if posts.automated.length > 0 %} active {% endif %}" data-tab="automated"
         onclick="handleTabSwitch('automated')">
         Automated Posts
     </button>
 
     <!-- THE SCHEDULED SWITCH -->
-    <button
-        class="tab-switch {% if posts.automated.length < 1 %} active {% endif %}"
-        data-tab="scheduled"
+    <button class="tab-switch {% if posts.automated.length < 1 %} active {% endif %}" data-tab="scheduled"
         onclick="handleTabSwitch('scheduled')">
         Scheduled Posts
     </button>
@@ -42,9 +38,7 @@
         <!-- THE POSTS -->
         <section class="posts" data-tab="automated">
             {% for post in posts.automated %}
-            <form
-                class="form post {% if post.status == 'active' %}failed-post{% endif %}"
-                data-form-id="{{ post.id }}"
+            <form class="form post {% if post.status == 'active' %}failed-post{% endif %}" data-form-id="{{ post.id }}"
                 onsubmit="event.preventDefault();">
                 <!-- THE INDEX -->
                 <p class="form-index">{{ loop.index }}</p>
@@ -53,32 +47,25 @@
                 <h3 class="form-heading" data-form-id="{{ post.id }}">Update the Post</h3>
 
                 <!-- THE ID -->
-                <input
-                    type="number"
-                    name="id"
-                    class="form-input hidden"
-                    data-form-id="{{ post.id }}"
+                <input type="number" name="id" class="form-input hidden" data-form-id="{{ post.id }}"
                     value="{{ post.id }}" />
 
                 <div class="form-container">
                     <section class="form-content">
+                        <select name="description" class="form-select" data-form-id="{{ post.id }}">
+                            <option value="" disabled selected>Description</option>
+                            {% for description in descriptions %}
+                            <option value="{{ description.description  }}">{{ description.description }}</option>
+                            {% endfor %}
+                        </select>
                         <!-- THE MESSAGE -->
-                        <textarea
-                            name="message"
-                            class="form-textarea"
-                            data-form-id="{{ post.id }}"
+                        <textarea name="message" class="form-textarea" data-form-id="{{ post.id }}"
                             placeholder="What's on your mind?">
-{{ post.message }}</textarea
-                        >
+{{ post.message }}</textarea>
 
                         <!-- THE LINK -->
-                        <input
-                            type="url"
-                            name="link"
-                            class="form-input"
-                            data-form-id="{{ post.id }}"
-                            placeholder="http(s)://(www.)example.org"
-                            value="{{ post.link }}" />
+                        <input type="url" name="link" class="form-input" data-form-id="{{ post.id }}"
+                            placeholder="http(s)://(www.)example.org" value="{{ post.link }}" />
 
                         <!-- THE GROUPS -->
                         {% if all_groups.length > 0 %}
@@ -89,12 +76,8 @@
                         <fieldset class="form-groups hidden" data-form-id="{{ post.id }}">
                             {% for group in all_groups %}
                             <label for="group-{{ group.id }}-post-{{ post.id }}">
-                                <input
-                                    type="checkbox"
-                                    name="groups"
-                                    id="group-{{ group.id }}-post-{{ post.id }}"
-                                    value="{{ group.id }}"
-                                    data-form-id="{{ post.id }}" />
+                                <input type="checkbox" name="groups" id="group-{{ group.id }}-post-{{ post.id }}"
+                                    value="{{ group.id }}" data-form-id="{{ post.id }}" />
                                 {{ group.name }}
                             </label>
                             {% endfor %}
@@ -113,14 +96,9 @@
 
                         <!-- THE SECONDARY GALLERY -->
                         {% if post.media %}
-                        <div
-                            class="form-media-gallery secondary {% if post.media == 'null' %} hidden {%endif%}"
+                        <div class="form-media-gallery secondary {% if post.media == 'null' %} hidden {%endif%}"
                             data-form-id="{{ post.id }}">
-                            <input
-                                type="text"
-                                name="images"
-                                class="form-input hidden"
-                                data-form-id="{{ post.id }}"
+                            <input type="text" name="images" class="form-input hidden" data-form-id="{{ post.id }}"
                                 value="{{ post.media }}" />
                         </div>
                         {% endif %}
@@ -137,51 +115,35 @@
                         {% include './template/_options.html' %}
 
                         <!-- THE TIME -->
-                        <input
-                            type="datetime-local"
-                            name="time"
-                            class="form-input"
-                            data-form-id="{{ post.id }}"
+                        <input type="datetime-local" name="time" class="form-input" data-form-id="{{ post.id }}"
                             value="{{ post.time }}" />
 
                         <!-- THE PRIORITY -->
-                        <input
-                            type="number"
-                            name="priority"
-                            class="form-input hidden"
-                            data-form-id="{{ post.id }}"
+                        <input type="number" name="priority" class="form-input hidden" data-form-id="{{ post.id }}"
                             value="{{ post.priority }}" />
 
                         <!-- THE BUTTONS -->
                         <section class="form-buttons" data-form-id="{{ post.id }}">
                             <!-- THE AUTOMATE BUTTON -->
-                            <button
-                                class="form-button form-button-automate"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'automated')">
+                            <button class="form-button form-button-automate" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'automated', false)">
                                 <i class="fa-regular fa-paper-plane"></i>&nbsp;&nbsp;&nbsp;&nbsp;Update
                             </button>
 
                             <!-- THE SCHEDULE BUTTON -->
-                            <button
-                                class="form-button form-button-schedule"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'scheduled')">
+                            <button class="form-button form-button-schedule" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'scheduled', false)">
                                 <i class="fa-solid fa-clock-rotate-left" style="font-size: 18px"></i>
                             </button>
 
                             <!-- THE PUBLISH BUTTON -->
-                            <button
-                                class="form-button form-button-publish"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'publish')">
+                            <button class="form-button form-button-publish" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'publish', false)">
                                 Publish Now
                             </button>
 
                             <!-- THE DELETE BUTTON -->
-                            <button
-                                class="form-button form-button-delete"
-                                data-form-id="{{ post.id }}"
+                            <button class="form-button form-button-delete" data-form-id="{{ post.id }}"
                                 onclick="deletePost('{{ post.id }}')">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
@@ -192,14 +154,16 @@
                 <section class="form-extra-info">
                     <!-- THE GROUPS -->
                     <p class="form-selected-groups">
-                        <b>Groups:</b></b>&nbsp; {% if post.groups == 'null' %} <span>no group.</span> {% endif %} {% if post.groups !=
+                        <b>Groups:</b></b>&nbsp; {% if post.groups == 'null' %} <span>no group.</span> {% endif %} {% if
+                        post.groups !=
                         'null' %} {% for group in post.groups %}
                         <span>{{ group.name }}.&nbsp;</span>
                         {% endfor %} {% endif %}
                     </p>
                     <!-- END GROUPS -->
 
-                    <input type="text" class="hidden" name="groups-holder" data-form-id="{{ post.id }}" value="{{ post.groups_string }}">
+                    <input type="text" class="hidden" name="groups-holder" data-form-id="{{ post.id }}"
+                        value="{{ post.groups_string }}">
 
 
                     <!-- THE PUBLISH TIME -->
@@ -226,10 +190,8 @@
         <!-- THE POSTS -->
         <section class="posts" data-tab="automated">
             {% for post in posts.scheduled %}
-            <form
-                class="form post {% if post.status == 'active' %} failed-post {% endif %}"
-                data-form-id="{{ post.id }}"
-                onsubmit="event.preventDefault();">
+            <form class="form post {% if post.status == 'active' %} failed-post {% endif %}"
+                data-form-id="{{ post.id }}" onsubmit="event.preventDefault();">
                 <!-- THE INDEX -->
                 <p class="form-index">{{ loop.index }}</p>
 
@@ -237,53 +199,38 @@
                 <h3 class="form-heading" data-form-id="{{ post.id }}">Update the Post</h3>
 
                 <!-- THE ID -->
-                <input
-                    type="number"
-                    name="id"
-                    class="form-input hidden"
-                    data-form-id="{{ post.id }}"
+                <input type="number" name="id" class="form-input hidden" data-form-id="{{ post.id }}"
                     value="{{ post.id }}" />
 
                 <div class="form-container">
                     <section class="form-content">
+                        <select name="description" class="form-select" data-form-id="0">
+                            <option value="" disabled selected>Description</option>
+                            {% for description in descriptions %}
+                            <option value="{{ description.description }}">{{ description.description }}</option>
+                            {% endfor %}
+                        </select>
                         <!-- THE MESSAGE -->
-                        <textarea
-                            name="message"
-                            class="form-textarea"
-                            data-form-id="{{ post.id }}"
-                            placeholder="What's on your mind?">
-{{ post.message }}</textarea
-                        >
+                        <textarea name="message" class="form-textarea" data-form-id="{{ post.id }}"
+                            placeholder="What's on your mind?"> {{ post.message }}</textarea>
 
                         <!-- THE LINK -->
-                        <input
-                            type="url"
-                            name="link"
-                            class="form-input"
-                            data-form-id="{{ post.id }}"
-                            placeholder="http(s)://(www.)example.org"
-                            value="{{ post.link }}" />
+                        <input type="url" name="link" class="form-input" data-form-id="{{ post.id }}"
+                            placeholder="http(s)://(www.)example.org" value="{{ post.link }}" />
 
                         <!-- THE GROUPS -->
                         {% if all_groups.length > 0 %}
-                        <button
-                            id="group-toggle"
-                            data-form-id="{{ post.id }}"
+                        <button id="group-toggle" data-form-id="{{ post.id }}"
                             onclick="toggleGroupSelector('{{ post.id }}')">
                             <span>Select Groups</span>
-                            <span
-                                ><i class="fa-solid fa-chevron-down group-toggle-icon" data-form-id="{{ post.id }}"></i
-                            ></span>
+                            <span><i class="fa-solid fa-chevron-down group-toggle-icon"
+                                    data-form-id="{{ post.id }}"></i></span>
                         </button>
                         <fieldset class="form-groups hidden" data-form-id="{{ post.id }}">
                             {% for group in all_groups %}
                             <label for="group-{{ group.id }}-post-{{ post.id }}">
-                                <input
-                                    type="checkbox"
-                                    name="groups"
-                                    id="group-{{ group.id }}-post-{{ post.id }}"
-                                    value="{{ group.id }}"
-                                    data-form-id="{{ post.id }}" />
+                                <input type="checkbox" name="groups" id="group-{{ group.id }}-post-{{ post.id }}"
+                                    value="{{ group.id }}" data-form-id="{{ post.id }}" />
                                 {{ group.name }}
                             </label>
                             {% endfor %}
@@ -302,14 +249,9 @@
 
                         <!-- THE SECONDARY GALLERY -->
                         {% if post.media %}
-                        <div
-                            class="form-media-gallery secondary {% if post.media == 'null' %} hidden {%endif%}"
+                        <div class="form-media-gallery secondary {% if post.media == 'null' %} hidden {%endif%}"
                             data-form-id="{{ post.id }}">
-                            <input
-                                type="text"
-                                name="images"
-                                class="form-input hidden"
-                                data-form-id="{{ post.id }}"
+                            <input type="text" name="images" class="form-input hidden" data-form-id="{{ post.id }}"
                                 value="{{ post.media }}" />
                         </div>
                         {% endif %}
@@ -326,52 +268,36 @@
                         {% include './template/_options.html' %}
 
                         <!-- THE TIME -->
-                        <input
-                            type="datetime-local"
-                            name="time"
-                            class="form-input"
-                            data-form-id="{{ post.id }}"
+                        <input type="datetime-local" name="time" class="form-input" data-form-id="{{ post.id }}"
                             value="{{ post.time }}" />
 
                         <!-- THE PRIORITY -->
-                        <input
-                            type="number"
-                            name="priority"
-                            class="form-input hidden"
-                            data-form-id="{{ post.id }}"
+                        <input type="number" name="priority" class="form-input hidden" data-form-id="{{ post.id }}"
                             value="{{ post.priority }}" />
 
                         <!-- THE BUTTONS -->
                         <section class="form-buttons" data-form-id="{{ post.id }}">
                             <!-- THE SCHEDULE BUTTON -->
-                            <button
-                                class="form-button form-button-schedule"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'scheduled')">
-                                <i class="fa-solid fa-clock-rotate-left" style="font-size: 18px"></i
-                                >&nbsp;&nbsp;&nbsp;&nbsp; Update
+                            <button class="form-button form-button-schedule" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'scheduled', false)">
+                                <i class="fa-solid fa-clock-rotate-left"
+                                    style="font-size: 18px"></i>&nbsp;&nbsp;&nbsp;&nbsp; Update
                             </button>
 
                             <!-- THE AUTOMATE BUTTON -->
-                            <button
-                                class="form-button form-button-automate"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'automated')">
+                            <button class="form-button form-button-automate" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'automated', false)">
                                 <i class="fa-regular fa-paper-plane"></i>
                             </button>
 
                             <!-- THE PUBLISH BUTTON -->
-                            <button
-                                class="form-button form-button-publish"
-                                data-form-id="{{ post.id }}"
-                                onclick="duplink('{{ post.id }}', 'publish')">
+                            <button class="form-button form-button-publish" data-form-id="{{ post.id }}"
+                                onclick="duplink('{{ post.id }}', 'publish', false)">
                                 Publish Now
                             </button>
 
                             <!-- THE DELETE BUTTON -->
-                            <button
-                                class="form-button form-button-delete"
-                                data-form-id="{{ post.id }}"
+                            <button class="form-button form-button-delete" data-form-id="{{ post.id }}"
                                 onclick="deletePost('{{ post.id }}')">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
@@ -388,7 +314,8 @@
                 </p>
                 <!-- END GROUPS -->
 
-                <input type="text" class="hidden" name="groups-holder" data-form-id="{{ post.id }}" value="{{ post.groups_string }}">
+                <input type="text" class="hidden" name="groups-holder" data-form-id="{{ post.id }}"
+                    value="{{ post.groups_string }}">
             </form>
             {% endfor %}
         </section>
@@ -410,4 +337,23 @@
 <script src="/js/posts/handleGroupCheckboxes.js"></script>
 
 <script src="/js/posts/handleDateTimeOnAutomatedPosts.js"></script>
+
+<script>
+    const stringWithHtmlEntities = '{{ descriptions | dump }}';
+    const jsonString = stringWithHtmlEntities.replace(/&quot;/g, '"');
+    const descriptionsArray = JSON.parse(jsonString).map(item => item.description);
+
+    const getRandomElement = (array) => {
+        const randomIndex = Math.floor(Math.random() * array.length);
+        return array[randomIndex];
+    };
+    function setRandomDescription() {
+        let descriptionBoxes = document.querySelectorAll(`[name="description"]`)
+        for (let i = 0; i < descriptionBoxes.length; i++) {
+            let randomDescription = getRandomElement(descriptionsArray);
+            descriptionBoxes[i].value = randomDescription
+        }
+    }
+    setRandomDescription()
+</script>
 {% endblock %}

@@ -16,4 +16,8 @@
         <!-- prettier-ignore -->
         <option value="user" {% if (post.publisher == 'user') %} selected {% endif %}>Post as User</option>
     </select>
+    <label>
+        <input type="checkbox" name="bulk" value="1" classs="checkbox" {% if (post.bulk) %} checked="checked" {% endif %} style="width:auto" data-form-id="{{ post.id }}">
+        Check this if you want to post to all groups and pages
+    </label>
 </section>

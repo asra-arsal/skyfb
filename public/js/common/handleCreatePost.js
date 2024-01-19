@@ -1,6 +1,6 @@
-const createPost = async (index, type) => {
-    // const apiType = (index === '0' || index === 0) ? 'create' : 'update';
-    const apiType =  'create';
+const createPost = async (index, type, isNew = true) => {
+    const apiType = (isNew) ? 'create' : 'update';
+    // const apiType =  'create';
     const apiEndpoint = type === 'publish' ? api.posts.publish : api.posts[apiType];
 
     let groups = [];

@@ -75,7 +75,7 @@
             </button>
             <fieldset class="form-groups hidden" data-form-id="0">
                 {% for group in groups %}
-                <label for="group-{{ group.id }}-post-0">
+                <label>
                     <input type="checkbox" name="groups" id="group-{{ group.id }}-post-0" value="{{ group.id }}"
                         data-form-id="0" /> {{ group.name }}
                 </label>

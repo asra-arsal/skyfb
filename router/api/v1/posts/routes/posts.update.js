@@ -29,6 +29,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
     const context = req?.body?.context ? req?.body?.context : null;
     const publisher = req?.body?.publisher ? req?.body?.publisher : null;
     let time = req?.body?.time ? req?.body?.time : null;
+    let bulk = req?.body?.bulk ? true : false;
     let priority = req?.body?.priority ? req?.body?.priority : null;
 
 
@@ -226,11 +227,12 @@ UPDATE.put('/', loggedIn, async (req, res) => {
         priority,
         status,
         id,
+        bulk,
     };
 
     try {
         const query = 'SELECT * FROM posts WHERE id = ?';
-        const params = [id];
+        const params = [parseInt(id)];
 
         const post = await db.get(query, params);
 
@@ -269,7 +271,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
 
     try {
         const query = `
-            UPDATE posts
+        UPDATE posts
             SET
                 type = ?,
                 message = ?,
@@ -281,10 +283,12 @@ UPDATE.put('/', loggedIn, async (req, res) => {
                 time = ?,
                 timestamp = ?,
                 priority = ?,
-                status = ?
-            WHERE
+                status = ?,
+                bulk = ?
+                WHERE
                 id = ?;
-        `;
+                `;
+        console.log('query: ', query);
         const params = [
             post.type,
             post.message,
@@ -297,9 +301,11 @@ UPDATE.put('/', loggedIn, async (req, res) => {
             post.timestamp,
             post.priority,
             post.status,
+            post.bulk,
             post.id,
         ];
-
+        console.log('params: ', params);
+        
         await db.run(query, params);
 
         res.json({
