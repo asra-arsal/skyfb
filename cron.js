@@ -26,6 +26,7 @@ const pubsub = require('./utils/pubsub');
 // The cronjob for scheduled posts.
 cron.schedule('*/5 * * * *', async () => {
     // Test comment
+    // Test comment2
     // Connect to the database.
     const db = await openDB();
 
