@@ -73,8 +73,7 @@ cron.schedule('*/5 * * * *', async () => {
 });
 
 // The cronjob for automated posts.
-// cron.schedule('*/5 * * * *', async () => {
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
     console.log('==============cron==============')
     // Connect to the database.
     const db = await openDB();
@@ -105,7 +104,7 @@ cron.schedule('*/1 * * * *', async () => {
                 time = ?;
         `;
 
-        const params = ["link" ,current_day, current_time];
+        const params = ["link", current_day, current_time];
 
         timeslot = await db.get(query, params);
         console.log('timeslot1: ', timeslot);

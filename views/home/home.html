@@ -219,7 +219,7 @@
             postForm = postForm.replace(sQ, "");
             
     
-            const targetDiv = document.querySelector('.form-container');
+            const targetDiv = document.querySelectorAll('.form-container');
     
             if (targetDiv) {
                 // Create a new element with the HTML content you want to append
@@ -227,7 +227,7 @@
                 newContent.innerHTML = '<hr style="margin-bottom: 25px;"/><section class="form-container">' + postForm + '</section>';
     
                 // Append the new element after the target div
-                targetDiv.parentNode.insertBefore(newContent, targetDiv.nextSibling);
+                targetDiv[targetDiv.length-1].parentNode.insertBefore(newContent, targetDiv[targetDiv.length-1].nextSibling);
             } else {
                 console.error('The target div with class was not found.');
             }
