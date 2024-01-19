@@ -7,28 +7,16 @@ module.exports = async (post, auth, page, browser) => {
 
     // Open hamburger menu.
     try {
-        // let [hamburgerMenu] = await page?.$x("/html/body/div[1]/div/div[1]/div[2]/div/div/div[3]");
-        // if (!hamburgerMenu) {
-        //     [hamburgerMenu] = await page?.$x("/html/body/div[3]/div/div[1]/div[3]/div/div/div[3]");
-        // }
-        // if (!hamburgerMenu) {
-        //     [hamburgerMenu] = await page?.$x("/html/body/div[2]/div/div[1]/div[3]/div/div/div[3]");
-        // }
-        // console.log('hamburgerMenu1: ', hamburgerMenu);
-        // if (hamburgerMenu) {
-        //     await hamburgerMenu.click();
-        // } else {
             await page.evaluate(() => {
                 let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[6];
                 let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
                 d.click();
             });
-        // }
 
         await sleep(3000);
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
             return {
                 success: false,
                 data: null,
@@ -81,7 +69,7 @@ module.exports = async (post, auth, page, browser) => {
                 await sleep(5000);
             } catch (err) {
                 if (err) {
-                    // await browser?.close();
+                    await browser?.close();
 
                     return {
                         success: false,
@@ -98,7 +86,7 @@ module.exports = async (post, auth, page, browser) => {
         }
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -126,7 +114,7 @@ module.exports = async (post, auth, page, browser) => {
             await sleep(3000);
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -165,7 +153,7 @@ module.exports = async (post, auth, page, browser) => {
 
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -197,7 +185,7 @@ module.exports = async (post, auth, page, browser) => {
             await sleep(5000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -221,7 +209,7 @@ module.exports = async (post, auth, page, browser) => {
 
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
 
             return {
                 success: false,
@@ -235,11 +223,10 @@ module.exports = async (post, auth, page, browser) => {
             };
         }
     }
-    // const totalSleepTime = 30000 + (post?.media?.length > 0 ? post?.media?.length : 0) * 12500;
     const totalSleepTime = 5000;
 
     await sleep(totalSleepTime);
-    // await browser?.close();
+    await browser?.close();
     return {
         success: true,
         data: null,

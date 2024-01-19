@@ -84,7 +84,7 @@ module.exports = async (post, auth) => {
             await sleep(3500);
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
