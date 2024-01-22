@@ -17,11 +17,21 @@ GET.get('/all', loggedIn, async (req, res) => {
         const query = 'SELECT * FROM timesheet ORDER BY day, priority';
 
         const timeslots = await db.all(query);
+        
+        const queryMedia = 'SELECT * FROM timesheet WHERE type = "media" ORDER BY day, priority';
+
+        const timeslotsMedia = await db.all(queryMedia);
+        
+        const queryLink = 'SELECT * FROM timesheet WHERE type = "link" ORDER BY day, priority';
+
+        const timeslotsLink = await db.all(queryLink);
 
         res.json({
             success: true,
             data: {
                 timeslots,
+                timeslotsMedia,
+                timeslotsLink,
             },
             error: null,
         });

@@ -3,7 +3,11 @@
 
     const resp = await fetch(apiEndpoint);
     const { success, data, error } = await resp.json();
+    automatedPosts(data.timeslotsMedia, "media")
+    automatedPosts(data.timeslotsLink, "link")
 
+})();
+const automatedPosts = (data, type) => {
     const days = {
         Monday: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         Tuesday: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday'],
@@ -30,12 +34,13 @@
         Sunday: [],
     };
 
-    for (let i = 0; i < data.timeslots.length; i++) {
-        const timeslot = data.timeslots[i];
+    for (let i = 0; i < data.length; i++) {
+        const timeslot = data[i];
 
         timeslots[timeslot.day].push(timeslot);
     }
 
+    // const publishTimes = document.querySelectorAll('.publish-time[data-publish-type="'+type+'"]');
     const publishTimes = document.querySelectorAll('.publish-time');
 
     let arrayOfTimeslots = [];
@@ -89,13 +94,18 @@
                 const id = lol;
                 const publish_time = document.querySelector(`.publish-time-time[data-publish-id="${id}"]`);
                 const publish_day = document.querySelector(`.publish-time-day[data-publish-id="${id}"]`);
+                const publish_type = document.querySelector(`.publish-time-day[data-publish-id="${id}"]`).getAttribute('data-publish-type');
+                if (publish_type == type) {
+                    // let timeslot = finalTimeslots[i][j];
+                    let timeslot = finalTimeslots[i].shift();
 
-                const timeslot = finalTimeslots[i][j];
 
-                publish_time.innerText = timeslot.time_formatted;
-                publish_day.innerText = timeslot.day;
-
+                    publish_time.innerText = timeslot.time_formatted;
+                    publish_day.innerText = timeslot.day;
+                }
                 lol = lol + 1;
+
+
             }
         }
     }
@@ -136,11 +146,12 @@
 
     for (let i = 0; i < publishTimes.length; i++) {
         const publish_date = document.querySelector(`.publish-time-date[data-publish-id="${i + 1}"]`);
-
-        publish_date.innerText = finTis[i][1];
+        const publish_type = document.querySelector(`.publish-time-date[data-publish-id="${i + 1}"]`).getAttribute('data-publish-type');
+        if (publish_type == type) {
+            publish_date.innerText = finTis[i][1];
+        }
     }
-})();
-
+}
 const getDate = (timestamp = null) => {
     const year = timestamp ? new Date(timestamp).getFullYear() : new Date().getFullYear();
     let month = timestamp ? new Date(timestamp).getMonth() : new Date().getMonth();

@@ -44,7 +44,7 @@ const createPost = async (index, type, isNew = true) => {
         return handleError('Error encountered when trying to create the Post.', error);
     }
 
-    // location.reload();
+    location.reload();
 };
 
 const getInput = (name, index) => {
