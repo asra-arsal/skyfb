@@ -133,7 +133,8 @@ dist
 *.db
 
 # User-uploaded media
-# public/media/
+public/media/
+!public/media/New Text Document.txt
 
 # Sass-generated files
 *.css

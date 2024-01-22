@@ -30,9 +30,10 @@ module.exports = async (post, auth) => {
         await sleep(2000)
     }
 
-    if (auth.useAgent == "true") {
+    if (auth.useAgent) {
         console.log('Agent is enabled')
-        await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36  uacq');
+        // await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36  uacq');
+        await page.setUserAgent(auth.useAgent);
     }
 
     // Check if an XPath exists on the page?.
@@ -47,6 +48,33 @@ module.exports = async (post, auth) => {
             return false;
         }
     };
+    if(["true", true].includes(process.env.PROXY_ENABLED)){
+        // Open ipinfo.
+        try {
+            console.log('opening IP Info')
+            const deadURL = 'https://ipinfo.io/';
+    
+            await page?.goto(deadURL);
+    
+            await sleep(5000);
+        } catch (err) {
+            if (err) {
+                await browser?.close();
+    
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 701,
+                        type: 'Puppeteer error.',
+                        moment: 'Opening facebook.',
+                        error: err.toString(),
+                    },
+                };
+            }
+        }
+
+    }
     // Open facebook and go to a dead link.
     try {
         console.log('opening Facebook')
