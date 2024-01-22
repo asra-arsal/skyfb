@@ -17,8 +17,8 @@ const login = async (username, password) => {
         }
     };
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
-    const username = process.env.PROXY_USER;
-    const password = process.env.PROXY_PASSWORD;
+    const username_ = process.env.PROXY_USER;
+    const password_ = process.env.PROXY_PASSWORD;
     let args = ['--start-maximized', '--disable-notifications',]
     if (process.env.PROXY_ENABLED === "true") {
         args.push(`--proxy-server=${proxy}`)
@@ -31,6 +31,13 @@ const login = async (username, password) => {
     });
 
     const page = await browser.newPage();
+    await sleep(3000)
+
+    if (process.env.PROXY_ENABLED === "true") {
+        console.log('Proxy is enabled')
+        await page.authenticate({ username_, password_ });
+        await sleep(2000)
+    }
     if (process.env.USE_USER_AGENT == "true") {
         await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36 uacq');
     }
