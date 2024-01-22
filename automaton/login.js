@@ -16,16 +16,50 @@ const login = async (username, password) => {
             return false;
         }
     };
+    const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
+    const username = process.env.PROXY_USER;
+    const password = process.env.PROXY_PASSWORD;
+    let args = ['--start-maximized', '--disable-notifications',]
+    if (process.env.PROXY_ENABLED === "true") {
+        args.push(`--proxy-server=${proxy}`)
+    }
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: null,
-        args: ['--start-maximized', '--disable-notifications'],
+        args: args,
         userDataDir: path.join(__dirname, 'userData'),
     });
 
     const page = await browser.newPage();
     if (process.env.USE_USER_AGENT == "true") {
         await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36 uacq');
+    }
+    if(["true", true].includes(process.env.PROXY_ENABLED)){
+        // Open ipinfo.
+        try {
+            console.log('opening IP Info')
+            const deadURL = 'https://ipinfo.io/';
+    
+            await page?.goto(deadURL);
+    
+            await sleep(5000);
+        } catch (err) {
+            if (err) {
+                await browser?.close();
+    
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 701,
+                        type: 'Puppeteer error.',
+                        moment: 'Opening facebook.',
+                        error: err.toString(),
+                    },
+                };
+            }
+        }
+
     }
     // Open the Facebook Login Page.
     try {
