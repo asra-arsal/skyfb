@@ -35,11 +35,11 @@ const login = async (username, password) => {
 
     if (["true",true].includes(process.env.PROXY_ENABLED)) {
         console.log('Proxy is enabled')
-        await page.authenticate({ username_, password_ });
+        await page.authenticate({ username:username_, password: password_ });
         await sleep(2000)
     }
     if (process.env.USE_USER_AGENT) {
-        await page.setUserAgent(USE_USER_AGENT);
+        await page.setUserAgent(process.env.USE_USER_AGENT);
     }
     if(["true", true].includes(process.env.PROXY_ENABLED)){
         // Open ipinfo.
