@@ -61,20 +61,20 @@ const automatedPosts = (data, type) => {
     let finalTimeslots = [];
 
     let firstWeek = [];
-    arrayOfTimeslots = arrayOfTimeslots.sort(function(a,b) {
-        let dayNumbers = {
-            Monday:1,
-            Tuesday:2,
-            Wednesday:3,
-            Thursday:4,
-            Friday:5,
-            Saturday:6,
-            Sunday:7
-        }
-        let a_ = dayNumbers[a.day]
-        let b_ = dayNumbers[b.day]
-        return a_ - b_;
-    });
+    // arrayOfTimeslots = arrayOfTimeslots.sort(function(a,b) {
+    //     let dayNumbers = {
+    //         Monday:1,
+    //         Tuesday:2,
+    //         Wednesday:3,
+    //         Thursday:4,
+    //         Friday:5,
+    //         Saturday:6,
+    //         Sunday:7
+    //     }
+    //     let a_ = dayNumbers[a.day]
+    //     let b_ = dayNumbers[b.day]
+    //     return a_ - b_;
+    // });
     for (let i = 0; i < arrayOfTimeslots.length; i++) {
         const final_day = arrayOfTimeslots[i].day;
         const final_time = arrayOfTimeslots[i].priority;
@@ -101,7 +101,7 @@ const automatedPosts = (data, type) => {
     }
 
     let lol = 1;
-
+    let fullfinalTimeslots = JSON.parse(JSON.stringify(finalTimeslots));
     for (let i = 0; i < finalTimeslots.length; i++) {
         for (j = 0; j < finalTimeslots[i].length; j++) {
             if (lol <= publishTimes.length) {
@@ -148,10 +148,10 @@ const automatedPosts = (data, type) => {
     let finTis = [];
 
     for (let i = 0; i < the_dates.length; i++) {
-        for (let j = 0; j < finalTimeslots[i].length; j++) {
+        for (let j = 0; j < fullfinalTimeslots[i].length; j++) {
             for (let k = 0; k < the_dates[i].length; k++) {
-                if (finalTimeslots[i][j].day === the_dates[i][k].day) {
-                    finTis.push([finalTimeslots[i][j].day, the_dates[i][k].date]);
+                if (fullfinalTimeslots[i][j].day === the_dates[i][k].day) {
+                    finTis.push([fullfinalTimeslots[i][j].day, the_dates[i][k].date]);
                 }
             }
         }
