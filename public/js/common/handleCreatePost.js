@@ -43,8 +43,9 @@ const createPost = async (index, type, isNew = true) => {
         hideLoadingAnimation();
         return handleError('Error encountered when trying to create the Post.', error);
     }
-
-    location.reload();
+    if(noOfPosts == index + 1){
+        location.reload();
+    }
 };
 
 const getInput = (name, index) => {

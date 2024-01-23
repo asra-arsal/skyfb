@@ -8,6 +8,7 @@
 
 })();
 const automatedPosts = (data, type) => {
+  
     const days = {
         Monday: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         Tuesday: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday'],
@@ -60,7 +61,20 @@ const automatedPosts = (data, type) => {
     let finalTimeslots = [];
 
     let firstWeek = [];
-
+    arrayOfTimeslots = arrayOfTimeslots.sort(function(a,b) {
+        let dayNumbers = {
+            Monday:1,
+            Tuesday:2,
+            Wednesday:3,
+            Thursday:4,
+            Friday:5,
+            Saturday:6,
+            Sunday:7
+        }
+        let a_ = dayNumbers[a.day]
+        let b_ = dayNumbers[b.day]
+        return a_ - b_;
+    });
     for (let i = 0; i < arrayOfTimeslots.length; i++) {
         const final_day = arrayOfTimeslots[i].day;
         const final_time = arrayOfTimeslots[i].priority;
