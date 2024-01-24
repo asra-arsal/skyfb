@@ -157,12 +157,13 @@ const automatedPosts = (data, type) => {
         }
     }
 
-
+    let k = 0;
     for (let i = 0; i < publishTimes.length; i++) {
         const publish_date = document.querySelector(`.publish-time-date[data-publish-id="${i + 1}"]`);
         const publish_type = document.querySelector(`.publish-time-date[data-publish-id="${i + 1}"]`).getAttribute('data-publish-type');
         if (publish_type == type) {
-            publish_date.innerText = finTis[i][1];
+            publish_date.innerText = finTis[k][1];
+            k++
         }
     }
 }
