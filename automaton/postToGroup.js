@@ -10,8 +10,8 @@ module.exports = async (post, auth, page, browser) => {
         
             await page.evaluate(() => {
                 let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[6];
-                let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
-                d.click();
+                // let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
+                mccontainer.click();
             });
 
         await sleep(3000);
