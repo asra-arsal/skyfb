@@ -16,7 +16,7 @@ module.exports = async (post, auth) => {
         args.push(`--proxy-server=${proxy}`)
     }
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: 'new',
         defaultViewport: null,
         args: args,
         userDataDir: path.join(__dirname, 'userData'),
