@@ -19,7 +19,7 @@ const login = async (username, password) => {
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
     const username_ = process.env.PROXY_USER;
     const password_ = process.env.PROXY_PASSWORD;
-    let args = ['--start-maximized', '--disable-notifications',]
+    let args = ['--start-maximized', '--disable-notifications', '--no-sandbox']
     if (["true",true].includes(process.env.PROXY_ENABLED) ) {
         args.push(`--proxy-server=${proxy}`)
     }

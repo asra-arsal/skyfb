@@ -10,7 +10,7 @@ module.exports = async (post, auth) => {
         // headless: 'new',
         headless: false,
         defaultViewport: null,
-        args: ['--start-maximized', '--disable-notifications'],
+        args: ['--start-maximized', '--disable-notifications', '--no-sandbox'],
         userDataDir: path.join(__dirname, 'userData'),
     });
 

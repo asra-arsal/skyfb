@@ -7,7 +7,7 @@ module.exports = async () => {
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: null,
-        args: ['--start-maximized', '--disable-notifications'],
+        args: ['--start-maximized', '--disable-notifications', '--no-sandbox'],
         userDataDir: path.join(__dirname, 'userData'),
     });
 

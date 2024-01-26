@@ -11,7 +11,7 @@ module.exports = async (post, auth) => {
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
     const username = process.env.PROXY_USER;
     const password = process.env.PROXY_PASSWORD;
-    let args = ['--start-maximized', '--disable-notifications',]
+    let args = ['--start-maximized', '--disable-notifications', '--no-sandbox']
     if (process.env.PROXY_ENABLED === "true") {
         args.push(`--proxy-server=${proxy}`)
     }
