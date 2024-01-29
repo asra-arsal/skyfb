@@ -5,7 +5,7 @@ const { sleep } = require('../utils/utils');
 
 module.exports = async () => {
     const browser = await puppeteer.launch({
-        headless: 'new',
+        headless: false,
         defaultViewport: null,
         args: ['--start-maximized', '--disable-notifications', '--no-sandbox'],
         userDataDir: path.join(__dirname, 'userData'),

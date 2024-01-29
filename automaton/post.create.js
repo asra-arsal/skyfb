@@ -8,7 +8,7 @@ const password = process.env.FB_PASSWORD;
 module.exports = async (post, auth) => {
     const browser = await puppeteer.launch({
         // headless: 'new',
-        headless: 'new',
+        headless: false,
         defaultViewport: null,
         args: ['--start-maximized', '--disable-notifications', '--no-sandbox'],
         userDataDir: path.join(__dirname, 'userData'),
