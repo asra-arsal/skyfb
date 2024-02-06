@@ -15,44 +15,84 @@ module.exports = async (post, auth) => {
     if (process.env.PROXY_ENABLED === "true") {
         args.push(`--proxy-server=${proxy}`)
     }
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-        args: args,
-        userDataDir: path.join(__dirname, 'userData'),
-    });
-    const page = await browser?.newPage();
-    await sleep(3000)
+    let browser = null
+    try{
 
-    if (process.env.PROXY_ENABLED === "true") {
-        console.log('Proxy is enabled')
-        await page.authenticate({ username, password });
-        await sleep(2000)
-    }
-
-    if (auth.useAgent) {
-        console.log('Agent is enabled')
-        // await page.setUserAgent('Mozilla/5.0 (Linux; Android 13; SM-A037U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36  uacq');
-        await page.setUserAgent(auth.useAgent);
-    }
-
-    // Check if an XPath exists on the page?.
-    const XPathExists = async (XPath) => {
-        try {
-            if (await page?.waitForXPath(XPath, { timeout: 2500 })) {
-                return true;
-            } else {
+        const browser = await puppeteer.launch({
+            // headless: false,
+            headless: false,
+            defaultViewport: null,
+            args: args,
+            userDataDir: path.join(__dirname, 'userData'),
+        });
+        const page = await browser?.newPage();
+        await sleep(3000)
+    
+        if (process.env.PROXY_ENABLED === "true") {
+            console.log('Proxy is enabled')
+            await page.authenticate({ username, password });
+            await sleep(2000)
+        }
+    
+        if (auth.useAgent) {
+            console.log('Agent is enabled')
+            await page.setUserAgent(auth.useAgent);
+        
+         
+          // Set viewport to mimic a mobile device
+          await page.setViewport({
+            width: 375, // typical width of a mobile device
+            height: 667, // typical height of a mobile device
+            deviceScaleFactor: 2, // high-density screens
+            isMobile: true,
+            hasTouch: true,
+            isLandscape: false // change to true if you want landscape mode
+          });
+        }
+    
+        // Check if an XPath exists on the page?.
+        const XPathExists = async (XPath) => {
+            try {
+                if (await page?.waitForXPath(XPath, { timeout: 2500 })) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (err) {
                 return false;
             }
-        } catch (err) {
-            return false;
+        };
+        if(["true", true].includes(process.env.PROXY_ENABLED)){
+            // Open ipinfo.
+            try {
+                console.log('opening IP Info')
+                const deadURL = 'https://ipinfo.io/';
+        
+                await page?.goto(deadURL);
+        
+                await sleep(5000);
+            } catch (err) {
+                if (err) {
+                    await browser?.close();
+        
+                    return {
+                        success: false,
+                        data: null,
+                        error: {
+                            code: 701,
+                            type: 'Puppeteer error.',
+                            moment: 'Opening facebook.',
+                            error: err.toString(),
+                        },
+                    };
+                }
+            }
+    
         }
-    };
-    if(["true", true].includes(process.env.PROXY_ENABLED)){
-        // Open ipinfo.
+        // Open facebook and go to a dead link.
         try {
-            console.log('opening IP Info')
-            const deadURL = 'https://ipinfo.io/';
+            console.log('opening Facebook')
+            const deadURL = 'https://www.facebook.com';
     
             await page?.goto(deadURL);
     
@@ -73,56 +113,33 @@ module.exports = async (post, auth) => {
                 };
             }
         }
-
-    }
-    // Open facebook and go to a dead link.
-    try {
-        console.log('opening Facebook')
-        const deadURL = 'https://www.facebook.com';
-
-        await page?.goto(deadURL);
-
-        await sleep(5000);
-    } catch (err) {
-        if (err) {
-            await browser?.close();
-
-            return {
-                success: false,
-                data: null,
-                error: {
-                    code: 701,
-                    type: 'Puppeteer error.',
-                    moment: 'Opening facebook.',
-                    error: err.toString(),
-                },
-            };
+        let res = {
+            success: false,
+            data: null,
+            error: {
+                code: 10000,
+                type: 'EXIT.',
+                moment: 'EXITED',
+                error: 'err.toString()',
+            },
         }
-    }
-    let res = {
-        success: false,
-        data: null,
-        error: {
-            code: 10000,
-            type: 'EXIT.',
-            moment: 'EXITED',
-            error: 'err.toString()',
-        },
-    }
-    if (post.context === "group" || post.context === "all") {
-        console.log('posting to groups')
-        res = await publish.toGroup(post,auth, page, browser)
-        if(res.success){
-            await browser?.close();
+        if (post.context === "group" || post.context === "all") {
+            console.log('posting to groups')
+            res = await publish.toGroup(post,auth, page, browser)
+            if(res.success){
+                await browser?.close();
+            }
         }
-    }
-    if (post.context === "page" || post.context === "all") {
-        console.log('posting to page')
-        res = await publish.toPage(post,auth, page, browser)
-        if(res.success){
-            await browser?.close();
+        if (post.context === "page" || post.context === "all") {
+            console.log('posting to page')
+            res = await publish.toPage(post,auth, page, browser)
+            if(res.success){
+                await browser?.close();
+            }
         }
+        return res
+        
+    }catch(e){
+        console.log(e)
     }
-    return res
-    
 }

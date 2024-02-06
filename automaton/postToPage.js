@@ -170,7 +170,10 @@ module.exports = async (post, auth, page, browser) => {
         // Entering the Post Media
         try {
             const mediaPath = path.join(__dirname, '..', 'public', 'media');
-            const [photoSelector] = await page?.$x(`//div[text()="Photos"]`);
+            let [photoSelector] = await page?.$x(`//div[text()="Photos"]`);
+			if(!photoSelector){
+				[photoSelector] = await page?.$x(`//div[text()="Photos/videos"]`);
+			}
             let media = []
             for (let i = 0; i < post?.media?.length; i++) {
                 media.push(path.join(mediaPath, post?.media[i]));
