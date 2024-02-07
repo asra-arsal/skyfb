@@ -24,7 +24,7 @@ const login = async (username, password) => {
         args.push(`--proxy-server=${proxy}`)
     }
     const browser = await puppeteer.launch({
-        headless: 'new',
+        headless: false,
         defaultViewport: null,
         args: args,
         userDataDir: path.join(__dirname, 'userData'),
