@@ -20,7 +20,7 @@ module.exports = async (post, auth) => {
 
         const browser = await puppeteer.launch({
             // headless: false,
-            headless: false,
+            headless: 'new',
             defaultViewport: null,
             args: args,
             userDataDir: path.join(__dirname, 'userData'),
