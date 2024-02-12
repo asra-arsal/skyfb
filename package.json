@@ -1,8 +1,8 @@
 {
     "author": {
-        "email": "ahmad@shahzad.dev",
-        "name": "Ahmad Shahzad",
-        "url": "https://shahzad.dev"
+        "email": "faizan.zahid@arhamsoft.org",
+        "name": "Arhamsoft (Pvt) Ltd",
+        "url": "https://arhamsoft.com/"
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
@@ -38,5 +38,5 @@
         "build:sass": "sass sass:public/css",
         "upgrade": "node upgrade.js"
     },
-    "version": "1.9.0"
+    "version": "2.0.0"
 }
