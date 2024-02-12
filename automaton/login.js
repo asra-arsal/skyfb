@@ -86,7 +86,7 @@ const login = async (username, password) => {
         await page.evaluate(() => {
             const xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log in to another account"]';
             const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            element.click();
+            if(element) element.click();
         });
         await sleep(2000)
 
