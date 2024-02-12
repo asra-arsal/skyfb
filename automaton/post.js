@@ -80,6 +80,7 @@ module.exports = async (post, auth) => {
         console.log('url: ', url);
         try {
             await page?.goto(url);
+            await page.waitForNavigation();
             await sleep(3000);
         } catch (err) {
             if (err) {
@@ -123,6 +124,7 @@ module.exports = async (post, auth) => {
             url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
             url = `https://mbasic.facebook.com${url}`
             await page?.goto(url);
+            await page.waitForNavigation();
             await sleep(3000);
         }
         let res = {
