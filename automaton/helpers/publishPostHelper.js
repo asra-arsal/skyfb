@@ -1,11 +1,11 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 
-const { sleep } = require('../utils/utils');
+const { sleep } = require('../../utils/utils');
 
 module.exports = async (post, auth, page, browser) => {
     // If the post is to page by the page
-    if (post?.publisher === "page") {
+    if ((post?.publisher === "page" && post?.context === "page") || (post?.context === "group")) {
         // Post Creation form open action.
         try {
             await page.evaluate(() => {
@@ -13,6 +13,8 @@ module.exports = async (post, auth, page, browser) => {
                 const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 element.click();
             });
+            await page.waitForNavigation();
+
             await sleep(2000)
         } catch (err) {
             if (err) {
@@ -34,12 +36,12 @@ module.exports = async (post, auth, page, browser) => {
         try {
             let content = post?.message
             if (post?.link !== '' && post?.link !== null) {
-                content += '\n\n'+post?.link;
+                content += '\n\n' + post?.link;
             }
             await page.evaluate((textcontent) => {
                 const xpath = 'textarea[name="xc_message"]';
-                document.querySelector(xpath).value=textcontent;
-            },content);
+                document.querySelector(xpath).value = textcontent;
+            }, content);
             await page.keyboard.press('Escape');
             await sleep(3000);
 
@@ -66,6 +68,8 @@ module.exports = async (post, auth, page, browser) => {
                 await photoBtnField.evaluate((s) => {
                     s.click()
                 });
+                await page.waitForNavigation();
+
                 await sleep(2000);
             } catch (err) {
                 if (err) {
@@ -84,21 +88,19 @@ module.exports = async (post, auth, page, browser) => {
             }
             // Entering the Post Media
             try {
-                const mediaPath = path.join(__dirname, '..', 'public', 'media');
+                const mediaPath = path.join(__dirname, '..', '..', 'public', 'media');
                 const fileInput = await page.$('input[type="file"]');
 
                 let media = path.join(mediaPath, post?.media[0])
+                console.log('media: ', media);
                 // Upload the image file
                 await fileInput.uploadFile(media);
+                const postIt = await page?.$(`input[name="add_photo_done"]`);
 
+                console.log('postIt: ', postIt);
+                await postIt.evaluate((s) => s.click());
+                await page.waitForNavigation();
                 await sleep(2000)
-                await page.evaluate(() => {
-                    const xpath = '//input[@name="add_photo_done"][1]';
-                    const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                    element.click();
-                });
-                
-                await sleep(8000)
             } catch (err) {
                 if (err) {
                     //  await browser.close();();
@@ -117,7 +119,7 @@ module.exports = async (post, auth, page, browser) => {
             }
         }
     }
-    
+
     // Publish the Post
     try {
         await page.evaluate(() => {
@@ -125,6 +127,7 @@ module.exports = async (post, auth, page, browser) => {
             const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             element.click();
         });
+        await page.waitForNavigation();
         await sleep(2000);
 
     } catch (err) {

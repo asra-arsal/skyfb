@@ -1,6 +1,8 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 const publish = {
+    verifyAndUpdateContext: require('./helpers/verifyAndUpdateContext'),
+    publishPostHelper: require('./helpers/publishPostHelper'),
     toPage: require('./postToPage'),
     toGroup: require('./postToGroup'),
     // meta: require('../automaton/post.create'),
@@ -16,65 +18,42 @@ module.exports = async (post, auth) => {
         args.push(`--proxy-server=${proxy}`)
     }
     let browser = null
-    try{
+    try {
 
         const browser = await puppeteer.launch({
-            // headless: false,
-            headless: 'new',
+            headless: false,
+            // headless: 'new',
             defaultViewport: null,
             args: args,
             userDataDir: path.join(__dirname, 'userData'),
         });
         const page = await browser?.newPage();
         await sleep(3000)
-    
+
         if (process.env.PROXY_ENABLED === "true") {
             console.log('Proxy is enabled')
             await page.authenticate({ username, password });
             await sleep(2000)
         }
-    
+
         if (auth.useAgent) {
             console.log('Agent is enabled')
             await page.setUserAgent(auth.useAgent);
-        
-         
-          // Set viewport to mimic a mobile device
-          await page.setViewport({
-            width: 375, // typical width of a mobile device
-            height: 667, // typical height of a mobile device
-            deviceScaleFactor: 2, // high-density screens
-            isMobile: true,
-            hasTouch: true,
-            isLandscape: false // change to true if you want landscape mode
-          });
         }
-    
-        // Check if an XPath exists on the page?.
-        const XPathExists = async (XPath) => {
-            try {
-                if (await page?.waitForXPath(XPath, { timeout: 2500 })) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (err) {
-                return false;
-            }
-        };
-        if(["true", true].includes(process.env.PROXY_ENABLED)){
+
+        if (["true", true].includes(process.env.PROXY_ENABLED)) {
             // Open ipinfo.
             try {
                 console.log('opening IP Info')
                 const deadURL = 'https://ipinfo.io/';
-        
+
                 await page?.goto(deadURL);
-        
+
                 await sleep(5000);
             } catch (err) {
                 if (err) {
                     await browser?.close();
-        
+
                     return {
                         success: false,
                         data: null,
@@ -87,31 +66,62 @@ module.exports = async (post, auth) => {
                     };
                 }
             }
-    
+
         }
-        // Open facebook and go to a dead link.
+
+        const contextRes = await publish.verifyAndUpdateContext(post, auth, page, browser)
+        if (!contextRes.success) {
+            await browser?.close();
+            return contextRes
+        }
+
+        
+        let url = 'https://mbasic.facebook.com';
+        console.log('url: ', url);
         try {
-            console.log('opening Facebook')
-            const deadURL = 'https://www.facebook.com';
-    
-            await page?.goto(deadURL);
-    
-            await sleep(5000);
+            await page?.goto(url);
+            await sleep(3000);
         } catch (err) {
             if (err) {
                 await browser?.close();
-    
                 return {
                     success: false,
                     data: null,
                     error: {
-                        code: 701,
+                        code: 702,
                         type: 'Puppeteer error.',
-                        moment: 'Opening facebook.',
+                        moment: 'Switching to the context.',
                         error: err.toString(),
                     },
                 };
             }
+        }
+        if (post.context === "page" || post.context === "all") {
+            console.log('posting to page')
+            url = 'https://mbasic.facebook.com';
+        }
+        if (post.context === "group" || post.context === "all") {
+            console.log('posting to group')
+            
+
+            await page.evaluate(() => {
+                const xpath = '//*[starts-with(text(), "Groups")]';
+                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                element.click();
+            });
+            await page.waitForNavigation();    
+            sleep(2000)    
+            await page.evaluate((groupName) => {
+                const xpath = `//*[@id="root"]/table/tbody/tr/td/div/ul/li/table/tbody/tr/td/a[text()="${groupName}"]`;
+                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                element.click();
+            },auth?.context?.groupName);
+            await page.waitForNavigation();        
+            sleep(2000)    
+            // // Switch to the correct context.
+            // url = auth?.context?.group;
+            // url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
+            // url = `https://mbasic.facebook.com${url}`
         }
         let res = {
             success: false,
@@ -123,23 +133,13 @@ module.exports = async (post, auth) => {
                 error: 'err.toString()',
             },
         }
-        if (post.context === "group" || post.context === "all") {
-            console.log('posting to groups')
-            res = await publish.toGroup(post,auth, page, browser)
-            if(res.success){
-                await browser?.close();
-            }
-        }
-        if (post.context === "page" || post.context === "all") {
-            console.log('posting to page')
-            res = await publish.toPage(post,auth, page, browser)
-            if(res.success){
-                await browser?.close();
-            }
+        res = await publish.publishPostHelper(post, auth, page, browser)
+        if (res.success) {
+            await browser?.close();
         }
         return res
-        
-    }catch(e){
+
+    } catch (e) {
         console.log(e)
     }
 }
