@@ -34,7 +34,7 @@ const login = async (username, password) => {
         // Open ipinfo.
         try {
             console.log('opening IP Info')
-            const deadURL = 'https://ipinfo.io/';
+            const deadURL = 'https://ipwho.is/';
 
             await page?.goto(deadURL);
 
