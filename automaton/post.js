@@ -122,6 +122,8 @@ module.exports = async (post, auth) => {
             url = auth?.context?.group;
             url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
             url = `https://mbasic.facebook.com${url}`
+            await page?.goto(url);
+            await sleep(3000);
         }
         let res = {
             success: false,
