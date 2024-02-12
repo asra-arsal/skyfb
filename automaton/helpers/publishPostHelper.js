@@ -5,20 +5,25 @@ const { sleep } = require('../../utils/utils');
 
 module.exports = async (post, auth, page, browser) => {
     // If the post is to page by the page
+	console.log('post?.publisher',post?.publisher)
+	console.log('post?.context',post?.context)
     if ((post?.publisher === "page" && post?.context === "page") || (post?.context === "group")) {
         // Post Creation form open action.
         try {
-            await page.evaluate(() => {
+            const elem = await page.evaluate(() => {
                 const xpath = '//input[@name="view_post"][@type="submit"]';
                 const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 element.click();
+				return element;
             });
+			console.log('elem',elem);
             await page.waitForNavigation();
 
             await sleep(2000)
         } catch (err) {
             if (err) {
                 //  await browser.close();();
+				console.log(err)
                 return {
                     success: false,
                     data: null,
