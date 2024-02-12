@@ -104,24 +104,24 @@ module.exports = async (post, auth) => {
             console.log('posting to group')
             
 
-            await page.evaluate(() => {
-                const xpath = '//*[starts-with(text(), "Groups")]';
-                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                element.click();
-            });
-            await page.waitForNavigation();    
-            sleep(2000)    
-            await page.evaluate((groupName) => {
-                const xpath = `//*[@id="root"]/table/tbody/tr/td/div/ul/li/table/tbody/tr/td/a[text()="${groupName}"]`;
-                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                element.click();
-            },auth?.context?.groupName);
-            await page.waitForNavigation();        
-            sleep(2000)    
-            // // Switch to the correct context.
-            // url = auth?.context?.group;
-            // url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
-            // url = `https://mbasic.facebook.com${url}`
+            // await page.evaluate(() => {
+            //     const xpath = '//*[starts-with(text(), "Groups")]';
+            //     const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            //     element.click();
+            // });
+            // await page.waitForNavigation();    
+            // sleep(2000)    
+            // await page.evaluate((groupName) => {
+            //     const xpath = `//*[@id="root"]/table/tbody/tr/td/div/ul/li/table/tbody/tr/td/a[text()="${groupName}"]`;
+            //     const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            //     element.click();
+            // },auth?.context?.groupName);
+            // await page.waitForNavigation();        
+            // sleep(2000)    
+            // Switch to the correct context.
+            url = auth?.context?.group;
+            url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
+            url = `https://mbasic.facebook.com${url}`
         }
         let res = {
             success: false,
