@@ -22,7 +22,7 @@ module.exports = async (posts, auth) => {
     try {
 
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: 'new',
             // headless: 'new',
             defaultViewport: null,
             args: args,
