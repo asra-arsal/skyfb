@@ -28,7 +28,6 @@ module.exports = async (posts, db) => {
         delete_errors: [],
     };
     let postsToPublish = []
-    // const res = await pub.post(posts, auth);
     if (posts.length > 0) {
         for (let i = 0; i < posts.length; i++) {
             let post = { ...posts[i] }
@@ -113,7 +112,7 @@ module.exports = async (posts, db) => {
                                     WHERE
                                         id = ?;
                             `;
-                const params = [post.id];
+                const params = [posts[i].id];
 
                 await db.run(query, params);
             } catch (err) {

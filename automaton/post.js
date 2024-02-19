@@ -22,7 +22,7 @@ module.exports = async (posts, auth) => {
     try {
 
         const browser = await puppeteer.launch({
-            headless: 'new',
+            headless:false,
             // headless: 'new',
             defaultViewport: null,
             args: args,
@@ -86,7 +86,11 @@ module.exports = async (posts, auth) => {
             
             if (posts[i].context === "page" || posts[i].context === "all") {
                 console.log('posting to page')
-                await page.waitForNavigation()
+                try{
+                    await page.waitForNavigation()
+                }catch(e){
+
+                }
                 url = 'https://mbasic.facebook.com';
                 
                 await page?.goto(url);
@@ -97,7 +101,11 @@ module.exports = async (posts, auth) => {
                 console.log('posting to group')
                 // Switch to the correct context.
                 // url = auth?.context?.group;
-                await page.waitForNavigation()
+                try{
+                    await page.waitForNavigation()
+                }catch(e){
+    
+                }
                 url = posts[i].contextDetails.group;
                 url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
                 url = `https://mbasic.facebook.com${url}`
