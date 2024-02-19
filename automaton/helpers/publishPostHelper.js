@@ -5,8 +5,6 @@ const { sleep } = require('../../utils/utils');
 
 module.exports = async (post, auth, page, browser) => {
     // If the post is to page by the page
-	console.log('post?.publisher',post?.publisher)
-	console.log('post?.context',post?.context)
     if ((post?.publisher === "page" && post?.context === "page") || (post?.context === "group")) {
         // Post Creation form open action.
         try {
@@ -16,14 +14,12 @@ module.exports = async (post, auth, page, browser) => {
                 element.click();
 				return element;
             });
-			console.log('elem',elem);
             await page.waitForNavigation();
 
             await sleep(2000)
         } catch (err) {
             if (err) {
                 //  await browser.close();();
-				console.log(err)
                 return {
                     success: false,
                     data: null,
@@ -97,12 +93,10 @@ module.exports = async (post, auth, page, browser) => {
                 const fileInput = await page.$('input[type="file"]');
 
                 let media = path.join(mediaPath, post?.media[0])
-                console.log('media: ', media);
                 // Upload the image file
                 await fileInput.uploadFile(media);
                 const postIt = await page?.$(`input[name="add_photo_done"]`);
 
-                console.log('postIt: ', postIt);
                 await postIt.evaluate((s) => s.click());
                 await page.waitForNavigation();
                 await sleep(2000)

@@ -288,7 +288,6 @@ UPDATE.put('/', loggedIn, async (req, res) => {
                 WHERE
                 id = ?;
                 `;
-        console.log('query: ', query);
         const params = [
             post.type,
             post.message,
@@ -304,7 +303,6 @@ UPDATE.put('/', loggedIn, async (req, res) => {
             post.bulk,
             post.id,
         ];
-        console.log('params: ', params);
         
         await db.run(query, params);
 

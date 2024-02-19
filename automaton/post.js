@@ -3,19 +3,14 @@ const puppeteer = require('puppeteer');
 const publish = {
     verifyAndUpdateContext: require('./helpers/verifyAndUpdateContext'),
     publishPostHelper: require('./helpers/publishPostHelper'),
+    loginUtility: require('./helpers/loginUtility'),
     toPage: require('./postToPage'),
     toGroup: require('./postToGroup'),
     // meta: require('../automaton/post.create'),
 };
 const { sleep } = require('../utils/utils');
 
-module.exports = async (post, auth) => {
-	console.log("==============================================")
-	console.log("==============================================")
-	
-	console.log(post)
-	console.log("==============================================")
-	console.log("==============================================")
+module.exports = async (posts, auth) => {
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
     const username = process.env.PROXY_USER;
     const password = process.env.PROXY_PASSWORD;
@@ -75,34 +70,7 @@ module.exports = async (post, auth) => {
 
         }
 
-        const contextRes = await publish.verifyAndUpdateContext(post, auth, page, browser)
-        console.log('contextRes',contextRes);
-		if (!contextRes.success) {
-            await browser?.close();
-            return contextRes
-        }
-        if (post.context === "page" || post.context === "all") {
-            console.log('posting to page')
-            url = 'https://mbasic.facebook.com';
-			
-            await page?.goto(url);
-            // await page.waitForNavigation();
-			await sleep(5000);
-        }
-        if (post.context === "group" || post.context === "all") {
-            console.log('posting to group')
-            // Switch to the correct context.
-            url = auth?.context?.group;
-            url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
-            url = `https://mbasic.facebook.com${url}`
-			console.log('groupURL',url)
-            await page?.goto(url);
-            // await page.waitForNavigation();
-			await sleep(2000);
-			console.log('reloading ========================================')
-            await page?.reload();
-			await sleep(3000);
-        }
+        await publish.loginUtility(browser, page)
         let res = {
             success: false,
             data: null,
@@ -113,8 +81,33 @@ module.exports = async (post, auth) => {
                 error: 'err.toString()',
             },
         }
-		console.log('aaaaaaaaaaaaa')
-        res = await publish.publishPostHelper(post, auth, page, browser)
+        for(let i = 0; i< posts.length; i++){
+            contextRes = await publish.verifyAndUpdateContext(posts[i], auth, page, browser)
+            
+            if (posts[i].context === "page" || posts[i].context === "all") {
+                console.log('posting to page')
+                await page.waitForNavigation()
+                url = 'https://mbasic.facebook.com';
+                
+                await page?.goto(url);
+                // await page.waitForNavigation();
+                await sleep(5000);
+            }
+            if (posts[i].context === "group" || posts[i].context === "all") {
+                console.log('posting to group')
+                // Switch to the correct context.
+                // url = auth?.context?.group;
+                await page.waitForNavigation()
+                url = posts[i].contextDetails.group;
+                url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
+                url = `https://mbasic.facebook.com${url}`
+                await page?.goto(url);
+                await sleep(2000);
+                await page?.reload();
+                await sleep(3000);
+            }
+            res = await publish.publishPostHelper(posts[i], auth, page, browser)
+        }
         if (res.success) {
             await browser?.close();
         }

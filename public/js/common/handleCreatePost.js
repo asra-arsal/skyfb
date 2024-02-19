@@ -25,7 +25,6 @@ const createPost = async (index, type, isNew = true) => {
         priority: getInput('priority', index).value,
         type,
     };
-    console.log('post: ', post);
     if (type === 'publish') {
         showLoadingAnimation();
     }

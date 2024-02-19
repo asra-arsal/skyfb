@@ -1,5 +1,9 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
+const helper = {
+    checkLoginUserAndLogout: require('./helpers/checkLoginUserAndLogout'),
+};
+// const { sleep } = require('../utils/utils');
 const { sleep } = require('../utils/utils');
 
 const login = async (username, password) => {
@@ -80,127 +84,137 @@ const login = async (username, password) => {
             };
         }
     }
+    const isCorrectLoggedIn  = await helper.checkLoginUserAndLogout(browser, page)
 
-    // Check if there is the option to Login to another account 
-    try {
-        await page.evaluate(() => {
-            const xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log in to another account"]';
-            const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            if(element) element.click();
-        });
-        await sleep(2000)
+    if(!isCorrectLoggedIn) // If coorect user is already logged in
+    {
 
-    } catch (err) {
-        if (err) {
-            await browser.close();
-
-            return {
-                success: false,
-                error: {
-                    code: 702,
-                    type: 'Puppeteer error.',
-                    moment: 'Log In to Another Page Action.',
-                    message: err.toString(),
-                },
-            };
+        // Check if there is the option to Login to another account 
+        try {
+            await page.evaluate(() => {
+                const xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log in to another account"]';
+                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                if(element) element.click();
+            });
+            await sleep(2000)
+    
+        } catch (err) {
+            if (err) {
+                await browser.close();
+    
+                return {
+                    success: false,
+                    error: {
+                        code: 702,
+                        type: 'Puppeteer error.',
+                        moment: 'Log In to Another Page Action.',
+                        message: err.toString(),
+                    },
+                };
+            }
         }
-    }
-
-    try {
-        const emailField = await page.$('input[name="email"]');
-        await emailField.type(process.env.FB_USERNAME);
-
-        const passwordField = await page.$('input[name="pass"]');
-        await passwordField.type(process.env.FB_PASSWORD);
-
-        await page.keyboard.press('Escape');
-
-        await page.evaluate(() => {
-            const loginBtnXpath = '//input[@type="submit"]';
-            const element = document.evaluate(loginBtnXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            element.click();
-        });
-        await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-        await sleep(5000)
-    } catch (err) {
-        if (err) {
-            // await browser?.close();
-            return {
-                success: false,
-                data: null,
-                error: {
-                    code: 703,
-                    type: 'Puppeteer error.',
-                    moment: 'Authenticating Meta Composer.',
-                    error: err?.toString(),
-                },
-            };
+    
+        try {
+            const emailField = await page.$('input[name="email"]');
+            await emailField.type(process.env.FB_USERNAME);
+    
+            const passwordField = await page.$('input[name="pass"]');
+            await passwordField.type(process.env.FB_PASSWORD);
+    
+            await page.keyboard.press('Escape');
+    
+            await page.evaluate(() => {
+                const loginBtnXpath = '//input[@type="submit"]';
+                const element = document.evaluate(loginBtnXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                element.click();
+            });
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+            await sleep(5000)
+        } catch (err) {
+            if (err) {
+                // await browser?.close();
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 703,
+                        type: 'Puppeteer error.',
+                        moment: 'Authenticating Meta Composer.',
+                        error: err?.toString(),
+                    },
+                };
+            }
         }
-    }
-    // Check if the user was stopped by the checkpoint
-    try {
-        const checkpointURL = 'https://mbasic.facebook.com/checkpoint/?next';
-        await page.goto(checkpointURL);
-        await page.waitForNetworkIdle();
-        await sleep(2000)
-    } catch (err) {
-        if (err) {
-            await browser.close();
-
-            return {
-                success: false,
-                error: {
-                    code: 704,
-                    type: 'Puppeteer error.',
-                    moment: 'Awaiting user input at the checkpoint.',
-                    message: err.toString(),
-                },
-            };
+        // Check if the user was stopped by the checkpoint
+        try {
+            const checkpointURL = 'https://mbasic.facebook.com/checkpoint/?next';
+            await page.goto(checkpointURL);
+            await page.waitForNetworkIdle();
+            await sleep(2000)
+        } catch (err) {
+            if (err) {
+                await browser.close();
+    
+                return {
+                    success: false,
+                    error: {
+                        code: 704,
+                        type: 'Puppeteer error.',
+                        moment: 'Awaiting user input at the checkpoint.',
+                        message: err.toString(),
+                    },
+                };
+            }
         }
-    }
-
-    // Verify if the user has reached the homepage
-    try {
-        await sleep(5000);
-        const pageURL = await page.url();
-
-        if (
-            pageURL === 'https://mbasic.facebook.com/checkpoint/?next' ||
-            pageURL === 'http://mbasic.facebook.com/checkpoint/?next'
-        ) {
-            await browser.close();
-            return {
-                success: true,
-                error: null,
-            };
-        } else {
+    
+        // Verify if the user has reached the homepage
+        try {
             await sleep(5000);
-            await browser.close();
-            return {
-                success: false,
-                error: {
-                    code: 705,
-                    type: 'Puppeteer error.',
-                    moment: 'Expecting login sequence to succeed.',
-                    message: 'The login sequence failed to log you in.',
-                },
-            };
-        }
-    } catch (err) {
-        if (err) {
-            await browser.close();
-
-            return {
-                success: false,
-                error: {
-                    code: 706,
-                    type: 'Puppeteer error.',
-                    moment: 'Expecting user to be at the homepage.',
-                    message: err.toString(),
-                },
-            };
+            const pageURL = await page.url();
+    
+            if (
+                pageURL === 'https://mbasic.facebook.com/checkpoint/?next' ||
+                pageURL === 'http://mbasic.facebook.com/checkpoint/?next'
+            ) {
+                await browser.close();
+                return {
+                    success: true,
+                    error: null,
+                };
+            } else {
+                await sleep(5000);
+                await browser.close();
+                return {
+                    success: false,
+                    error: {
+                        code: 705,
+                        type: 'Puppeteer error.',
+                        moment: 'Expecting login sequence to succeed.',
+                        message: 'The login sequence failed to log you in.',
+                    },
+                };
+            }
+        } catch (err) {
+            if (err) {
+                await browser.close();
+    
+                return {
+                    success: false,
+                    error: {
+                        code: 706,
+                        type: 'Puppeteer error.',
+                        moment: 'Expecting user to be at the homepage.',
+                        message: err.toString(),
+                    },
+                };
+            }
         }
     }
+    await browser.close();
+    return {
+        success: true,
+        error: null,
+    };
 };
 
 module.exports = login;

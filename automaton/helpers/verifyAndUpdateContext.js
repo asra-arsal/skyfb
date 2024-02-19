@@ -2,7 +2,6 @@ const { sleep } = require('../../utils/utils');
 
 module.exports = async (post, auth, page, browser) => {
     try {
-        console.log('opening Facebook')
         const deadURL = 'https://m.facebook.com';
 
         await page?.goto(deadURL);

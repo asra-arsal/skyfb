@@ -117,7 +117,7 @@ const getImageFormatFromBase64Url = (image) => {
 };
 
 const saveBase64MediaToFileSystem = (base64Images = null) => {
-    if (base64Images === null || base64Images === []) return null;
+    // if (base64Images === null || base64Images === []) return null;
 
     const prefix = 'image-' + nanoid();
     const outputFolder = path.join(__dirname, '..', 'public', 'media');

@@ -69,10 +69,12 @@ cron.schedule('*/5 * * * *', async () => {
             });
         }
     }
+    console.log('posts1',posts)
+    if(posts.length > 0){
+        const resp = await pubsub(posts, db);
+        if (!resp.success) console.error(resp);
+    }
 
-    const resp = await pubsub(posts, db);
-
-    if (!resp.success) console.error(resp);
 });
 
 // The cronjob for automated posts.
@@ -110,7 +112,6 @@ cron.schedule('*/5 * * * *', async () => {
         const params = ["link", current_day, current_time];
 
         timeslot = await db.get(query, params);
-        console.log('timeslot1: ', timeslot);
     } catch (err) {
         if (err) {
             await db.close();
@@ -150,7 +151,6 @@ cron.schedule('*/5 * * * *', async () => {
             `;
 
             post = await db.get(query);
-            console.log('post: ', post);
         } catch (err) {
             if (err) {
                 console.error({
@@ -189,10 +189,8 @@ cron.schedule('*/5 * * * *', async () => {
         `;
 
         const params = ["media", current_day, current_time];
-        console.log('params: ', params);
 
         timeslot = await db.get(query, params);
-        console.log('timeslot: ', timeslot);
     } catch (err) {
         if (err) {
             await db.close();
@@ -232,7 +230,6 @@ cron.schedule('*/5 * * * *', async () => {
             `;
 
             post = await db.get(query);
-            console.log('post: ', post);
         } catch (err) {
             if (err) {
                 console.error({
