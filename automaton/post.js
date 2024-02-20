@@ -87,14 +87,14 @@ module.exports = async (posts, auth) => {
             if (posts[i].context === "page" || posts[i].context === "all") {
                 console.log('posting to page')
                 try{
-                    // await page.waitForNavigation()
+                    await page.waitForNavigation()
                 }catch(e){
 
                 }
                 url = 'https://mbasic.facebook.com';
                 
                 await page?.goto(url);
-                // await page.waitForNavigation();
+                await page.waitForNavigation();
                 await sleep(5000);
             }
             if (posts[i].context === "group" || posts[i].context === "all") {

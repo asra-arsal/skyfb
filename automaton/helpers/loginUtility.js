@@ -9,13 +9,15 @@ const loginUtility = async (browser, page) => {
         // Function to check if any tag contains the specified text
         const elements = document.querySelectorAll('*'); // Select all elements on the page
         for (let element of elements) {
-            if (element.textContent.includes(searchText)) {
+            if (element.textContent.includes('Log in to another account')) {
+                return true;
+            }else if(element.textContent.includes('Log into another account')) {
                 return true;
             }
         }
         return false;
     }, searchText);
-
+	console.log('tagFound', tagFound)
     if (tagFound) {
         // Check if there is the option to Login to another account 
         try {
@@ -34,6 +36,7 @@ const loginUtility = async (browser, page) => {
                     xpath = '//*[text()="Log in to another account"]';
                     element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 }
+				console.log('element',element)
                 if (element) element.click();
             });
             await sleep(2000)
