@@ -16,15 +16,13 @@
     <!-- THE HEADING -->
     <h3 class="form-heading" data-form-id="0">Create a Post</h3>
     <section class="form-buttons bulk-action-btns" data-form-id="0">
-        <!-- <button class="form-button form-button-bulk" data-form-id="0" onclick="generateNewPostHtml()"> -->
+        <button class="form-button form-button-publish" data-form-id="0" onclick="selectAllGroups()">
+            Select All Groups
+        </button>
         <button class="form-button form-button-bulk" data-form-id="0">
             Generate Bulk Posts from Images
         </button>
         <input type="file" name="bulkfiles" class="hidden" data-form-id="0" multiple />
-        <!-- THE SCHEDULE BUTTON -->
-        <!-- <button class="form-button form-button-schedule" data-form-id="0" onclick="bulkDuplink('scheduled')">
-            Schedule
-        </button> -->
 
         <!-- THE AUTOMATE BUTTON -->
         <button class="form-button form-button-automate" data-form-id="0" onclick="bulkDuplink('automated')">
@@ -36,12 +34,12 @@
         </button> -->
     </section>
     <!-- THE ID -->
-    
+
 
     <section class="form-container ">
         <input type="number" name="id" class="form-input hidden" data-form-id="0" value="0" />
         <section class="form-content">
-            
+
             <select name="description" class="form-select" data-form-id="0">
                 <option value="" disabled selected>Description</option>
                 {% for description in descriptions %}
@@ -174,9 +172,10 @@
     };
     function setRandomDescription() {
         let descriptionBoxes = document.querySelectorAll(`[name="description"]`)
-        for(let i = 0; i < descriptionBoxes.length; i++) {
-            let randomDescription = getRandomElement(descriptionsArray);
-            descriptionBoxes[i].value = randomDescription
+        for (let i = 0; i < descriptionBoxes.length; i++) {
+            // let randomDescription = getRandomElement(descriptionsArray);
+            // descriptionBoxes[i].value = randomDescription
+            descriptionBoxes[i].selectedIndex = i+1
         }
     }
     function checkBulk(e) {
@@ -184,48 +183,48 @@
         let bulk = document.querySelector(`[name="bulk"][data-form-id="${dataFormId}"]`).checked;
         if (bulk) {
             let a = document.querySelectorAll(`[name="groups"][data-form-id="${dataFormId}"]`)
-            for(let i = 0; i< a.length; i++){
+            for (let i = 0; i < a.length; i++) {
                 a[i].checked = true
             }
         } else {
             let a = document.querySelectorAll(`[name="groups"][data-form-id="${dataFormId}"]`)
-            for(let i = 0; i< a.length; i++){
+            for (let i = 0; i < a.length; i++) {
                 a[i].checked = false
             }
         }
     }
-    
+
     function generateNewPostHtml(length = 1) {
-        for(let i = 0; i < length; i++){
+        for (let i = 0; i < length; i++) {
             let sQ = 'data-form-id="' + (noOfPosts - 1) + '"'
             let search = new RegExp(sQ, 'g');
             postForm = postForm.replace(search, 'data-form-id="' + (noOfPosts) + '"');
-            
-            sQ = "duplink('"+(noOfPosts - 1)+"', 'scheduled')"
-            postForm = postForm.replace(sQ, "duplink('"+(noOfPosts)+"', 'scheduled')");
-            
-            sQ = "duplink('"+(noOfPosts - 1)+"', 'automated')"
-            postForm = postForm.replace(sQ, "duplink('"+(noOfPosts)+"', 'automated')");
-            
-            sQ = "duplink('"+(noOfPosts - 1)+"', 'publish')"
-            postForm = postForm.replace(sQ, "duplink('"+(noOfPosts)+"', 'publish')");
-            
-            sQ = "toggleGroupSelector('"+(noOfPosts - 1)+"')"
-            postForm = postForm.replace(sQ, "toggleGroupSelector('"+(noOfPosts)+"')");
-            
+
+            sQ = "duplink('" + (noOfPosts - 1) + "', 'scheduled')"
+            postForm = postForm.replace(sQ, "duplink('" + (noOfPosts) + "', 'scheduled')");
+
+            sQ = "duplink('" + (noOfPosts - 1) + "', 'automated')"
+            postForm = postForm.replace(sQ, "duplink('" + (noOfPosts) + "', 'automated')");
+
+            sQ = "duplink('" + (noOfPosts - 1) + "', 'publish')"
+            postForm = postForm.replace(sQ, "duplink('" + (noOfPosts) + "', 'publish')");
+
+            sQ = "toggleGroupSelector('" + (noOfPosts - 1) + "')"
+            postForm = postForm.replace(sQ, "toggleGroupSelector('" + (noOfPosts) + "')");
+
             sQ = 'listener="true"'
             postForm = postForm.replace(sQ, "");
-            
-    
+
+
             const targetDiv = document.querySelectorAll('.form-container');
-    
+
             if (targetDiv) {
                 // Create a new element with the HTML content you want to append
                 const newContent = document.createElement('div');
                 newContent.innerHTML = '<hr style="margin-bottom: 25px;"/><section class="form-container">' + postForm + '</section>';
-    
+
                 // Append the new element after the target div
-                targetDiv[targetDiv.length-1].parentNode.insertBefore(newContent, targetDiv[targetDiv.length-1].nextSibling);
+                targetDiv[targetDiv.length - 1].parentNode.insertBefore(newContent, targetDiv[targetDiv.length - 1].nextSibling);
             } else {
                 console.error('The target div with class was not found.');
             }
@@ -236,14 +235,19 @@
         setRandomDescription()
     }
     const bulkDuplink = async (type) => {
-        for(i = 0; i < noOfPosts; i++){
-            await duplink(i,type)
+        for (i = 0; i < noOfPosts; i++) {
+            await duplink(i, type)
         }
     }
-    
+
     document.querySelector('[name="bulk"]').addEventListener('change', checkBulk);
     setRandomDescription()
-
+    const selectAllGroups = () => {
+        let boxes = document.querySelectorAll('[name="groups"]')
+        boxes.forEach((box) => {
+            box.checked = true
+        })
+    }
 </script>
 
 {% endblock %}
