@@ -87,7 +87,7 @@ module.exports = async (posts, auth) => {
             if (posts[i].context === "page" || posts[i].context === "all") {
                 console.log('posting to page')
                 try{
-                    await page.waitForNavigation()
+                    // await page.waitForNavigation()
                 }catch(e){
 
                 }
@@ -102,7 +102,7 @@ module.exports = async (posts, auth) => {
                 // Switch to the correct context.
                 // url = auth?.context?.group;
                 try{
-                    await page.waitForNavigation()
+                    // await page.waitForNavigation()
                 }catch(e){
     
                 }
