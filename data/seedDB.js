@@ -12,6 +12,7 @@ const seedDB = async () => {
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 type TEXT NOT NULL,
                 message TEXT,
+                comment TEXT,
                 link TEXT,
                 link_description TEXT,
                 media TEXT,

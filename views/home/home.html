@@ -49,20 +49,11 @@
             <!-- THE MESSAGE -->
             <textarea name="message" class="form-textarea" data-form-id="0"
                 placeholder="What's on your mind?"></textarea>
-            <!-- THE MESSAGE / DESCRIPTION SWITCHER
-            <label>
-                <input type="checkbox" name="random_description" value="1" classs="checkbox" style="width:auto"
-                    data-form-id="0">
-                Use random description
-            </label> -->
+            <!-- THE COMMENT -->
+            <input type="text" name="comment" class="form-input" data-form-id="0" placeholder="Write a comment for the post"/>
             <!-- THE LINK -->
             <input type="url" name="link" class="form-input" data-form-id="0"
                 placeholder="http(s)://(www.)example.org" />
-
-            <!-- THE LINK DESCRIPTION-->
-            <!-- <input type="text" name="link_description" class="form-input" data-form-id="0"
-                placeholder="What's the link about" /> -->
-
             <!-- THE GROUPS -->
             {% if groups.length > 0 %}
             <button id="group-toggle" data-form-id="0" onclick="toggleGroupSelector('0')">
@@ -165,17 +156,19 @@
     const stringWithHtmlEntities = '{{ descriptions | dump }}';
     const jsonString = stringWithHtmlEntities.replace(/&quot;/g, '"');
     const descriptionsArray = JSON.parse(jsonString).map(item => item.description);
-
     const getRandomElement = (array) => {
         const randomIndex = Math.floor(Math.random() * array.length);
         return array[randomIndex];
     };
     function setRandomDescription() {
+        let descriptionCounter = 1
         let descriptionBoxes = document.querySelectorAll(`[name="description"]`)
         for (let i = 0; i < descriptionBoxes.length; i++) {
             // let randomDescription = getRandomElement(descriptionsArray);
             // descriptionBoxes[i].value = randomDescription
-            descriptionBoxes[i].selectedIndex = i+1
+            descriptionCounter  = descriptionCounter <= descriptionsArray.length ? descriptionCounter : 1
+            descriptionBoxes[i].selectedIndex = descriptionCounter
+            descriptionCounter += 1 
         }
     }
     function checkBulk(e) {

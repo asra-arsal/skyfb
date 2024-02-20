@@ -21,6 +21,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     // Get user submission.
     const type = req?.body?.type ? req?.body?.type : null;
     const message = req?.body?.message ? req?.body?.message : null;
+    const comment = req?.body?.comment ? req?.body?.comment : null;
     const link = req?.body?.link ? req?.body?.link : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     let groups = req?.body?.groups && req?.body?.groups?.length > 0 ? req?.body?.groups : null;
@@ -192,6 +193,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
     const post = {
         type,
         message,
+        comment,
         link,
         media: JSON.stringify(images),
         groups: JSON.stringify(groups),
@@ -211,6 +213,7 @@ CREATE.post('/', loggedIn, async (req, res) => {
             (
                 type,
                 message,
+                comment,
                 link,
                 media,
                 groups,
@@ -221,12 +224,13 @@ CREATE.post('/', loggedIn, async (req, res) => {
                 priority,
                 status,
                 bulk
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const params = [
             post.type,
             post.message,
+            post.comment,
             post.link,
             post.media,
             post.groups,

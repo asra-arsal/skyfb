@@ -17,6 +17,7 @@ publish.post('/', loggedIn, async (req, res) => {
 
     const id = req?.body?.id ? req?.body?.id : null;
     const message = req?.body?.message ? req?.body?.message : null;
+    const comment = req?.body?.comment ? req?.body?.comment : null;
     const link = req?.body?.link ? req?.body?.link : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     const groups = req?.body?.groups && req?.body?.groups?.length > 0 && req?.body?.groups !== '[]' ? req?.body?.groups : null;
@@ -194,6 +195,7 @@ publish.post('/', loggedIn, async (req, res) => {
 
         const post = {
             message,
+            comment,
             link,
             media: JSON.stringify(images),
             groups: JSON.stringify(groups),

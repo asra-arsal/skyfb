@@ -11,6 +11,7 @@ const publish = {
 const { sleep } = require('../utils/utils');
 
 module.exports = async (posts, auth) => {
+    console.log('posts: ', posts);
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
     const username = process.env.PROXY_USER;
     const password = process.env.PROXY_PASSWORD;

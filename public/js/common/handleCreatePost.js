@@ -23,6 +23,7 @@ const createPost = async (index, type, isNew = true) => {
         publisher: getInput('publisher', index).value,
         time: getInput('time', index).value,
         priority: getInput('priority', index).value,
+        comment: getInput('comment', index).value,
         type,
     };
     if (type === 'publish') {

@@ -145,6 +145,70 @@ module.exports = async (post, auth, page, browser) => {
             };
         }
     }
+    // If the post is to page and the comment is added
+    if(post?.context === "page" && post?.comment){
+        console.log('yes there is a comment and is posted to page')
+        try{
+            const commentElements = await page.evaluate(() => {
+                const xpath = '//a[text()="Comment"]';
+                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                if(element){
+                    element.click()
+                }
+				return element;
+            });
+            await page.waitForNavigation();
+            console.log('commentElements: ', commentElements)
+        }catch(err){
+            if (err) {
+                //  await browser.close();();
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 709,
+                        type: 'Puppeteer error.',
+                        moment: 'Commenting on page.',
+                        error: err.toString(),
+                    },
+                };
+            }
+        }
+         // Switch to the content writing field.
+         try {
+            let comment = post?.comment
+            await page.evaluate((textcontent) => {
+                const xpath = 'input[name="comment_text"]';
+                document.querySelector(xpath).value = textcontent;
+            }, comment);
+            await page.keyboard.press('Escape');
+            await sleep(3000);
+            await page.evaluate(() => {
+                const xpath = '//input[@value="Comment"][@type="submit"]';
+                const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                element.click();
+            });
+            await page.waitForNavigation();
+            await sleep(2000);
+    
+
+        } catch (err) {
+            if (err) {
+                //  await browser.close();();
+
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 710,
+                        type: 'Puppeteer error.',
+                        moment: 'Writing a comment in the field and submitting it.',
+                        error: err.toString(),
+                    },
+                };
+            }
+        }
+    }
     const totalSleepTime = 5000;
 
     await sleep(totalSleepTime);

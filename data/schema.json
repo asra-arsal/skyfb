@@ -11,6 +11,7 @@
             "id",
             "type",
             "message",
+            "comment",
             "link",
             "link_description",
             "media",
