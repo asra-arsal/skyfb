@@ -94,7 +94,6 @@ module.exports = async (posts, auth) => {
                 url = 'https://mbasic.facebook.com';
                 
                 await page?.goto(url);
-                await page.waitForNavigation();
                 await sleep(5000);
             }
             if (posts[i].context === "group" || posts[i].context === "all") {
