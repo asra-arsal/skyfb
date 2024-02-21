@@ -4,6 +4,7 @@ const { execSync } = require('node:child_process');
 const { sleep } = require('./utils/utils');
 
 const db_migrate = require('./data/migrate');
+const updateDB = require('./data/updateDB');
 
 (async () => {
     console.log('----------');
@@ -56,7 +57,7 @@ const db_migrate = require('./data/migrate');
     console.log('----------');
     console.log('[3] Starting Database Migration...');
     console.log('----------');
-
+    await updateDB();
     const upgraded_db_schema = JSON.parse(readFileSync('./data/schema.json'));
 
     if (upgraded_db_schema.migrate !== true) {
