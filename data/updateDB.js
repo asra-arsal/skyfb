@@ -15,6 +15,8 @@ const openDB = require('./openDB');
 const seedDB = require('./seedDB');
 
 module.exports = async () => {
+    // Seed the new database.
+    await seedDB();
 
     const db = {
         new: await openDB(),
@@ -28,23 +30,15 @@ module.exports = async () => {
         console.log('[1] Updating Posts Table...');
         await sleep(1500);
         const query = `
-                IF NOT EXISTS (
-                    SELECT *
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = 'posts' AND COLUMN_NAME = 'comment'
-                )
-                BEGIN
-                    -- Add the new column
                     ALTER TABLE posts
                     ADD COLUMN comment TEXT;
-                END;
                 `;
 
-        await db.new.run(query, params);
+        await db.new.run(query);
         console.log('[1] Updating Posts Table Completed!\n\n');
     } catch (err) {
         if (err) {
-            console.error('[1] There was an error when updating the posts: ', err);
+            console.error('[] There was an error when updating the posts: ', err);
         }
     }
     await db.new.close();
