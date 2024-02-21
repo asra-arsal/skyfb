@@ -86,6 +86,30 @@ module.exports = async () => {
         }
     }
 
+    // updating the new posts to the new one
+    try {
+        console.log('[3] Updating Posts Table...');
+        await sleep(1500);
+        const query = `
+                IF NOT EXISTS (
+                    SELECT *
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'posts' AND COLUMN_NAME = 'comment'
+                )
+                BEGIN
+                    -- Add the new column
+                    ALTER TABLE posts
+                    ADD COLUMN comment TEXT;
+                END;
+                `;
+
+        await db.new.run(query, params);
+        console.log('[3] Updating Posts Table Completed!\n\n');
+    } catch (err) {
+        if (err) {
+            console.error('[3] There was an error when updating the posts: ', err);
+        }
+    }
     // Migrate the old posts to the new one
     try {
         console.log('[3] Migrating the posts...');
@@ -136,35 +160,35 @@ module.exports = async () => {
     }
 
 
-        // Migrate the old description to the new one
-        try {
-            console.log('[4] Migrating the description...');
-            await sleep(1500);
-            const descriptions = await db.old.all('SELECT * FROM Description');
-            if (descriptions?.length > 0) {
-                for (let i = 0; i < descriptions.length; i++) {
-                    const description = descriptions[i];
-    
-                    const query = `INSERT INTO description
+    // Migrate the old description to the new one
+    try {
+        console.log('[4] Migrating the description...');
+        await sleep(1500);
+        const descriptions = await db.old.all('SELECT * FROM Description');
+        if (descriptions?.length > 0) {
+            for (let i = 0; i < descriptions.length; i++) {
+                const description = descriptions[i];
+
+                const query = `INSERT INTO description
                         (
                             description
                         ) VALUES (?);
                     `;
-                    const params = [description.description];
-    
-                    await db.new.run(query, params);
-                }
-            }
-            console.log('[4] Description Migration Completed!\n\n');
-        } catch (err) {
-            if (err) {
-                console.error('[4] There was an error when exporting the description: ', err);
+                const params = [description.description];
+
+                await db.new.run(query, params);
             }
         }
+        console.log('[4] Description Migration Completed!\n\n');
+    } catch (err) {
+        if (err) {
+            console.error('[4] There was an error when exporting the description: ', err);
+        }
+    }
+
 
     await db.new.close();
-    await db.old.close();
 
-    console.log('Database migration finished successfully!');
+    console.log('Database updation finished successfully!');
     console.log('---------------');
 };

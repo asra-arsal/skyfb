@@ -6,6 +6,7 @@
 <!-- THE STYLES BLOCK -->
 {% block styles %}
 <link rel="stylesheet" href="/css/home/home.css" />
+<link rel="stylesheet" href="/css/settings/settings.css" />
 {% endblock %}
 
 <!-- THE CONTENT BLOCK -->
@@ -16,6 +17,9 @@
     <!-- THE HEADING -->
     <h3 class="form-heading" data-form-id="0">Create a Post</h3>
     <section class="form-buttons bulk-action-btns" data-form-id="0">
+        <button class="form-button form-button-publish" data-form-id="0" onclick="openModal('modal-create')">
+            Add Comments to All
+        </button>
         <button class="form-button form-button-publish" data-form-id="0" onclick="selectAllGroups()">
             Select All Groups
         </button>
@@ -50,7 +54,8 @@
             <textarea name="message" class="form-textarea" data-form-id="0"
                 placeholder="What's on your mind?"></textarea>
             <!-- THE COMMENT -->
-            <input type="text" name="comment" class="form-input" data-form-id="0" placeholder="Write a comment for the post"/>
+            <input type="text" name="comment" class="form-input" data-form-id="0"
+                placeholder="Write a comment for the post" />
             <!-- THE LINK -->
             <input type="url" name="link" class="form-input" data-form-id="0"
                 placeholder="http(s)://(www.)example.org" />
@@ -141,6 +146,20 @@
 
     </section>
 </form>
+
+<div id="modal-overlay" class="hidden"></div>
+<div id="modal-create" class="modal hidden">
+    <h3 id="modal-create-heading" class="modal-heading">Add Comments</h3>
+    <input type="text" name="bulk_comments" id="modal-create-comment" class="modal-input"
+        placeholder="Love it!! That's all I need!!" />
+    <section id="modal-create-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="closeModal('modal-create')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-primary" onclick="addComments('modal-create')">Add</button>
+    </section>
+</div>
 <!-- END FORM -->
 {% endblock %}
 
@@ -166,9 +185,9 @@
         for (let i = 0; i < descriptionBoxes.length; i++) {
             // let randomDescription = getRandomElement(descriptionsArray);
             // descriptionBoxes[i].value = randomDescription
-            descriptionCounter  = descriptionCounter <= descriptionsArray.length ? descriptionCounter : 1
+            descriptionCounter = descriptionCounter <= descriptionsArray.length ? descriptionCounter : 1
             descriptionBoxes[i].selectedIndex = descriptionCounter
-            descriptionCounter += 1 
+            descriptionCounter += 1
         }
     }
     function checkBulk(e) {
@@ -241,6 +260,31 @@
             box.checked = true
         })
     }
+
+    const openModal = (id) => {
+        const modal = document.getElementById(id);
+        const overlay = document.getElementById('modal-overlay');
+
+        modal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    };
+    const closeModal = (id) => {
+        const modal = document.getElementById(id);
+        const overlay = document.getElementById('modal-overlay');
+
+        modal.classList.add('hidden');
+        overlay.classList.add('hidden');
+    };
+    const addComments = (id) =>{
+        let comment = document.querySelector(`[name="bulk_comments"]`).value
+
+        let comments = document.querySelectorAll(`[name="comment"]`)
+        for (let i = 0; i < comments.length; i++) {
+            comments[i].value = comment
+        }
+        closeModal(id)
+    }
+
 </script>
 
 {% endblock %}
