@@ -46,7 +46,7 @@ const login = async (username, password) => {
             await sleep(5000);
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
 
                 return {
                     success: false,
@@ -73,7 +73,7 @@ const login = async (username, password) => {
 
     } catch (err) {
         if (err) {
-            //    await browser.close();
+               await browser.close();
 
             return {
                 success: false,
@@ -102,7 +102,7 @@ const login = async (username, password) => {
 
         } catch (err) {
             if (err) {
-                //      await browser.close();
+                     await browser.close();
 
                 return {
                     success: false,
@@ -135,7 +135,7 @@ const login = async (username, password) => {
             await sleep(5000)
         } catch (err) {
             if (err) {
-                // await browser?.close();
+                await browser?.close();
                 return {
                     success: false,
                     data: null,
@@ -157,7 +157,7 @@ const login = async (username, password) => {
             await sleep(2000)
         } catch (err) {
             if (err) {
-                //   await browser.close();
+                  await browser.close();
 
                 return {
                     success: false,
@@ -180,14 +180,14 @@ const login = async (username, password) => {
                 pageURL === 'https://mbasic.facebook.com/checkpoint/?next' ||
                 pageURL === 'http://mbasic.facebook.com/checkpoint/?next'
             ) {
-                //  await browser.close();
+                 await browser.close();
                 return {
                     success: true,
                     error: null,
                 };
             } else {
                 await sleep(5000);
-                //  await browser.close();
+                 await browser.close();
                 return {
                     success: false,
                     error: {
@@ -200,7 +200,7 @@ const login = async (username, password) => {
             }
         } catch (err) {
             if (err) {
-                // await browser.close();
+                await browser.close();
 
                 return {
                     success: false,
@@ -214,7 +214,7 @@ const login = async (username, password) => {
             }
         }
     }
-    //    await browser.close();
+       await browser.close();
     return {
         success: true,
         error: null,

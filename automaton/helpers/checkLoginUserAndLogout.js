@@ -21,7 +21,7 @@ const checkLoginUserAndLogout = async (browser, page) => {
     let loggedInUser = await page.evaluate(() => {
         const xpath = '//*[@id="mbasic_logout_button"]';
         const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        return element ? element.textContent.trim() : null;
+        return element ? element.textContent.trim() : '';
     });
     if(haveCommonSubstrings(loggedInUser, process.env.PROFILE_NAME)){
         return true
@@ -29,7 +29,7 @@ const checkLoginUserAndLogout = async (browser, page) => {
         await page.evaluate(() => {
             const xpath = '//*[@id="mbasic_logout_button"]';
             const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            element.click();
+            if(element) element.click();
         });
         await helper.checkAndDissmissAutomatedBehaviour(browser, page)
         return false
