@@ -4,6 +4,7 @@ const publish = {
     verifyAndUpdateContext: require('./helpers/verifyAndUpdateContext'),
     publishPostHelper: require('./helpers/publishPostHelper'),
     loginUtility: require('./helpers/loginUtility'),
+    checkAndDissmissAutomatedBehaviour: require('./helpers/checkAndDissmissAutomatedBehaviour'),
     toPage: require('./postToPage'),
     toGroup: require('./postToGroup'),
     // meta: require('../automaton/post.create'),
@@ -19,7 +20,6 @@ module.exports = async (posts, auth) => {
     if (process.env.PROXY_ENABLED === "true") {
         args.push(`--proxy-server=${proxy}`)
     }
-    let browser = null
     try {
 
         const browser = await puppeteer.launch({
@@ -96,6 +96,7 @@ module.exports = async (posts, auth) => {
                 
                 await page?.goto(url);
                 await sleep(5000);
+                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             if (posts[i].context === "group" || posts[i].context === "all") {
                 console.log('posting to group')
@@ -113,6 +114,7 @@ module.exports = async (posts, auth) => {
                 await sleep(2000);
                 await page?.reload();
                 await sleep(3000);
+                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             res = await publish.publishPostHelper(posts[i], auth, page, browser)
         }

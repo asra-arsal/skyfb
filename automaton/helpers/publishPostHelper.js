@@ -1,6 +1,7 @@
 const path = require('path');
-const puppeteer = require('puppeteer');
-
+const helper = {
+    checkAndDissmissAutomatedBehaviour: require('./checkAndDissmissAutomatedBehaviour'),
+};
 const { sleep } = require('../../utils/utils');
 
 module.exports = async (post, auth, page, browser) => {
@@ -15,7 +16,7 @@ module.exports = async (post, auth, page, browser) => {
 				return element;
             });
             await page.waitForNavigation();
-
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             await sleep(2000)
         } catch (err) {
             if (err) {
@@ -70,6 +71,7 @@ module.exports = async (post, auth, page, browser) => {
                     s.click()
                 });
                 await page.waitForNavigation();
+                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
 
                 await sleep(2000);
             } catch (err) {
@@ -99,7 +101,9 @@ module.exports = async (post, auth, page, browser) => {
 
                 await postIt.evaluate((s) => s.click());
                 await page.waitForNavigation();
-                await sleep(2000)
+                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
+                await sleep(2000)    
+
             } catch (err) {
                 if (err) {
                     //  await browser.close();();
@@ -127,6 +131,7 @@ module.exports = async (post, auth, page, browser) => {
             element.click();
         });
         await page.waitForNavigation();
+        await helper.checkAndDissmissAutomatedBehaviour(browser, page)
         await sleep(2000);
 
     } catch (err) {
@@ -158,6 +163,7 @@ module.exports = async (post, auth, page, browser) => {
 				return element;
             });
             await page.waitForNavigation();
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             console.log('commentElements: ', commentElements)
         }catch(err){
             if (err) {
@@ -189,6 +195,7 @@ module.exports = async (post, auth, page, browser) => {
                 element.click();
             });
             await page.waitForNavigation();
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             await sleep(2000);
     
 

@@ -2,6 +2,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const helper = {
     checkLoginUserAndLogout: require('./helpers/checkLoginUserAndLogout'),
+    checkAndDissmissAutomatedBehaviour: require('./helpers/checkAndDissmissAutomatedBehaviour')
 };
 // const { sleep } = require('../utils/utils');
 const { sleep } = require('../utils/utils');
@@ -11,7 +12,7 @@ const login = async (username, password) => {
     const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
     const username_ = process.env.PROXY_USER;
     const password_ = process.env.PROXY_PASSWORD;
-    
+
     let args = ['--start-maximized', '--disable-notifications', '--no-sandbox']
     if (["true", true].includes(process.env.PROXY_ENABLED)) {
         args.push(`--proxy-server=${proxy}`)
@@ -67,11 +68,12 @@ const login = async (username, password) => {
 
         await page.goto(loginURL);
         await page.waitForNetworkIdle();
+        await helper.checkAndDissmissAutomatedBehaviour(browser, page)
         await sleep(2000)
 
     } catch (err) {
         if (err) {
-            await browser.close();
+            //    await browser.close();
 
             return {
                 success: false,
@@ -84,9 +86,8 @@ const login = async (username, password) => {
             };
         }
     }
-    const isCorrectLoggedIn  = await helper.checkLoginUserAndLogout(browser, page)
-
-    if(!isCorrectLoggedIn) // If coorect user is already logged in
+    const isCorrectLoggedIn = await helper.checkLoginUserAndLogout(browser, page)
+    if (!isCorrectLoggedIn) // If coorect user is already logged in
     {
 
         // Check if there is the option to Login to another account 
@@ -94,14 +95,15 @@ const login = async (username, password) => {
             await page.evaluate(() => {
                 const xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log in to another account"]';
                 const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                if(element) element.click();
+                if (element) element.click();
             });
             await sleep(2000)
-    
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
+
         } catch (err) {
             if (err) {
-                await browser.close();
-    
+                //      await browser.close();
+
                 return {
                     success: false,
                     error: {
@@ -113,22 +115,23 @@ const login = async (username, password) => {
                 };
             }
         }
-    
+
         try {
             const emailField = await page.$('input[name="email"]');
             await emailField.type(process.env.FB_USERNAME);
-    
+
             const passwordField = await page.$('input[name="pass"]');
             await passwordField.type(process.env.FB_PASSWORD);
-    
+
             await page.keyboard.press('Escape');
-    
+
             await page.evaluate(() => {
                 const loginBtnXpath = '//input[@type="submit"]';
                 const element = document.evaluate(loginBtnXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 element.click();
             });
             await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             await sleep(5000)
         } catch (err) {
             if (err) {
@@ -150,11 +153,12 @@ const login = async (username, password) => {
             const checkpointURL = 'https://mbasic.facebook.com/checkpoint/?next';
             await page.goto(checkpointURL);
             await page.waitForNetworkIdle();
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
             await sleep(2000)
         } catch (err) {
             if (err) {
-                await browser.close();
-    
+                //   await browser.close();
+
                 return {
                     success: false,
                     error: {
@@ -166,24 +170,24 @@ const login = async (username, password) => {
                 };
             }
         }
-    
+
         // Verify if the user has reached the homepage
         try {
             await sleep(5000);
             const pageURL = await page.url();
-    
+
             if (
                 pageURL === 'https://mbasic.facebook.com/checkpoint/?next' ||
                 pageURL === 'http://mbasic.facebook.com/checkpoint/?next'
             ) {
-                await browser.close();
+                //  await browser.close();
                 return {
                     success: true,
                     error: null,
                 };
             } else {
                 await sleep(5000);
-                await browser.close();
+                //  await browser.close();
                 return {
                     success: false,
                     error: {
@@ -196,8 +200,8 @@ const login = async (username, password) => {
             }
         } catch (err) {
             if (err) {
-                await browser.close();
-    
+                // await browser.close();
+
                 return {
                     success: false,
                     error: {
@@ -210,7 +214,7 @@ const login = async (username, password) => {
             }
         }
     }
-    await browser.close();
+    //    await browser.close();
     return {
         success: true,
         error: null,

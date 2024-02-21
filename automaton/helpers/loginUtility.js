@@ -1,9 +1,12 @@
 const { sleep } = require('../../utils/utils');
-
+const helper = {
+    checkAndDissmissAutomatedBehaviour: require('./checkAndDissmissAutomatedBehaviour'),
+};
 const loginUtility = async (browser, page) => {
     let url = 'https://mbasic.facebook.com';
     await page?.goto(url);
     sleep(2000)
+    await helper.checkAndDissmissAutomatedBehaviour(browser, page)
     const searchText = "Choose your account"
     const tagFound = await page.evaluate((searchText) => {
         // Function to check if any tag contains the specified text
@@ -11,35 +14,36 @@ const loginUtility = async (browser, page) => {
         for (let element of elements) {
             if (element.textContent.includes('Log in to another account')) {
                 return true;
-            }else if(element.textContent.includes('Log into another account')) {
+            } else if (element.textContent.includes('Log into another account')) {
                 return true;
             }
         }
         return false;
     }, searchText);
-	console.log('tagFound', tagFound)
+    console.log('tagFound', tagFound)
     if (tagFound) {
         // Check if there is the option to Login to another account 
         try {
             await page.evaluate(() => {
                 let xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log in to another account"]';
                 let element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                if(!element){
+                if (!element) {
                     xpath = '//*[@id="root"]/table/tbody/tr/td/div/div[2]/div[2]/table/tbody/tr/td[2]/div/a/div[text()="Log into another account"]';
                     element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 }
-                if(!element){
+                if (!element) {
                     xpath = '//*[text()="Log into another account"]';
                     element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 }
-                if(!element){
+                if (!element) {
                     xpath = '//*[text()="Log in to another account"]';
                     element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 }
-				console.log('element',element)
+                console.log('element', element)
                 if (element) element.click();
             });
             await sleep(2000)
+            await helper.checkAndDissmissAutomatedBehaviour(browser, page)
 
         } catch (err) {
             if (err) {
@@ -58,7 +62,7 @@ const loginUtility = async (browser, page) => {
         }
     } else {
         const checkEmailField = await page.$('input[name="email"]');
-        if(!checkEmailField){
+        if (!checkEmailField) {
             return {
                 success: true,
                 error: null,
@@ -81,6 +85,7 @@ const loginUtility = async (browser, page) => {
         });
         await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
         await sleep(5000)
+        await helper.checkAndDissmissAutomatedBehaviour(browser, page)
     } catch (err) {
         if (err) {
             // await browser?.close();
@@ -97,7 +102,7 @@ const loginUtility = async (browser, page) => {
         }
     }
 
-   
+
     return {
         success: true,
         error: null,

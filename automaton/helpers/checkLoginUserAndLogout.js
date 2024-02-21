@@ -1,4 +1,7 @@
 const { sleep } = require('../../utils/utils');
+const helper = {
+    checkAndDissmissAutomatedBehaviour: require('./checkAndDissmissAutomatedBehaviour'),
+};
 function haveCommonSubstrings(str1, str2) {
     // Iterate through each substring of str1
     for (let i = 0; i < str1.length; i++) {
@@ -28,6 +31,7 @@ const checkLoginUserAndLogout = async (browser, page) => {
             const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             element.click();
         });
+        await helper.checkAndDissmissAutomatedBehaviour(browser, page)
         return false
     }
         
