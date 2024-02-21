@@ -57,6 +57,8 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
                 automated[i].groups_string = JSON.stringify(post_groups);
             }
         }
+        console.log('automated: ', automated);
+
     } catch (err) {
         if (err) {
             await db.close();
@@ -71,7 +73,7 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
         const query = "SELECT * FROM posts WHERE type = 'scheduled' ORDER BY priority;";
 
         scheduled = await db.all(query);
-
+        
         for (let i = 0; i < scheduled.length; i++) {
             if (scheduled[i].groups !== 'null') {
                 let post_groups = JSON.parse(scheduled[i].groups);
@@ -87,6 +89,7 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
                 scheduled[i].groups_string = JSON.stringify(post_groups);
             }
         }
+        console.log('scheduled: ', scheduled);
     } catch (err) {
         if (err) {
             await db.close();

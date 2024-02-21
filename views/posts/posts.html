@@ -60,9 +60,10 @@
                         </select>
                         <!-- THE MESSAGE -->
                         <textarea name="message" class="form-textarea" data-form-id="{{ post.id }}"
-                            placeholder="What's on your mind?">
-{{ post.message }}</textarea>
-
+                            placeholder="What's on your mind?"> {{ post.message }}</textarea>
+                        <!-- THE COMMENT -->
+                        <input type="text" name="comment" class="form-input" data-form-id="{{ post.id }}"
+                        placeholder="Write a comment for the post" value="{{ post.comment }}"/>
                         <!-- THE LINK -->
                         <input type="url" name="link" class="form-input" data-form-id="{{ post.id }}"
                             placeholder="http(s)://(www.)example.org" value="{{ post.link }}" />
@@ -213,7 +214,9 @@
                         <!-- THE MESSAGE -->
                         <textarea name="message" class="form-textarea" data-form-id="{{ post.id }}"
                             placeholder="What's on your mind?"> {{ post.message }}</textarea>
-
+                        <!-- THE COMMENT -->
+                        <input type="text" name="comment" class="form-input" data-form-id="0"
+                        placeholder="Write a comment for the post" value="{{ post.comment }}" />
                         <!-- THE LINK -->
                         <input type="url" name="link" class="form-input" data-form-id="{{ post.id }}"
                             placeholder="http(s)://(www.)example.org" value="{{ post.link }}" />

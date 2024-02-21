@@ -22,6 +22,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
     const id = req?.body?.id ? parseInt(req?.body?.id) : null;
     const type = req?.body?.type ? req?.body?.type : null;
     const message = req?.body?.message ? req?.body?.message : null;
+    const comment = req?.body?.comment ? req?.body?.comment : null;
     const link = req?.body?.link ? req?.body?.link : null;
     let media = req?.body?.media && req?.body?.media !== '[]' ? req?.body?.media : null;
     const IMAGES = req?.body?.images ? req?.body?.images : null;
@@ -217,6 +218,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
     const post = {
         type,
         message,
+        comment,
         link,
         media: JSON.stringify(images),
         groups: JSON.stringify(groups),
@@ -275,6 +277,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
             SET
                 type = ?,
                 message = ?,
+                comment = ?,
                 link = ?,
                 media = ?,
                 groups = ?,
@@ -291,6 +294,7 @@ UPDATE.put('/', loggedIn, async (req, res) => {
         const params = [
             post.type,
             post.message,
+            post.comment,
             post.link,
             post.media,
             post.groups,
