@@ -23,7 +23,7 @@ module.exports = async (posts, auth) => {
     try {
 
         const browser = await puppeteer.launch({
-            headless:'new',
+            headless:false,
             // headless: 'new',
             defaultViewport: null,
             args: args,
@@ -96,7 +96,7 @@ module.exports = async (posts, auth) => {
                 
                 await page?.goto(url);
                 await sleep(5000);
-                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
+                await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             if (posts[i].context === "group" || posts[i].context === "all") {
                 console.log('posting to group')
@@ -114,7 +114,7 @@ module.exports = async (posts, auth) => {
                 await sleep(2000);
                 await page?.reload();
                 await sleep(3000);
-                await helper.checkAndDissmissAutomatedBehaviour(browser, page)
+                await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             res = await publish.publishPostHelper(posts[i], auth, page, browser)
         }
