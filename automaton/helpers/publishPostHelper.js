@@ -152,7 +152,6 @@ module.exports = async (post, auth, page, browser) => {
     }
     // If the post is to page and the comment is added
     if(post?.context === "page" && post?.comment){
-        console.log('yes there is a comment and is posted to page')
         try{
             const commentElements = await page.evaluate(() => {
                 const xpath = '//a[text()="Comment"]';
@@ -164,7 +163,6 @@ module.exports = async (post, auth, page, browser) => {
             });
             await page.waitForNavigation();
             await helper.checkAndDissmissAutomatedBehaviour(browser, page)
-            console.log('commentElements: ', commentElements)
         }catch(err){
             if (err) {
                 //  await browser.close();();

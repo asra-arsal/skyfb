@@ -20,7 +20,6 @@ const loginUtility = async (browser, page) => {
         }
         return false;
     }, searchText);
-    console.log('tagFound', tagFound)
     if (tagFound) {
         // Check if there is the option to Login to another account 
         try {
@@ -39,7 +38,6 @@ const loginUtility = async (browser, page) => {
                     xpath = '//*[text()="Log in to another account"]';
                     element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                 }
-                console.log('element', element)
                 if (element) element.click();
             });
             await sleep(2000)

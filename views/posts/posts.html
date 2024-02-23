@@ -32,9 +32,12 @@
         <!-- THE TAB TITLE -->
         <h3 class="tab-title">Automated Posts</h3>
 
-        <!-- THE RE-ORDER BUTTON -->
-        <button class="re-order" data-tab="automated" onclick="handleReOrderSwitch('automated')">Re-Order Posts</button>
-
+        <section class="post-bulk-form-buttons" data-form-id="{{ post.id }}">
+            <!-- THE RE-ORDER BUTTON -->
+            <button class="re-order" data-tab="automated" onclick="handleReOrderSwitch('automated')">Re-Order Posts</button>
+            <!-- THE BULK DLEETE BUTTON -->
+            <button class="bulk-delete" onclick="deleteBulkPost('automated')">Delete All <i class="fa-regular fa-trash-can"></i></button>
+        </section>
         <!-- THE POSTS -->
         <section class="posts" data-tab="automated">
             {% for post in posts.automated %}
@@ -185,8 +188,13 @@
         <!-- THE TAB TITLE -->
         <h3 class="tab-title">Scheduled Posts</h3>
 
-        <!-- THE RE-ORDER BUTTON -->
-        <button class="re-order" data-tab="scheduled" onclick="handleReOrderSwitch('scheduled')">Re-Order Posts</button>
+       
+        <section class="post-bulk-form-buttons" data-form-id="{{ post.id }}">
+            <!-- THE RE-ORDER BUTTON -->
+            <button class="re-order" data-tab="automated" onclick="handleReOrderSwitch('scheduled')">Re-Order Posts</button>
+            <!-- THE BULK DLEETE BUTTON -->
+            <button class="bulk-delete" onclick="deleteBulkPost('scheduled')">Delete All <i class="fa-regular fa-trash-can"></i></button>
+        </section>
 
         <!-- THE POSTS -->
         <section class="posts" data-tab="automated">

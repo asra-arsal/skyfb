@@ -9,16 +9,13 @@ const checkAndDissmissAutomatedBehaviour = async (browser, page) => {
             for (let element of elements) {
                 for (let tag of tags) {
                     if (element.textContent.includes(tag)) {
-						console.log('Yes')
                         return true;
                     }
                 }
             }
-			console.log('No')
             return false;
         }, tags);
 
-        console.log('tagFound', tagFound)
 		if(tagFound){
 			 await page.evaluate(() => {
 				const xpath = '//input[@type="submit"]';

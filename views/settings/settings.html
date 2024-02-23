@@ -26,11 +26,16 @@
         <section class="settings-tab tab" data-tab="manage-groups">
             <!-- THE TAB HEADING -->
             <h2 class="settings-tab-heading">Manage Groups</h2>
-
-            <!-- THE CREATE GROUP -->
-            <button class="group-action-create" onclick="openModal('modal-create')">
-                <i class="fa-solid fa-plus"></i> Create Group
-            </button>
+            <section class="post-bulk-form-buttons" data-form-id="{{ post.id }}">
+                <!-- THE CREATE GROUP -->
+                <button class="group-action-create" onclick="openModal('modal-create')">
+                    <i class="fa-solid fa-plus"></i> Create Group
+                </button>
+                <!-- THE BULK IMPORT BUTTON -->
+                <button class="group-action-import" id="groupActionImport"><i class="fa-solid fa-list"></i> Import
+                </button>
+                <input type="file" id="importFile" name="import-file" style="display:none" />
+            </section>
 
             <!-- THE GROUPS LIST -->
             <table id="groups-list">
@@ -89,4 +94,48 @@
 <script src="/js/settings/deleteGroup.js"></script>
 <script src="/js/settings/handleEditGroup.js"></script>
 <script src="/js/settings/handleDeleteGroup.js"></script>
+
+
+
+<script>
+    document.getElementById('groupActionImport').addEventListener('click', function (event) {
+        document.getElementById('importFile').click()
+    });
+    document.getElementById('importFile').addEventListener('change', function (event) {
+        // const fileInput = document.getElementById('fileInput');
+        const fileList = event.target.files;
+
+        if (fileList.length > 0) {
+            const file = fileList[0];
+            console.log('File selected:', file.name);
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                let fileText = event.target.result;
+                let lines = fileText.split('\r\n');
+                let groups = []
+                let isAllGood = true
+                for(let i=0; i < lines.length; i++){
+                    let splited = lines[i].split(',')
+                    if(!splited[1]){
+                        isAllGood = false
+                    }
+                    groups.push({
+                        name:splited[0].trim(),
+                        link:splited[1].trim()
+                    })
+                }
+                if(isAllGood){
+                    importGroups(groups);
+                }else{
+                    alert("Kindly check your import file")
+                }
+            };
+
+            reader.readAsText(file);
+        } else {
+            console.error('No file selected');
+        }
+    });
+</script>
 {% endblock %}

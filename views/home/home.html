@@ -238,7 +238,6 @@
                 // Append the new element after the target div
                 targetDiv[targetDiv.length - 1].parentNode.insertBefore(newContent, targetDiv[targetDiv.length - 1].nextSibling);
             } else {
-                console.error('The target div with class was not found.');
             }
             document.querySelector(`[name="bulk"][data-form-id="${noOfPosts}"]`).addEventListener('change', checkBulk);
             noOfPosts = noOfPosts + 1

@@ -1,7 +1,7 @@
 {% extends '../_base.html' %}
 
 <!-- THE TITLE BLOCK -->
-{% block title %} Settings | FB-AUTO {% endblock %}
+{% block title %} Description | FB-AUTO {% endblock %}
 
 <!-- THE STYLES BLOCK -->
 {% block styles %}
@@ -10,35 +10,30 @@
 
 <!-- THE CONTENT BLOCK -->
 {% block content %}
-<!-- THE SETTINGS -->
-<div id="settings">
-    <!-- THE SETTINGS SWITCHER -->
-    <section id="settings-switcher">
-        <!-- THE GROUPS SWITCH -->
-        <button class="tab-switch active" data-tab="manage-groups" onclick="handleTabSwitch('manage-groups')">
-            Manage Descriptions
+<!-- THE DESCRIPTION -->
+<div id="description">
+    <!-- THE DESCRIPTION SWITCHER -->
+    <section id="description-switcher">
+        <!-- THE DESCRIPTION SWITCH -->
+        <button class="tab-switch active" data-tab="manage-groups" onclick="handleTabSwitch('manage-description')">
+            Manage Description
         </button>
     </section>
 
-    <!-- THE SETTINGS TABS -->
-    <section id="settings-tabs">
+    <!-- THE DESCRIPTION TABS -->
+    <section id="description-tabs">
         <!-- THE DESCRIPTION TAB -->
         <section class="settings-tab tab" data-tab="manage-groups">
             <!-- THE TAB HEADING -->
-            <h2 class="settings-tab-heading">Manage Descriptions</h2>
+            <h2 class="settings-tab-heading">Manage Description</h2>
 
-            <section class="post-bulk-form-buttons" data-form-id="{{ post.id }}">
-                <!-- THE CREATE DESCRIPTION -->
-                <button class="group-action-create" onclick="openModal('modal-create')">
-                    <i class="fa-solid fa-plus"></i> Create Description
-                </button>
-                <!-- THE BULK IMPORT BUTTON -->
-                <button class="group-action-import" id="groupActionImport"><i class="fa-solid fa-list"></i> Import
-                </button>
-                <input type="file" id="importFile" name="import-file" style="display:none" />
-            </section>
+            <!-- THE CREATE GROUP -->
+            <button class="group-action-create" onclick="openModal('modal-create')">
+                <i class="fa-solid fa-plus"></i> Create Description
+            </button>
+
             <!-- THE DESCRIPTION LIST -->
-            <table id="groups-list">
+            <table id="description-list">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -52,15 +47,18 @@
                         <td class="group-id">
                             <p>{{ loop.index }}</p>
                         </td>
-                        <td class="group-description">
+                        <td class="group-name">
                             <p>{{ description.description }}</p>
+                            <!-- <p>{{description}}</p> -->
                         </td>
                         <td class="group-actions">
-                            <button class="group-action-edit"
+                            <button
+                                class="group-action-edit"
                                 onclick='handleEditDescription("{{ description.id }}", "{{ description.description }}")'>
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button class="group-action-delete"
+                            <button
+                                class="group-action-delete"
                                 onclick='handleDeleteDescription("{{ description.id }}", "{{ description.description }}")'>
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
@@ -77,6 +75,7 @@
 {% include './template/_modals.html' %}
 <!-- END MODALS -->
 {% endblock %}
+
 <!-- THE SCRIPTS BLOCK -->
 {% block scripts %}
 <script src="/js/posts/handleTabSwitch.js"></script>
@@ -90,31 +89,4 @@
 
 
 <script src="/js/settings/createGroup.js"></script>
-
-<script>
-    document.getElementById('groupActionImport').addEventListener('click', function (event) {
-        document.getElementById('importFile').click()
-    });
-    document.getElementById('importFile').addEventListener('change', function (event) {
-        // const fileInput = document.getElementById('fileInput');
-        const fileList = event.target.files;
-
-        if (fileList.length > 0) {
-            const file = fileList[0];
-            console.log('File selected:', file.name);
-
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                let fileText = event.target.result;
-                // const lines = fileText.replace('\r','').split('\n');
-                const lines = fileText.split('\r\n');
-                importDescriptions(lines);
-            };
-
-            reader.readAsText(file);
-        } else {
-            console.error('No file selected');
-        }
-    });
-</script>
 {% endblock %}

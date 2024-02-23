@@ -24,3 +24,22 @@ const createGroup = async (route) => {
 
     window.location.href = '/settings';
 };
+
+
+const importGroups = async (groups) => {
+    const apiEndpoint = api.groups.import;
+    let data = { groups: groups }
+    const resp = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify(data),
+    });
+    const { success, error } = await resp.json();
+
+    if (!success) return handleError('There was an error when publishing the description to the database.', error);
+
+    window.location.href = '/settings';
+};
+

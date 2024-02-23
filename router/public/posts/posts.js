@@ -57,7 +57,6 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
                 automated[i].groups_string = JSON.stringify(post_groups);
             }
         }
-        console.log('automated: ', automated);
 
     } catch (err) {
         if (err) {
@@ -89,7 +88,6 @@ posts.get('/', loggedIn, changePass, async (req, res) => {
                 scheduled[i].groups_string = JSON.stringify(post_groups);
             }
         }
-        console.log('scheduled: ', scheduled);
     } catch (err) {
         if (err) {
             await db.close();

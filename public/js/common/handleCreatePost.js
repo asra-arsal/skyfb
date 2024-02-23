@@ -26,9 +26,9 @@ const createPost = async (index, type, isNew = true) => {
         comment: getInput('comment', index).value,
         type,
     };
-    if (type === 'publish') {
+    // if (type === 'publish') {
         showLoadingAnimation();
-    }
+    // }
 
     const resp = await fetch(apiEndpoint, {
         method: type === 'publish' ? 'POST' : apiType === 'update' ? 'PUT' : 'POST',

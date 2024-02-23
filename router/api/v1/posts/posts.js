@@ -7,6 +7,7 @@ posts.use('/', require('./routes/posts.get'));
 posts.use('/create', require('./routes/posts.create'));
 posts.use('/update', require('./routes/posts.update'));
 posts.use('/delete', require('./routes/posts.delete'));
+posts.use('/delete-all', require('./routes/posts.delete.all'));
 posts.use('/publish', require('./routes/posts.publish'));
 
 posts.use('/re-order', require('./re-order/re-order'));

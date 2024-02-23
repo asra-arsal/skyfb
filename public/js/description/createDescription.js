@@ -22,3 +22,21 @@ const createDescription = async (route) => {
 
     window.location.href = '/description';
 };
+
+
+const importDescriptions = async (descriptions) => {
+    const apiEndpoint = api.description.import;
+    let data = { descriptions: descriptions }
+    const resp = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify(data),
+    });
+    const { success, error } = await resp.json();
+
+    if (!success) return handleError('There was an error when publishing the description to the database.', error);
+
+    window.location.href = '/description';
+};
