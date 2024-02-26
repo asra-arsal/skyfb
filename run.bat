@@ -14,7 +14,7 @@ set "grandParentPath=%parentPath%\.."
 
 for %%A in ("%grandParentPath%") do set "grandParentDir=%%~nxA"
 
-set "cmd=pm2 start main.js -n !grandParentDir!-!prevDir!"
+set "cmd=pm2 start app.js -n !grandParentDir!-!prevDir!"
 
 echo Command: !cmd!
 
