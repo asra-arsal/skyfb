@@ -8,6 +8,7 @@ const openDB = require('../../../../../data/openDB');
 const { loggedIn } = require('../../../../../utils/loggedIn');
 
 DELETE.delete('/all', loggedIn, async (req, res) => {
+    
     // Connect to the database.
     const db = await openDB();
 

@@ -1,5 +1,5 @@
-const deleteDescription = async () => {
-    const apiEndpoint = api.description.delete;
+const deleteDescription = async (all= false) => {
+    const apiEndpoint = `${all ? api.description.deleteAll : api.description.delete}`;
 
     const idInput = document.getElementById('modal-delete-description-id');
 

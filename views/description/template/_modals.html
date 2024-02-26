@@ -44,7 +44,7 @@
 <!-- THE DELETE MODAL -->
 <div id="modal-delete" class="modal hidden">
     <!-- THE MODAL HEADING -->
-    <h3 id="modal-delete-heading" class="modal-heading">Delete Group</h3>
+    <h3 id="modal-delete-heading" class="modal-heading">Delete Description</h3>
 
     <!-- THE ID -->
     <input type="number" name="id" id="modal-delete-description-id" class="modal-input hidden" />
@@ -61,5 +61,20 @@
 
         <!-- THE CONFIRM BUTTON -->
         <button class="modal-button modal-button-danger" onclick="deleteDescription()">Delete</button>
+    </section>
+</div>
+
+<!-- THE DELETE ALL MODAL -->
+<div id="modal-deleteall" class="modal hidden">
+    <!-- THE MODAL HEADING -->
+    <h3 id="modal-delete-heading" class="modal-heading">Delete All Descriptions</h3>
+
+    <!-- THE MODAL BUTTOS -->
+    <section id="modal-delete-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-secondary" onclick="closeModal('modal-deleteall')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="deleteDescription('all')">Delete</button>
     </section>
 </div>

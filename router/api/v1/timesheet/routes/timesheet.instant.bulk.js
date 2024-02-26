@@ -34,11 +34,12 @@ function generateTimeIntervals(startTime, endTime, intervals) {
     const timeIntervals = [];
     const start = new Date(startTime);
     const end = new Date(endTime);
-    const intervalMilliseconds = (end - start) / intervals;
+    const intervalMilliseconds = end - start == 0 ? 86400000 / intervals : (end - start) / intervals;
 
     for (let i = 0; i < intervals; i++) {
         const time = new Date(start.getTime() + i * intervalMilliseconds);
-        timeIntervals.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        // timeIntervals.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        timeIntervals.push(convertTo24HourFormat(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})));
     }
     return timeIntervals;
 }
@@ -100,7 +101,7 @@ INSTANT.post('/', loggedIn, async (req, res) => {
         data: null,
         error: null
     }
-
+    console.log('times', times)
     for (let i = 0; i < times.length; i++) {
         let time = times[i]
         // Verify if the time submitted by the user is correct.
@@ -125,7 +126,7 @@ INSTANT.post('/', loggedIn, async (req, res) => {
     if (!error.success) {
         return res.json(error)
     }
-    
+
     let errors = {
         system: [],
     };

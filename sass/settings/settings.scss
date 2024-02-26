@@ -76,7 +76,32 @@
 
             &:active {
                 box-shadow: none;
-                transform: translate(calc(-50% + 3px), 3px);
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                left: 0;
+                transform: none;
+            }
+        }
+    }
+    .group-action-delete-main {
+        margin-top: 50px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        padding: 5px 25px;
+        background: transparent;
+        border: 3px solid $red;
+        font-weight: bold;
+        color: $red;
+
+        &:hover {
+            box-shadow: 3px 3px $light;
+
+            &:active {
+                box-shadow: none;
             }
         }
 
