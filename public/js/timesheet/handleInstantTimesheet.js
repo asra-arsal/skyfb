@@ -17,6 +17,26 @@
         }
     });
 })();
+(() => {
+    const selectAllDays = document.getElementById('modal-range-days-all');
+
+    selectAllDays.addEventListener('change', (e) => {
+        const days = document.querySelectorAll('.modal-range-checkbox');
+        if (e.currentTarget.checked) {
+            days.forEach((day) => {
+                if (day.id !== 'modal-range-days-all') {
+                    day.checked = true;
+                    day.disabled = true;
+                }
+            });
+        } else {
+            days.forEach((day) => {
+                day.checked = false;
+                day.disabled = false;
+            });
+        }
+    });
+})();
 
 document.addEventListener('DOMContentLoaded', function () {
     // Hide the link section by default
@@ -95,7 +115,7 @@ const createInstantTimeslots = async () => {
 
     const time = document.getElementById('modal-instant-time').value;
 
-    const timesheet = { days: checkedDays, time, type: selectedValue };
+    const timesheet = { days: checkedDays, time, type: selectedValue,  };
     const resp = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
@@ -105,6 +125,46 @@ const createInstantTimeslots = async () => {
     });
     const { success, error } = await resp.json();
 
+    if (!success) return handleError('There was an error when creating the timeslots in the database.', error);
+
+    if (success && error) return handleError('There was an error when creating the timeslots in the database.', error);
+
+    window.location.href = '/timesheet';
+};
+const createInstantBulkTimeslots = async () => {    
+    const apiEndpoint = api.timesheet.instantBulk;
+
+    const allDays = document.getElementById('modal-range-days-all');
+    
+    let checkedDays = [];
+
+    if (allDays.checked) {
+        checkedDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    } else {
+        const daysChecked = document.querySelectorAll('.modal-range-checkbox:checked');
+
+        for (let i = 0; i < daysChecked.length; i++) {
+            const dayChecked = daysChecked[i];
+
+            checkedDays.push(dayChecked.value);
+        }
+    }
+
+    const timeFrom = document.getElementById('modal-range-time-from').value;
+    const timeTo = document.getElementById('modal-range-time-to').value;
+
+    const count = document.getElementById('modal-range-count').value;
+    const timesheet = { days: checkedDays, timeFrom, timeTo, type: selectedValue, count: count };
+    showLoadingAnimation();
+    const resp = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify(timesheet),
+    });
+    const { success, error } = await resp.json();
+    hideLoadingAnimation();
     if (!success) return handleError('There was an error when creating the timeslots in the database.', error);
 
     if (success && error) return handleError('There was an error when creating the timeslots in the database.', error);

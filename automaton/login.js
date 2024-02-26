@@ -1,6 +1,7 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 const helper = {
+    openBrowser: require('./helpers/openBrowser'),
     checkLoginUserAndLogout: require('./helpers/checkLoginUserAndLogout'),
     checkAndDissmissAutomatedBehaviour: require('./helpers/checkAndDissmissAutomatedBehaviour')
 };
@@ -8,60 +9,8 @@ const helper = {
 const { sleep } = require('../utils/utils');
 
 const login = async (username, password) => {
-    // Check if an XPath exists on the page?.
-    const proxy = process.env.PROXY_HOST + ":" + process.env.PROXY_PORT;
-    const username_ = process.env.PROXY_USER;
-    const password_ = process.env.PROXY_PASSWORD;
-
-    let args = ['--start-maximized', '--disable-notifications', '--no-sandbox']
-    if (["true", true].includes(process.env.PROXY_ENABLED)) {
-        args.push(`--proxy-server=${proxy}`)
-    }
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-        args: args,
-        userDataDir: path.join(__dirname, 'userData'),
-    });
-
-    const page = await browser.newPage();
-    await sleep(3000)
-
-    if (["true", true].includes(process.env.PROXY_ENABLED)) {
-        console.log('Proxy is enabled')
-        await page.authenticate({ username: username_, password: password_ });
-        await sleep(2000)
-    }
-    if (process.env.USE_USER_AGENT) {
-        await page.setUserAgent(process.env.USE_USER_AGENT);
-    }
-    if (["true", true].includes(process.env.PROXY_ENABLED)) {
-        // Open ipinfo.
-        try {
-            console.log('opening IP Info')
-            const deadURL = 'https://ipwho.is/';
-
-            await page?.goto(deadURL);
-
-            await sleep(5000);
-        } catch (err) {
-            if (err) {
-                await browser?.close();
-
-                return {
-                    success: false,
-                    data: null,
-                    error: {
-                        code: 701,
-                        type: 'Puppeteer error.',
-                        moment: 'Opening facebook.',
-                        error: err.toString(),
-                    },
-                };
-            }
-        }
-
-    }
+    
+    const {browser, page} = await helper.openBrowser()
     // Open the Facebook Login Page.
     try {
         const loginURL = 'https://mbasic.facebook.com/login';

@@ -194,6 +194,114 @@
     </section>
 </div>
 
+<!-- THE INSTANT MODAL -->
+<div id="modal-range" class="modal hidden">
+    <!-- THE MODAL HEADING -->
+    <h3 id="modal-instant-heading" class="modal-heading">Range Time Slots</h3>
+
+    <!-- THE TIME -->
+    <label>From</label>
+    <input placeholder="--:-- --" type="time" name="range-time-from" id="modal-range-time-from" class="modal-input time-pickable" />
+    <label>To</label>
+    <input placeholder="--:-- --" type="time" name="range-time-to" id="modal-range-time-to" class="modal-input time-pickable" />
+    <label>Count</label>
+    <input placeholder="10" type="number" name="range-number" id="modal-range-count" class="modal-input" />
+
+    <!-- THE DAYS -->
+    <fieldset>
+        <legend>Timeslot Days</legend>
+
+        <label for="modal-range-days-all" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-all"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="All" />
+            Select All
+        </label>
+
+        <label for="modal-range-days-monday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-monday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Monday" />
+            Monday
+        </label>
+
+        <label for="modal-range-days-tuesday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-tuesday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Tuesday" />
+            Tuesday
+        </label>
+
+        <label for="modal-range-days-wednesday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-wednesday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Wednesday" />
+            Wednesday
+        </label>
+
+        <label for="modal-range-days-thursday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-thursday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Thursday" />
+            Thursday
+        </label>
+
+        <label for="modal-range-days-friday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-friday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Friday" />
+            Friday
+        </label>
+
+        <label for="modal-range-days-saturday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-saturday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Saturday" />
+            Saturday
+        </label>
+
+        <label for="modal-range-days-sunday" class="modal-checkbox">
+            <input
+                type="checkbox"
+                name="days"
+                id="modal-range-days-sunday"
+                class="modal-checkbox-input modal-range-checkbox"
+                value="Sunday" />
+            Sunday
+        </label>
+    </fieldset>
+
+    <!-- THE MODAL BUTTONS -->
+    <section id="modal-range-buttons" class="modal-buttons">
+        <!-- THE CANCEL BUTTON -->
+        <button class="modal-button modal-button-danger" onclick="closeModal('modal-range')">Cancel</button>
+
+        <!-- THE CONFIRM BUTTON -->
+        <button class="modal-button modal-button-primary" onclick="createInstantBulkTimeslots()">Create</button>
+    </section>
+</div>
+
 <style>
     #picker {
         position: fixed;

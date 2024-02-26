@@ -75,8 +75,8 @@ body {
             #timesheet-actions {
                 height: 50px;
                 width: 125px;
-                display: grid;
-                display: grid;
+                // display: grid;
+                display: inline-flex;
                 grid-template-columns: 1fr 1fr;
                 grid-gap: 25px;
 

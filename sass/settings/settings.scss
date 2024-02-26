@@ -30,19 +30,46 @@
             }
         }
     }
-
+    .post-bulk-form-buttons{
+        text-align: center;
+    }
     .group-action-create {
         margin-top: 50px;
         text-align: center;
         position: relative;
-        left: 50%;
-        transform: translateX(-50%);
         cursor: pointer;
         padding: 5px 25px;
         background: transparent;
         border: 3px solid $blue;
         font-weight: bold;
         color: $blue;
+
+        &:hover {
+            box-shadow: 3px 3px $light;
+
+            &:active {
+                box-shadow: none;
+                transform: translate(calc(-50% + 3px), 3px);
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                left: 0;
+                transform: none;
+            }
+        }
+    }
+    .group-action-import {
+        margin-top: 50px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        padding: 5px 25px;
+        background: transparent;
+        border: 3px solid $green;
+        font-weight: bold;
+        color: $green;
 
         &:hover {
             box-shadow: 3px 3px $light;
