@@ -22,7 +22,7 @@ const openBrowser = async () => {
         }
         
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: process.env.USE_HEADLESS_BROWSER == "true" ? 'new' : false,
             // headless: 'new',
             defaultViewport: null,
             args: args,
