@@ -10,7 +10,7 @@ const { sleep } = require('../utils/utils');
 
 const login = async (username, password) => {
     
-    const {browser, page} = await helper.openBrowser()
+    const {browser, page} = await helper.openBrowser(true)
     // Open the Facebook Login Page.
     try {
         const loginURL = 'https://mbasic.facebook.com/login';

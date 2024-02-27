@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 const { sleep } = require('../../utils/utils');
-const openBrowser = async () => {
+const openBrowser = async (login = false) => {
     try {
         let proxyPath = process.env.PROXY
         proxyPath = proxyPath ? proxyPath.split(':') : ''        // 0: IP, 1: PORT, 2: USER, 3: PASSWORD
@@ -22,7 +22,7 @@ const openBrowser = async () => {
         }
         
         const browser = await puppeteer.launch({
-            headless: process.env.USE_HEADLESS_BROWSER == "true" ? 'new' : false,
+            headless: (process.env.USE_HEADLESS_BROWSER == "true" && !login )  ? 'new' : false,
             // headless: 'new',
             defaultViewport: null,
             args: args,
