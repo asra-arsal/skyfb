@@ -1,6 +1,8 @@
-const { sleep } = require('../../utils/utils');
+const { sleep, isKeywordPresent } = require('../../utils/utils');
+
 
 module.exports = async (post, auth, page, browser) => {
+	
     try {
         const deadURL = 'https://m.facebook.com';
 
@@ -62,9 +64,24 @@ module.exports = async (post, auth, page, browser) => {
                 await contextMenu.click();
             } else {
                 const element = await page.evaluate(() => {
+					const isKeywordPresent = (element, keyword) => {
+						if (element.textContent.includes(keyword)) {
+							return true;
+						}
+						for (let child of element.children) {
+							if (isKeywordPresent(child, keyword)) {
+								return true;
+							}
+						}
+						return false;
+					}
                     let mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[15];
+					if(isKeywordPresent(mccontainer,'Reels') || isKeywordPresent(mccontainer,'Groups') || isKeywordPresent(mccontainer,'Messages')){
+						mccontainer = document.querySelectorAll('div[data-mcomponent="MContainer"')[14];
+					}
                     let d = mccontainer.querySelectorAll('div[data-mcomponent="ServerTextArea"')[0];
                     d.click();
+					return  isKeywordPresent(mccontainer,'Reels') || isKeywordPresent(mccontainer,'Groups') || isKeywordPresent(mccontainer,'Messages')
                 });
             }
 
@@ -81,7 +98,7 @@ module.exports = async (post, auth, page, browser) => {
         }
     } catch (err) {
         if (err) {
-            await browser?.close();
+            //await browser?.close();
 
             return {
                 success: false,

@@ -2,7 +2,17 @@ const fs = require('fs');
 const path = require('path');
 
 const { nanoid } = require('nanoid');
-
+const isKeywordPresent = (element, keyword) => {
+		if (element.textContent.includes(keyword)) {
+			return true;
+		}
+		for (let child of element.children) {
+			if (isKeywordPresent(child, keyword)) {
+				return true;
+			}
+		}
+		return false;
+	}
 const sleep = (millisec) => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -161,6 +171,7 @@ const convert24HourTimeTo12HourTime = (time) => {
 };
 
 module.exports = {
+	isKeywordPresent,
     sleep,
     isValidURL,
     isValidDay,
