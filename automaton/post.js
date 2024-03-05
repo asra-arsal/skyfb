@@ -29,13 +29,13 @@ module.exports = async (posts, auth) => {
         for(let i = 0; i< posts.length; i++){
             contextRes = await publish.verifyAndUpdateContext(posts[i], auth, page, browser)
             
+            try{
+                await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+            }catch(e){
+
+            }
             if (posts[i].context === "page" || posts[i].context === "all") {
                 console.log('posting to page')
-                try{
-                    await page.waitForNavigation()
-                }catch(e){
-
-                }
                 url = 'https://mbasic.facebook.com';
                 
                 await page?.goto(url);

@@ -37,8 +37,8 @@ cron.schedule('*/5 * * * *', async () => {
         const current_time = new Date().getTime();
 
         const query = `
-            SELECT
-                *
+        SELECT
+        *
             FROM
                 posts
             WHERE
@@ -47,7 +47,7 @@ cron.schedule('*/5 * * * *', async () => {
                 status = 'inactive'
                 AND
                 timestamp <= ?;
-        `;
+                `;
 
         const params = [current_time];
 
@@ -69,8 +69,8 @@ cron.schedule('*/5 * * * *', async () => {
             });
         }
     }
-    console.log('posts1',posts)
-    if(posts.length > 0){
+    console.log('posts1', posts)
+    if (posts.length > 0) {
         const resp = await pubsub(posts, db);
         if (!resp.success) console.error(resp);
     }
@@ -93,6 +93,21 @@ cron.schedule('*/5 * * * *', async () => {
     const MINUTES = `${minutes < 10 ? '0' : ''}${minutes}`;
     const current_time = `${HOURS}:${MINUTES}`;
 
+    const currentTimeNew = new Date();
+    currentTimeNew.setMinutes(currentTimeNew.getMinutes() - 5);
+
+    const hoursless = currentTimeNew.getHours(); // Get the hour of the modified time
+    const minutesless = currentTimeNew.getMinutes(); // Get the minutes of the modified time
+
+    // Add leading zero if hour or minute is less than 10
+    const formattedHours = `${hoursless < 10 ? '0' : ''}${hoursless}`;
+    const formattedMinutes = `${minutesless < 10 ? '0' : ''}${minutesless}`;
+
+    // Combine hours and minutes to form the time string in 'HH:MM' format
+    const current_time_less = `${formattedHours}:${formattedMinutes}`;
+
+
+
     let timeslot;
 
     try {
@@ -106,10 +121,12 @@ cron.schedule('*/5 * * * *', async () => {
                 AND
                 day = ?
                 AND
-                time = ?;
+                time <= ?
+                AND
+                time > ?;
         `;
 
-        const params = ["link", current_day, current_time];
+        const params = ["link", current_day, current_time, current_time_less];
 
         timeslot = await db.get(query, params);
     } catch (err) {
@@ -176,19 +193,23 @@ cron.schedule('*/5 * * * *', async () => {
 
     try {
         const query = `
-            SELECT
-                *
-            FROM
+        SELECT
+        *
+        FROM
                 timesheet
             WHERE
                 type = ? 
                 AND
                 day = ?
                 AND
-                time = ?;
-        `;
+                time <= ?
+                AND
+                time > ?;
+                `;
 
-        const params = ["media", current_day, current_time];
+        const params = ["media", current_day, current_time, current_time_less];
+        console.log('params: ', params);
+        console.log('query: ', query);
 
         timeslot = await db.get(query, params);
     } catch (err) {
@@ -216,18 +237,19 @@ cron.schedule('*/5 * * * *', async () => {
 
         try {
             const query = `
-                SELECT
-                    *
-                FROM
+            SELECT
+            *
+            FROM
                     posts
                 WHERE
-                    media IS NOT NULL
+                media IS NOT NULL
                     AND
                     type = 'automated'
                     AND
                     status = 'inactive'
-                ORDER BY priority;
-            `;
+                    ORDER BY priority;
+                    `;
+            console.log('query: ', query);
 
             post = await db.get(query);
         } catch (err) {
