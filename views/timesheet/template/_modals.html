@@ -201,11 +201,12 @@
 
     <!-- THE TIME -->
     <label>From</label>
-    <input placeholder="--:-- --" type="time" name="range-time-from" id="modal-range-time-from" class="modal-input time-pickable" />
+    <input placeholder="--:-- --" type="time" name="range-time-from" id="modal-range-time-from" class="modal-input time-pickable" onchange="detemineMaximumSlots()" />
     <label>To</label>
-    <input placeholder="--:-- --" type="time" name="range-time-to" id="modal-range-time-to" class="modal-input time-pickable" />
-    <label>Count</label>
-    <input placeholder="10" type="number" name="range-number" id="modal-range-count" class="modal-input" />
+    <input placeholder="--:-- --" type="time" name="range-time-to" id="modal-range-time-to" class="modal-input time-pickable" onchange="detemineMaximumSlots()"/>
+    <label>Count <span id="maxNotice" style="display:none">( At max <span id="maxCount" ></span> slots are allowed)</span></label>
+    <input placeholder="10" type="number" name="range-number" id="modal-range-count" class="modal-input" min="0" disabled onchange="verifyMaxRanges()"/>
+    <input type="hidden" id="modal-range-count-hidden"/>
 
     <!-- THE DAYS -->
     <fieldset>
@@ -419,6 +420,15 @@
 </div>
 
 <script>
+    document.getElementById('modal-range-count').addEventListener('change', () => {   
+        let value = document.getElementById('modal-range-count').value
+        let maxValue = document.getElementById('modal-range-count-hidden').value
+        if(value > maxValue){
+            document.getElementById('modal-range-count').value = maxValue
+        }
+    })
+    const verifyMaxRanges = () => {
+    }
     document.querySelectorAll('.time-pickable').forEach((timepickable) => {
         timepickable.addEventListener('click', (e) => {
             e.preventDefault();
@@ -472,5 +482,6 @@
         document.querySelector('#picker').classList.add('hidden');
 
         document.querySelector('.time-pickable.the-active-time-picker').classList.remove('the-active-time-picker');
+        detemineMaximumSlots()
     });
 </script>

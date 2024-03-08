@@ -131,6 +131,42 @@ const createInstantTimeslots = async () => {
 
     window.location.href = '/timesheet';
 };
+function calculateTimeSlots(start, end, gap) {
+    // Convert start and end time to Date objects
+    var startTime = new Date("01/01/2024 " + start);
+    var endTime = new Date("01/01/2024 " + end);
+
+    // Calculate the duration in milliseconds
+    var duration = endTime - startTime;
+
+    // Convert gap to milliseconds
+    var gapMilliseconds = gap * 60000; // 1 minute = 60000 milliseconds
+
+    // Calculate the number of time slots
+    var numberOfTimeSlots = Math.floor(duration / gapMilliseconds);
+
+    return numberOfTimeSlots;
+}
+const detemineMaximumSlots = () => {
+    const timeFrom = document.getElementById('modal-range-time-from').value;
+    const timeTo = document.getElementById('modal-range-time-to').value;
+    if(timeFrom && timeTo){
+        const maximumSlots = calculateTimeSlots(timeFrom, timeTo, 5)    //5 mins gap 
+        document.getElementById('modal-range-count').disabled = false;
+        document.getElementById('modal-range-count').max = maximumSlots
+        document.getElementById('modal-range-count-hidden').value = maximumSlots
+        document.getElementById('maxNotice').style.display = 'block'
+        document.getElementById('maxCount').textContent = maximumSlots
+    }else{
+        document.getElementById('modal-range-count').disabled = false;
+        document.getElementById('modal-range-count-hidden').value = 999999999
+        document.getElementById('maxNotice').style.display = 'none'
+    }
+
+}
+document.getElementById("modal-range-time-from").addEventListener("change", detemineMaximumSlots);
+document.getElementById("modal-range-time-to").addEventListener("change", detemineMaximumSlots);
+
 const createInstantBulkTimeslots = async () => {    
     const apiEndpoint = api.timesheet.instantBulk;
 
@@ -197,4 +233,3 @@ const createTimeslot = async (route) => {
 
     window.location.href = '/timesheet';
 };
-

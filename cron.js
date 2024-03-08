@@ -69,7 +69,6 @@ cron.schedule('*/5 * * * *', async () => {
             });
         }
     }
-    console.log('posts1', posts)
     if (posts.length > 0) {
         const resp = await pubsub(posts, db);
         if (!resp.success) console.error(resp);
@@ -121,12 +120,10 @@ cron.schedule('*/5 * * * *', async () => {
                 AND
                 day = ?
                 AND
-                time <= ?
-                AND
-                time > ?;
+                time = ?;
         `;
 
-        const params = ["link", current_day, current_time, current_time_less];
+        const params = ["link", current_day, current_time];
 
         timeslot = await db.get(query, params);
     } catch (err) {
@@ -202,14 +199,10 @@ cron.schedule('*/5 * * * *', async () => {
                 AND
                 day = ?
                 AND
-                time <= ?
-                AND
-                time > ?;
+                time <= ?;
                 `;
 
-        const params = ["media", current_day, current_time, current_time_less];
-        console.log('params: ', params);
-        console.log('query: ', query);
+        const params = ["media", current_day, current_time];
 
         timeslot = await db.get(query, params);
     } catch (err) {
@@ -249,7 +242,6 @@ cron.schedule('*/5 * * * *', async () => {
                     status = 'inactive'
                     ORDER BY priority;
                     `;
-            console.log('query: ', query);
 
             post = await db.get(query);
         } catch (err) {
