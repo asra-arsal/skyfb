@@ -138,7 +138,8 @@ function calculateTimeSlots(start, end, gap) {
 
     // Calculate the duration in milliseconds
     var duration = endTime - startTime;
-
+    if(duration == 0)
+        duration = 86400000
     // Convert gap to milliseconds
     var gapMilliseconds = gap * 60000; // 1 minute = 60000 milliseconds
 
