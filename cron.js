@@ -199,7 +199,7 @@ cron.schedule('*/5 * * * *', async () => {
                 AND
                 day = ?
                 AND
-                time <= ?;
+                time = ?;
                 `;
 
         const params = ["media", current_day, current_time];
