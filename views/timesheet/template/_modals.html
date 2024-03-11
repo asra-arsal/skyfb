@@ -423,7 +423,7 @@
     document.getElementById('modal-range-count').addEventListener('change', () => {   
         let value = document.getElementById('modal-range-count').value
         let maxValue = document.getElementById('modal-range-count-hidden').value
-        if(value > maxValue){
+        if(parseInt(value) > parseInt(maxValue)){
             document.getElementById('modal-range-count').value = maxValue
         }
     })
