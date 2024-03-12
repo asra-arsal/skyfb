@@ -39,7 +39,11 @@ module.exports = async (posts, auth) => {
                 url = 'https://mbasic.facebook.com';
                 
                 await page?.goto(url);
-                await sleep(5000);
+                try{
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                }catch(e){
+    
+                }
                 await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             if (posts[i].context === "group" || posts[i].context === "all") {
@@ -48,9 +52,17 @@ module.exports = async (posts, auth) => {
                 url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
                 url = `https://mbasic.facebook.com${url}`
                 await page?.goto(url);
-                await sleep(2000);
+                try{
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                }catch(e){
+    
+                }
                 await page?.reload();
-                await sleep(3000);
+                try{
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                }catch(e){
+    
+                }
                 await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
             res = await publish.publishPostHelper(posts[i], auth, page, browser)

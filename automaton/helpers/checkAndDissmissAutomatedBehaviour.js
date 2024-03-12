@@ -22,7 +22,7 @@ const checkAndDissmissAutomatedBehaviour = async (browser, page) => {
 				const element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 				element.click();
 			});
-			await page.waitForNavigation();
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 			await sleep(2000);
 		}
     } catch (err) {
