@@ -1,36 +1,35 @@
 const puppeteer = require('puppeteer');
-const path = require('path'); 
-const fs = require('fs'); 
+const path = require('path');
 const { sleep } = require('../../utils/utils');
-const lockFilePath = '../../puppeteer.lock';
 
-async function isBrowserRunning() {
-    try {
-        await fs.promises.access(lockFilePath, fs.constants.F_OK);
-        return true;
-    } catch (error) {
-        return false;
+// Function to navigate to a URL with retry logic
+async function navigateWithRetry(page, url, maxRetries = 3) {
+    let retryCount = 0;
+    while (retryCount < maxRetries) {
+        try {
+            await page.goto(url);
+            console.log('Page loaded successfully!');
+            return; // Exit the function if navigation is successful
+        } catch (error) {
+            if (error.message.includes('ERR_EMPTY_RESPONSE')) {
+                console.log(`Error loading page (attempt ${retryCount + 1}):`, error.message);
+                retryCount++;
+                // Add a delay before retrying (optional)
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+            } else {
+                // If the error is not ERR_EMPTY_RESPONSE, rethrow it
+                throw error;
+            }
+        }
     }
+    // If maxRetries is reached without successful navigation, throw an error
+    console.log( `Failed to load page after ${maxRetries} attempts.`);
+    throw new Error(`Failed to load page after ${maxRetries} attempts.`);
+    
 }
-
-async function setBrowserRunningFlag() {
-    await fs.promises.writeFile(lockFilePath, 'Puppeteer is running', 'utf8');
-}
-
-async function clearBrowserRunningFlag() {
-    await fs.promises.unlink(lockFilePath);
-}
-
 const openBrowser = async (login = false) => {
     try {
-        // const browserAlreadyRunning = await isBrowserRunning();
-        // if (browserAlreadyRunning) {
-        //     console.log('Another Puppeteer instance is already running.');
-        //     return;
-        // }
-
-        // // Set the flag to indicate that Puppeteer is running
-        // await setBrowserRunningFlag();
+        
         let proxyPath = process.env.PROXY
         proxyPath = proxyPath ? proxyPath.split(':') : ''        // 0: IP, 1: PORT, 2: USER, 3: PASSWORD
         const isProxyEnabled = proxyPath[0] && proxyPath[1] && proxyPath[2] && proxyPath[3]
@@ -68,12 +67,13 @@ const openBrowser = async (login = false) => {
             // Open ipinfo.
             try {
                 await page.authenticate({ username: proxyUser, password: proxyPWD });
-                await sleep(2000)
-
-                console.log('opening IP Info')
                 const proxyUrl = 'https://ipwho.is/';
+                await sleep(4000)
 
-                await page?.goto(proxyUrl);
+                console.log('opening IP Info 1')
+                await navigateWithRetry(page, proxyUrl);
+
+                // await page?.goto(proxyUrl);
 
                 // const pageSource = await page.content();
                 // const jsonMatch = pageSource.match(/<pre.*?>(.*?)<\/pre>/s);
