@@ -14,7 +14,7 @@ const { sleep } = require('../utils/utils');
 
 module.exports = async (posts, auth) => {
     try {
-        const {browser, page} = await publish.openBrowser()
+        const { browser, page } = await publish.openBrowser()
         await publish.loginUtility(browser, page)
         let res = {
             success: false,
@@ -26,23 +26,25 @@ module.exports = async (posts, auth) => {
                 error: 'err.toString()',
             },
         }
-        for(let i = 0; i< posts.length; i++){
+        console.log('posts: ', posts);
+        for (let i = 0; i < posts.length; i++) {
+            console.log('posts[i]: ', posts[i]);
             contextRes = await publish.verifyAndUpdateContext(posts[i], auth, page, browser)
-            
-            try{
+
+            try {
                 await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-            }catch(e){
+            } catch (e) {
 
             }
             if (posts[i].context === "page" || posts[i].context === "all") {
                 console.log('posting to page')
                 url = 'https://mbasic.facebook.com';
-                
+
                 await page?.goto(url);
-                try{
+                try {
                     await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-                }catch(e){
-    
+                } catch (e) {
+
                 }
                 await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
@@ -50,22 +52,32 @@ module.exports = async (posts, auth) => {
                 console.log('posting to group')
                 url = posts[i].contextDetails.group;
                 url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
-                url = `https://mbasic.facebook.com${url}`
+                if (posts[i]?.publisher === "user" ) {
+                    url = `https://mbasic.facebook.com${url}`
+                }
+                else {
+                    url = `https://m.facebook.com${url}`
+                }
                 await page?.goto(url);
-                try{
+                try {
                     await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-                }catch(e){
-    
+                } catch (e) {
+
                 }
                 await page?.reload();
-                try{
+                try {
                     await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-                }catch(e){
-    
+                } catch (e) {
+
                 }
                 await publish.checkAndDissmissAutomatedBehaviour(browser, page)
             }
-            res = await publish.publishPostHelper(posts[i], auth, page, browser)
+            if (posts[i]?.publisher === "page" && posts[i].context === "group" ) {
+                res = await publish.toGroup(posts[i], auth, page, browser)
+            }
+            else {
+                res = await publish.publishPostHelper(posts[i], auth, page, browser)
+            }
         }
         if (res.success) {
             await browser?.close();
