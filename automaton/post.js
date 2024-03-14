@@ -28,11 +28,16 @@ module.exports = async (posts, auth) => {
         }
         console.log('posts: ', posts);
         for (let i = 0; i < posts.length; i++) {
-            console.log('posts[i]: ', posts[i]);
+            console.log('============================================================================================ ');
+            console.log('posts['+i+']: ', posts[i]);
+            console.log('============================================================================================ ');
             contextRes = await publish.verifyAndUpdateContext(posts[i], auth, page, browser)
+            console.log('============================================================================================ ');
+            console.log('contextRes: ', contextRes);
+            console.log('============================================================================================ ');
 
             try {
-                await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                await page.waitForNavigation({ waitUntil: 'domcontentloaded',  timeout: 60000 });
             } catch (e) {
 
             }
@@ -42,7 +47,7 @@ module.exports = async (posts, auth) => {
 
                 await page?.goto(url);
                 try {
-                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded',  timeout: 60000 });
                 } catch (e) {
 
                 }
@@ -60,13 +65,13 @@ module.exports = async (posts, auth) => {
                 }
                 await page?.goto(url);
                 try {
-                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded',  timeout: 60000 });
                 } catch (e) {
 
                 }
                 await page?.reload();
                 try {
-                    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+                    await page.waitForNavigation({ waitUntil: 'domcontentloaded',  timeout: 60000 });
                 } catch (e) {
 
                 }

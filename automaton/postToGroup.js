@@ -129,7 +129,6 @@ module.exports = async (post, auth, page, browser) => {
 
     await sleep(totalSleepTime);
 
-    await browser?.close();
     return {
         success: true,
         data: null,
