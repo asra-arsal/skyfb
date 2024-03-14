@@ -67,11 +67,11 @@ const openBrowser = async (login = false) => {
             // Open ipinfo.
             try {
                 await page.authenticate({ username: proxyUser, password: proxyPWD });
-                const proxyUrl = 'https://ipwho.is/';
-                await sleep(4000)
+                // const proxyUrl = 'https://ipwho.is/';
+                // await sleep(4000)
 
-                console.log('opening IP Info 1')
-                await navigateWithRetry(page, proxyUrl);
+                // console.log('opening IP Info 1')
+                // await navigateWithRetry(page, proxyUrl);
 
                 // await page?.goto(proxyUrl);
 
