@@ -40,7 +40,6 @@ const openBrowser = async (login = false) => {
             proxy = `http://${proxyPath[0]}:${proxyPath[1]}`;
             proxyUser = proxyPath[2]
             proxyPWD = proxyPath[3]
-
         }
 
         let args = ['--start-maximized', '--disable-notifications', '--no-sandbox']
@@ -64,34 +63,32 @@ const openBrowser = async (login = false) => {
         }
 
         if (isProxyEnabled) {
-            // Open ipinfo.
             try {
+                await sleep(2000);
                 await page.authenticate({ username: proxyUser, password: proxyPWD });
-                // const proxyUrl = 'https://ipwho.is/';
-                // await sleep(4000)
-
-                // console.log('opening IP Info 1')
-                // await navigateWithRetry(page, proxyUrl);
-
-                // await page?.goto(proxyUrl);
-
-                // const pageSource = await page.content();
-                // const jsonMatch = pageSource.match(/<pre.*?>(.*?)<\/pre>/s);
-                // const jsonString = jsonMatch ? jsonMatch[1] : null;
-
-                // // Parse the JSON string into an object
-                // if (jsonString) {
-                //     const data = JSON.parse(jsonString);
-                //     console.log('Extracted JSON:', data?.ip);
-                // } else {
-                //     console.log('No JSON data found in the page source.');
-                // }
-
-                await sleep(5000);
+                await sleep(3000);
+                const proxyUrl = 'https://ipwho.is/';
+                await page.goto(proxyUrl);
+                await sleep(2000)
             } catch (err) {
                 if (err) {
                     console.log('err1: ', err);
-                    await browser?.close();
+					if (err.message.includes('ERR_EMPTY_RESPONSE')) {
+						try {
+							await page?.reload();
+							await sleep(3000);
+							await page.authenticate({ username: proxyUser, password: proxyPWD });
+							await sleep(2000)
+							const proxyUrl = 'https://ipwho.is/';
+                            await page.goto(proxyUrl);
+							await sleep(2000)
+						} catch (err) {
+							console.log('err123: ', err);
+							await browser?.close();		
+						}					
+					}else{
+						await browser?.close();
+					}
 
                     return false;
                 }

@@ -86,7 +86,7 @@ const loginUtility = async (browser, page) => {
         await helper.checkAndDissmissAutomatedBehaviour(browser, page)
     } catch (err) {
         if (err) {
-            // await browser?.close();
+            await browser?.close();
             return {
                 success: false,
                 data: null,
