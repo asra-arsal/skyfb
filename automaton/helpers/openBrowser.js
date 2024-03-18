@@ -65,8 +65,12 @@ const openBrowser = async (login = false) => {
         if (isProxyEnabled) {
             try {
                 await sleep(2000);
-                await page.authenticate({ username: proxyUser, password: proxyPWD });
-                await sleep(3000);
+                await Promise.all([
+                    page.authenticate({ username: proxyUser, password: proxyPWD }),
+                    sleep(3000) // Assuming sleep is a function that returns a promise
+                ]);
+                // await page.authenticate({ username: proxyUser, password: proxyPWD });
+                // await sleep(3000);
                 const proxyUrl = 'https://ipwho.is/';
                 await page.goto(proxyUrl);
                 await sleep(2000)
@@ -77,8 +81,12 @@ const openBrowser = async (login = false) => {
 						try {
 							await page?.reload();
 							await sleep(3000);
-							await page.authenticate({ username: proxyUser, password: proxyPWD });
-							await sleep(2000)
+                            await Promise.all([
+                                page.authenticate({ username: proxyUser, password: proxyPWD }),
+                                sleep(3000) // Assuming sleep is a function that returns a promise
+                            ]);
+							// await page.authenticate({ username: proxyUser, password: proxyPWD });
+							// await sleep(2000)
 							const proxyUrl = 'https://ipwho.is/';
                             await page.goto(proxyUrl);
 							await sleep(2000)
