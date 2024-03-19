@@ -2,31 +2,7 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const { sleep } = require('../../utils/utils');
 
-// Function to navigate to a URL with retry logic
-async function navigateWithRetry(page, url, maxRetries = 3) {
-    let retryCount = 0;
-    while (retryCount < maxRetries) {
-        try {
-            await page.goto(url);
-            console.log('Page loaded successfully!');
-            return; // Exit the function if navigation is successful
-        } catch (error) {
-            if (error.message.includes('ERR_EMPTY_RESPONSE')) {
-                console.log(`Error loading page (attempt ${retryCount + 1}):`, error.message);
-                retryCount++;
-                // Add a delay before retrying (optional)
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-            } else {
-                // If the error is not ERR_EMPTY_RESPONSE, rethrow it
-                throw error;
-            }
-        }
-    }
-    // If maxRetries is reached without successful navigation, throw an error
-    console.log( `Failed to load page after ${maxRetries} attempts.`);
-    throw new Error(`Failed to load page after ${maxRetries} attempts.`);
-    
-}
+
 const openBrowser = async (login = false) => {
     try {
         
@@ -107,7 +83,7 @@ const openBrowser = async (login = false) => {
         return { browser, page }
     } catch (err) {
         if (err) {
-            console.log('err: ', err);
+            console.log('openBrowser Error: ', err);
             await browser.close();
 
             return false;

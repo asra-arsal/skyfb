@@ -10,12 +10,23 @@ const publish = {
     toGroup: require('./postToGroup'),
     // meta: require('../automaton/post.create'),
 };
-const { sleep } = require('../utils/utils');
 
 module.exports = async (posts, auth) => {
     let browser = null
     try {
         const { browser, page } = await publish.openBrowser()
+        if(!browser || !page){
+            return {
+                success: false,
+                data: null,
+                error: {
+                    code: 200000,
+                    type: 'EXIT.',
+                    moment: 'EXITED',
+                    error: 'Failed to launch new browser',
+                },
+            }
+        }
         let res = await publish.loginUtility(browser, page)
         if(!res.success){
             return res
