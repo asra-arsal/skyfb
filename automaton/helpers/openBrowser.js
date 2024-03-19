@@ -108,7 +108,7 @@ const openBrowser = async (login = false) => {
     } catch (err) {
         if (err) {
             console.log('err: ', err);
-            //await browser.close();
+            await browser.close();
 
             return false;
         }

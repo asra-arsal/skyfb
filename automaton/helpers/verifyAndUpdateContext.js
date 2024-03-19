@@ -1,4 +1,4 @@
-const { sleep, isKeywordPresent } = require('../../utils/utils');
+const { sleep } = require('../../utils/utils');
 
 
 module.exports = async (post, auth, page, browser) => {

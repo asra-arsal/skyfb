@@ -151,6 +151,7 @@ module.exports = async (posts, db) => {
                 moment: 'PubSub-Unified-Publication',
                 error: 'Various errors were encountered while trying to publish posts to Pages/Groups and/or removing them from the Database.',
                 description: { delete_erros: end_result.delete_errors, publish_errors: end_result.publish_errors },
+                publish_errors: end_result.publish_errors,
             },
         };
 

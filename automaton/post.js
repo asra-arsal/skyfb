@@ -16,17 +16,20 @@ module.exports = async (posts, auth) => {
     let browser = null
     try {
         const { browser, page } = await publish.openBrowser()
-        await publish.loginUtility(browser, page)
-        let res = {
-            success: false,
-            data: null,
-            error: {
-                code: 10000,
-                type: 'EXIT.',
-                moment: 'EXITED',
-                error: 'err.toString()',
-            },
+        let res = await publish.loginUtility(browser, page)
+        if(!res.success){
+            return res
         }
+        // let res = {
+        //     success: false,
+        //     data: null,
+        //     error: {
+        //         code: 10000,
+        //         type: 'EXIT.',
+        //         moment: 'EXITED',
+        //         error: 'err.toString()',
+        //     },
+        // }
         console.log('posts: ', posts);
         for (let i = 0; i < posts.length; i++) {
             console.log('============================================================================================ ');
