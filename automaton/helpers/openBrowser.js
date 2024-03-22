@@ -24,6 +24,7 @@ const openBrowser = async (login = false) => {
         }
 
         const browser = await puppeteer.launch({
+            timeout: 90000,
             headless: (process.env.USE_HEADLESS_BROWSER == "true" && !login) ? 'new' : false,
             // headless: 'new',
             defaultViewport: null,
@@ -84,7 +85,7 @@ const openBrowser = async (login = false) => {
     } catch (err) {
         if (err) {
             console.log('openBrowser Error: ', err);
-            await browser.close();
+            
 
             return false;
         }

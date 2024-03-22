@@ -14,21 +14,26 @@ const publish = {
 module.exports = async (posts, auth) => {
     let browser = null
     try {
-        const { browser, page } = await publish.openBrowser()
-        if(!browser || !page){
-            return {
-                success: false,
-                data: null,
-                error: {
-                    code: 200000,
-                    type: 'EXIT.',
-                    moment: 'EXITED',
-                    error: 'Failed to launch new browser',
-                },
+        let { browser, page } = await publish.openBrowser()
+        if (!browser || !page) {
+            let browserData = await publish.openBrowser()
+            browser = browserData.browser
+            page = browserData.page
+            if (!browser || !page) {
+                return {
+                    success: false,
+                    data: null,
+                    error: {
+                        code: 200000,
+                        type: 'EXIT.',
+                        moment: 'EXITED',
+                        error: 'Failed to launch new browser',
+                    },
+                }
             }
         }
         let res = await publish.loginUtility(browser, page)
-        if(!res.success){
+        if (!res.success) {
             return res
         }
         // let res = {
