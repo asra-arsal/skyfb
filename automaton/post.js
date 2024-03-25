@@ -78,12 +78,12 @@ module.exports = async (posts, auth) => {
                     console.log('posting to group')
                     url = posts[i].contextDetails.group;
                     url = url.substring(url.indexOf('facebook.com') + 'facebook.com'.length);
-                    if (posts[i]?.publisher === "user") {
+                    // if (posts[i]?.publisher === "user") {
                         url = `https://mbasic.facebook.com${url}`
-                    }
-                    else {
-                        url = `https://m.facebook.com${url}`
-                    }
+                    // }
+                    // else {
+                    //     url = `https://m.facebook.com${url}`
+                    // }
                     await page?.goto(url);
                     try {
                         await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -98,12 +98,12 @@ module.exports = async (posts, auth) => {
                     }
                     await publish.checkAndDissmissAutomatedBehaviour(browser, page)
                 }
-                if (posts[i]?.publisher === "page" && posts[i].context === "group") {
-                    res = await publish.toGroup(posts[i], auth, page, browser)
-                }
-                else {
+                // if (posts[i]?.publisher === "page" && posts[i].context === "group") {
+                //     res = await publish.toGroup(posts[i], auth, page, browser)
+                // }
+                // else {
                     res = await publish.publishPostHelper(posts[i], auth, page, browser)
-                }
+                // }
             }
         }
         if (res.success) {
